@@ -1,0 +1,88 @@
+<?php
+
+    // Default timezone setting.
+    date_default_timezone_set('Europe/London');
+
+    // Profile name used to identify the configuration information saved config_definition and config_value
+    define('CONF_configuration_profile','Test,Live');
+
+    // Main mysql Connection settings
+    define('CONF_mysql_host'       ,'');
+    define('CONF_mysql_user'       ,'');
+    define('CONF_mysql_password'   ,'');
+    define('CONF_mysql_database'   ,'');
+
+    // Location of the home directory path
+    define('CONF_base_url'          ,'');
+
+    // mysqli connection
+    $db = new mysqli(CONF_mysql_host,CONF_mysql_user,CONF_mysql_password,CONF_mysql_database);
+    if ($db->connect_errno > 0){
+        die('Unable to connect to database [' . $db->connect_error . ']');
+    }
+
+    // ==============================================
+    // Loading configuration constant from DB
+    $configProfile = explode(',',CONF_configuration_profile);
+    switch(count($configProfile)) {
+        case 1 :
+            $query  = "SELECT name,value,type,`key` ";
+            $query .= "FROM `config_value` as a , `config_definition` as b ";
+            $query .= "where a.config_definition_id = b.id ";
+            $query .= "and profile = '" . $configProfile[0] . "'";
+            break;
+        case 2 :
+            $query  = "SELECT name,value,type,`key` ";
+            $query .= "FROM `config_value` as a , `config_definition` as b ";
+            $query .= "where a.config_definition_id = b.id ";
+            $query .= "and profile = '" . $configProfile[0] . "' ";
+            $query .= "union ";
+            $query .= "SELECT name,value,type,`key` ";
+            $query .= "FROM `config_value` as a , `config_definition` as b ";
+            $query .= "where a.config_definition_id = b.id ";
+            $query .= "and profile = '" . $configProfile[1] . "' ";
+            $query .= "and b.id not in ( ";
+            $query .= "    SELECT b.id ";
+            $query .= "    FROM `config_value` as a , `config_definition` as b ";
+            $query .= "    where a.config_definition_id = b.id ";
+            $query .= "    and profile = '" . $configProfile[0] . "' ";
+            $query .= ")";
+            break;
+        default :
+            die("Configuration profile is wrong: " . CONF_configuration_profile);
+            break;
+    }
+
+    $result = $db->query($query);
+
+    if ($result) {
+        while ( $row = $result->fetch_assoc()) {
+            switch($row['type']) {
+                case "string" :
+                case "number" :
+                case "html" :
+                    define($row['name'],$row['value']);
+                    break;
+                case "integer" :
+                    $tempVariable = $row['value'];
+                    settype($tempVariable,"integer");
+                    define($row['name'],$tempVariable);
+                    break;
+                case "boolean" :
+                    if ($row['value'] == 'true') {
+                        define($row['name'],true);
+                    }
+                    else {
+                        define($row['name'],false);
+                    }
+                    break;
+                case "array":
+                    $name = $row["name"];
+                    if(!isset($$name)) {
+                        $$name = array();
+                    }
+                    ${$name}[$row["key"]] = $row["value"];
+                    break;
+            }
+        }
+    }

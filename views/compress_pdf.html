@@ -1,0 +1,196 @@
+{% extends "base_tabler.html" %}
+
+{% set screen_title = 'Compress PDF' %}
+
+{% block additional_style %}
+<link rel="stylesheet" href="{{ base_url }}/assets/js/dm-uploader/jquery.dm-uploader.css">
+<style>
+.dm-uploader {
+	border: 0.25rem dashed #A5A5C7;
+	text-align: center;
+}
+.dm-uploader.active {
+	border-color: red;
+
+	border-style: solid;
+}
+</style>
+{% endblock %}
+
+{% block page_content %}
+    <section class="position-relative pt-12 pt-md-14 mt-n11">
+
+      <!-- Shape -->
+      <div class="shape shape-fluid-x shape-blur-2 svg-shim text-light">
+        <svg viewBox="0 0 1313 768" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M442.794 768c163.088 0 305.568-88.227 382.317-219.556l.183.556s.249-.749.762-2.181a440.362 440.362 0 0033.192-71.389C901.996 397.81 989.306 277.09 1144.29 206l-.92-.693C1230.34 171.296 1295.63 94.049 1312.83 0H1.294v295.514c-.663 9.909-1 19.908-1 29.986 0 244.386 198.114 442.5 442.5 442.5z" fill="currentColor"/></svg>
+      </div>
+
+      <!-- Content -->
+      <div class="container">
+        <div class="row align-items-center text-center text-md-left">
+
+          <div class="col-12 col-md-6">
+
+            <!-- Heading -->
+            <h1 class="display-1 font-weight-bold">
+              <div data-aos="fade-right">Compress PDF</div>
+              <div data-aos="fade-right" data-aos-delay="100"></div>
+            </h1>
+
+            <!-- Text -->
+            <p class="font-size-lg text-muted" data-aos="fade-right" data-aos-delay="200">
+              Reduce the size of your PDFs online easily. Whether you're a freelancer or a business owner, our tools are here to help you get things done-better, faster, smarter.
+            </p>
+
+            <!-- List -->
+            <div class="d-flex" data-aos="fade-right" data-aos-delay="300">
+
+              <!-- Icon -->
+              <div class="icon text-primary">
+                <img alt="" src="{{ base_url }}/assets/svg/reduce.svg" width="32" height="32" /> 
+              </div>
+
+              <div class="ml-5">
+
+                <!-- Heading -->
+                <h4 class="mb-1">
+                  Reduce file size up to 99%
+                </h4>
+
+              </div>
+
+            </div>
+            
+            <div class="d-flex" data-aos="fade-right" data-aos-delay="400">
+
+              <!-- Icon -->
+              <div class="icon text-primary">
+                <img alt="" src="{{ base_url }}/assets/svg/cert.svg" width="32" height="32" />                
+              </div>
+
+              <div class="ml-5">
+
+                <!-- Heading -->
+                <h4 class="mb-1">
+                  GDPR compliant
+                </h4>
+
+              </div>
+            </div>
+            
+            <div class="d-flex" data-aos="fade-right" data-aos-delay="500">
+
+              <!-- Icon -->
+              <div class="icon text-primary">
+                <img alt="" src="{{ base_url }}/assets/svg/encrypt.svg" width="32" height="32" />                
+              </div>
+
+              <div class="ml-5">
+
+                <!-- Heading -->
+                <h4 class="mb-1">
+                  TLS encryption for secure document processing
+                </h4>
+
+              </div>
+            </div>
+            
+          </div>
+          
+          <div class="col-12 col-md-6">
+
+          <!-- Our markup, the important part here! -->
+          <div id="drag-and-drop-zone" class="dm-uploader p-5" data-aos="fade-left">
+            <p class="mb-5 mt-5"><img alt="" src="{{ base_url }}/assets/svg/pdfs.svg" width="96" height="60" /></p>
+
+            <div class="btn btn-primary btn-block mb-5">
+                <span>Choose Files</span>
+                <input type="file" title='Click to add Files' />
+            </div>
+            
+            <p class="mb-5 mt-5 text-muted">or Drag &amp; Drop files here</p>
+          </div><!-- /uploader -->
+
+            <!-- Image 
+            <img src="{{ base_url }}/landkit/img/illustrations/illustration-4.png" alt="..." class="img-fluid mw-130 float-right mb-6 mb-md-0" data-aos="fade-left">
+            -->
+
+          </div>
+                    
+        </div> <!-- / .row -->
+      </div> <!-- / .container -->
+
+    </section>
+{% endblock %}
+
+{% block additional_js %}
+<script src="{{ base_url }}/assets/js/dm-uploader/jquery.dm-uploader.js"></script>
+<script>
+$(function(){
+  /*
+   * For the sake keeping the code clean and the examples simple this file
+   * contains only the plugin configuration & callbacks.
+   * 
+   * UI functions ui_* can be located in: demo-ui.js
+   */
+  $('#drag-and-drop-zone').dmUploader({ //
+    url: '{{ base_url }}/compress-pdf',
+    maxFileSize: 3000000, // 3 Megs 
+    onDragEnter: function(){
+      // Happens when dragging something over the DnD area
+      this.addClass('active');
+    },
+    onDragLeave: function(){
+      // Happens when dragging something OUT of the DnD area
+      this.removeClass('active');
+    },
+    onInit: function(){
+      // Plugin is ready to use
+      //ui_add_log('Penguin initialized :)', 'info');
+    },
+    onComplete: function(){
+      // All files in the queue are processed (success or error)
+      //ui_add_log('All pending tranfers finished');
+    },
+    onNewFile: function(id, file){
+      // When a new file is added using the file selector or the DnD area
+      //ui_add_log('New file added #' + id);
+      //ui_multi_add_file(id, file);
+    },
+    onBeforeUpload: function(id){
+      // about tho start uploading a file
+      //ui_add_log('Starting the upload of #' + id);
+      //ui_multi_update_file_status(id, 'uploading', 'Uploading...');
+      //ui_multi_update_file_progress(id, 0, '', true);
+    },
+    onUploadCanceled: function(id) {
+      // Happens when a file is directly canceled by the user.
+      //ui_multi_update_file_status(id, 'warning', 'Canceled by User');
+      //ui_multi_update_file_progress(id, 0, 'warning', false);
+    },
+    onUploadProgress: function(id, percent){
+      // Updating file progress
+      //ui_multi_update_file_progress(id, percent);
+    },
+    onUploadSuccess: function(id, data){
+      // A file was successfully uploaded
+      //ui_add_log('Server Response for file #' + id + ': ' + JSON.stringify(data));
+      //ui_add_log('Upload of file #' + id + ' COMPLETED', 'success');
+      //ui_multi_update_file_status(id, 'success', 'Upload Complete');
+      //ui_multi_update_file_progress(id, 100, 'success', false);
+    },
+    onUploadError: function(id, xhr, status, message){
+      //ui_multi_update_file_status(id, 'danger', message);
+      //ui_multi_update_file_progress(id, 0, 'danger', false);  
+    },
+    onFallbackMode: function(){
+      // When the browser doesn't support this plugin :(
+      //ui_add_log('Plugin cant be used here, running Fallback callback', 'danger');
+    },
+    onFileSizeError: function(file){
+      //ui_add_log('File \'' + file.name + '\' cannot be added: size excess limit', 'danger');
+    }
+  });
+});
+</script>
+{% endblock %}

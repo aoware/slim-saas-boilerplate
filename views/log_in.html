@@ -1,0 +1,43 @@
+{% extends "base_tabler_access.html" %}
+
+{% set screen_title = 'Log in' %}
+
+{% block page_content %}
+        <div class="card card-md">
+          <div class="card-body">
+            <h2 class="h2 text-center mb-4">Login to your account</h2>
+			<div class="alert alert-danger d-none" role="alert" id="error">
+			  <h4 class="alert-title" id="error_message"></h4>
+			</div>
+            <div>
+              <div class="mb-3">
+                <label class="form-label">Email address</label>
+                <input id="email" type="email" class="form-control" placeholder="your@email.com" autocomplete="off">
+              </div>
+              <div class="mb-2">
+                <label class="form-label">
+                  Password
+                  <span class="form-label-description">
+                    <a href="{{ base_url }}/forgot-password">I forgot password</a>
+                  </span>
+                </label>
+                <div class="input-group input-group-flat">
+                  <input id="password" type="password" class="form-control" placeholder="Your password"  autocomplete="off">
+                </div>
+              </div>
+              <div class="form-footer">
+                <button class="btn btn-primary w-100" onclick="login('email')" id="login_button">
+                  Log in&nbsp;&nbsp;<span id="login_cog"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="text-center text-muted mt-3">
+          Don't have account yet? <a href="{{ base_url }}/sign-up" tabindex="-1">Sign up</a>
+        </div>
+{% endblock %}
+
+{% block additional_js %}
+<script src="{{ base_url }}/assets/js/log-in.js?v={{ version }}"></script>
+{% endblock %}

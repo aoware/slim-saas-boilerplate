@@ -1,0 +1,39 @@
+{% extends "base_tabler_access.html" %}
+
+{% set screen_title = 'Sign up' %}
+
+{% block page_content %}
+	    <div class="card card-md">
+	      <div class="card-body">
+	        <h2 class="h2 text-center mb-4">Create a new account</h2>
+            <div class="mb-3">
+              <label class="form-label">Account name</label>
+              <input type="text" class="form-control" placeholder="Enter account name" id="name" name="name">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email address</label>
+              <input type="email" class="form-control" placeholder="Enter email" id="email" name="email">
+            </div>            
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" class="form-control"  placeholder="Password"  autocomplete="off" id="password" name="password">
+            </div>
+            <div class="mb-3">
+              <label class="form-check">
+                <input type="checkbox" class="form-check-input"/>
+                <span class="form-check-label">Agree the <a href="{{ base_url }}/terms-of-service" tabindex="-1">terms and policy</a>.</span>
+              </label>
+            </div>
+            <div class="form-footer">
+              <button class="btn btn-primary w-100" onclick="signup('email')">Create new account</button>
+            </div>
+          </div>
+        </div>
+        <div class="text-center text-muted mt-3">
+          Already have account? <a href="{{ base_url }}/log-in" tabindex="-1">Log in</a>
+        </div>
+{% endblock %}
+
+{% block additional_js %}
+<script src="{{ base_url }}/assets/js/sign-up.js?v={{ version }}"></script>
+{% endblock %}
