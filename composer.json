@@ -3,12 +3,12 @@
 	"description": "Saas boilerplate built with Slim4",
 	"keywords": ["saas","boilerplate","slim4"],
 	"type": "project",
-	"license": "MIT"
+	"license": "MIT",
     "authors": [
         {
             "name": "Alain Orset",
             "email": "alain@aoware.co.uk.com",
-			"homepage": "https://www.aoware.co.uk",
+			"homepage": "https://www.aoware.co.uk"
         }
     ],
     "require": {
