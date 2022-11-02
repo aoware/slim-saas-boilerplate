@@ -6,6 +6,10 @@
 	    <div class="card card-md">
 	      <div class="card-body">
 	        <h2 class="h2 text-center mb-4">Create a new account</h2>
+	        <div class="alert alert-success d-none" role="alert" id="success">
+			  <h4 class="alert-heading">Congratulations!</h4>
+			  <p>Your account has been created. Please check your email address for next steps.</p>
+			</div>
             <div class="mb-3">
               <label class="form-label">Account name</label>
               <input type="text" class="form-control" placeholder="Enter account name" id="name" name="name">
@@ -20,12 +24,14 @@
             </div>
             <div class="mb-3">
               <label class="form-check">
-                <input type="checkbox" class="form-check-input"/>
+                <input type="checkbox" class="form-check-input" id="tandc" />
                 <span class="form-check-label">Agree the <a href="{{ base_url }}/terms-of-service" tabindex="-1">terms and policy</a>.</span>
               </label>
             </div>
             <div class="form-footer">
-              <button class="btn btn-primary w-100" onclick="signup('email')">Create new account</button>
+              <button class="btn btn-primary w-100" onclick="signup('email')" disabled id="signup_button">
+                Create new account&nbsp;&nbsp;<span id="signup_cog"></span>
+              </button>
             </div>
           </div>
         </div>

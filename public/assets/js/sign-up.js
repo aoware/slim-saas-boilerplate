@@ -15,6 +15,15 @@ $(document).ready(function(){
 		$('#modalEmailDuplication').modal();
 	}
 
+	$("#tandc").change(function() {
+	    if ($("#tandc").is(':checked')) {
+            $('#signup_button').prop('disabled', false);
+	    }
+	    else {
+			$('#signup_button').prop('disabled', true);
+		}
+	});
+
 	$("#name").change(function() {
 		$("#name").removeClass("is-invalid");
 		$('#name_error').addClass("d-none").hide();
@@ -65,6 +74,10 @@ function signup(channel) {
     	error = true;
     }
     else {
+		
+	    $('#signup_cog').html('<i class="fa fa-spin fa-cog"></i>');
+    	$('#signup_button').prop('disabled', true);
+    	
     	$.ajax({
     	    type: 'POST',
     		url: base_url + '/sign-up/email-validation',
@@ -91,28 +104,31 @@ function signup(channel) {
 
     if (error === false) {
 
-		$('#signup_cog').html('<i class="fa fa-spin fa-cog"></i>');
-    	$('#signup_button').prop('disabled', true);
-
     	$.ajax({
     	    type: 'POST',
     		url: base_url + '/sign-up',
     		data: 'name=' + encodeURIComponent($('#name').val()) + '&email=' + encodeURIComponent($('#email').val()) + '&password=' + encodeURIComponent($('#password').val()),
     		success: function(result) {
     			$('#signup_cog').html('');
-    			$('#signup_button').prop('disabled', false);
                 if (result.success === true) {
-                	$('#registration_social').addClass("d-none").hide();
-                	$('#required_field_message').addClass("d-none").hide();
-                	$('#registration_form').addClass("d-none").hide();
-                	$('#registration_title').text("Thanks for registering");
-                	$('#registration_message').removeClass("d-none").show();
+					$('#name').val('');
+					$('#name').focus();
+					$('#email').val('');
+					$('#password').val('');
+					$('#tandc').prop('checked', false);
+                	$('#success').removeClass("d-none").show();
                 }
+                else {
+					$('#signup_button').prop('disabled', false);
+				}
             },
     		async:true
         });
 
     }
+    
+    $('#signup_cog').html('');
+    $('#signup_button').prop('disabled', false);
     
     return false;
 
