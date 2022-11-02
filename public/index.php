@@ -29,7 +29,7 @@ $container->set('twig', function() {
          'gtm'               => CONF_google_tag_manager,
          'current_year'      => date('Y'),
          'current_month'     => date('m'),
-         'brand_name'        => 'PDFToolBox',
+         'brand_name'        => 'Slim Saas Boilerplate',
      //  'is_mobile'         => $is_mobile,
          'version'           => 0.001
      ];

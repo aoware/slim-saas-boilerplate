@@ -38,4 +38,15 @@ class base_controller {
         
     }
     
+    function return_custom_content($view,$content,$mime_type) {
+        
+        $final_content = array_merge($this->app->get('template_options'),$content);
+    
+        $this->app->response->headers->set('Content-Type', $mime_type);
+        
+        return $this->app->get('twig')->render($this->response, $view, $final_content);
+        
+    }
+    
+    
 }

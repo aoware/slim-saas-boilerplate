@@ -143,3 +143,14 @@
         return $c->log_out();
 
     });
+    
+// =============================================================== //
+// Special Files                                                   //
+// =============================================================== //
+
+    $app->get('/site.webmanifest', function ($request, $response, $args) {
+        
+        $c = new \controllers\static_pages($this,$request, $response, $args);
+        return $c->render_manifest();
+        
+    });
