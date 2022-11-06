@@ -16,7 +16,8 @@
         "slim/psr7": "1.4",
         "twig/twig": "^3",
         "slim/twig-view": "^3.2.0",
-        "php-di/php-di": "^6"
+        "php-di/php-di": "^6",
+        "phpmailer/phpmailer": "^6.5"
     },
     "autoload": {
         "psr-4": {

@@ -18,6 +18,20 @@
         
     });
 
+    $app->get('/dashboard', function ($request, $response, $args) {
+        
+        $c = new \controllers\static_pages($this,$request, $response, $args);
+        return $c->render('dashboard','client');
+        
+    });
+
+    $app->get('/backoffice', function ($request, $response, $args) {
+        
+        $c = new \controllers\static_pages($this,$request, $response, $args);
+        return $c->render('backoffice','agent');
+        
+    });
+    
 // =============================================================== //
 // Tools - Compress                                                //
 // =============================================================== //

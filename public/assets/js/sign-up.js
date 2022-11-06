@@ -48,6 +48,9 @@ $(document).ready(function(){
 
 function signup(channel) {
 
+    $('#signup_cog').html('<i class="fa fa-spin fa-cog"></i>');
+	$('#signup_button').prop('disabled', true);
+
 	var base_url = $("#base_url").val();
 
 	var error = false;
@@ -74,10 +77,7 @@ function signup(channel) {
     	error = true;
     }
     else {
-		
-	    $('#signup_cog').html('<i class="fa fa-spin fa-cog"></i>');
-    	$('#signup_button').prop('disabled', true);
-    	
+		    	
     	$.ajax({
     	    type: 'POST',
     		url: base_url + '/sign-up/email-validation',

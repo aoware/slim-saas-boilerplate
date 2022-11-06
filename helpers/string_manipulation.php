@@ -143,7 +143,7 @@ class string_manipulation {
 
     }
     
-    function generateRandomCode($plength) {
+    function generate_random_code($plength) {
         
         if (!is_numeric($plength) || $plength <= 0) {
             $plength = 8;

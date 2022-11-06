@@ -4,8 +4,16 @@ namespace controllers;
 
 class static_pages extends base_controller {
 
-    function render($page) {
-       
+    function render($page,$session_type = null) {
+        
+        $session = $this->check_login_session();
+        
+        if (!is_null($session_type)) {
+            if ($session['is_logged'] === false) {
+                return $this->return_redirection(CONF_base_url);
+            }
+        }
+        
         return $this->return_html($page . '.html', []);
         
     }

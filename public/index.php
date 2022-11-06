@@ -3,6 +3,11 @@
 require_once('../vendor/autoload.php');
 require_once('../config.php');
 
+// Start session
+if(!session_id()){
+    session_start();
+}
+
 // Create Container
 $container = new \DI\Container();
 \Slim\Factory\AppFactory::setContainer($container);
@@ -11,6 +16,16 @@ $container = new \DI\Container();
 $container->set('twig', function() {
     
     return \Slim\Views\Twig::create('../views', compact('cache'));
+    
+});
+
+$container->set('email_template', function() {
+    
+    $loader = new \Twig\Loader\FilesystemLoader('../views/email_templates');
+     
+    return new \Twig\Environment($loader, [
+        'cache' => false
+    ]);
     
 });
 

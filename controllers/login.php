@@ -140,15 +140,16 @@ class login extends base_controller {
         }
         
         unset($u);
+        
         $u = new \models\users;
         
         $sm = new \helpers\string_manipulation;
-        $login_token = $sm->generateRandomCode(32);
+        $login_token = $sm->generate_random_code(32);
         
         $u->getRecordsByLogin_token($login_token);
         
         while(count($u->recordSet) > 0) {
-            $login_token = $sm->generateRandomCode(32);
+            $login_token = $sm->generate_random_code(32);
             $u->getRecordsByLogin_token($login_token);
         }
         
@@ -246,22 +247,15 @@ class login extends base_controller {
             return false;
         }
         
-        /*
-        $template_id     = 1;
-        $recipient_name  = null;
-        $recipient_email = $allPostVars['register_email'];
+        $recipient_name  = $allPostVars['name'];
+        $recipient_email = $allPostVars['email'];
         $params          = [
             "token" => $result_registration['verification_token'],
         ];
         $e = new \helpers\email;
-        $result_email = $e->sendEmail($result_registration['user_id'],$template_id,$recipient_name,$recipient_email,$params);
-        */
-        
-        $response = [
-            "redirection" => 'sign-up?success'
-        ];
-        
-        return $this->return_json(true,"Sign up Success",$response);
+        $result_email = $e->send_email('user_verification',$recipient_name,$recipient_email,$params);
+       
+        return $this->return_json(true,"Sign up Success");
     }
 
     function verify($token) {
@@ -429,12 +423,12 @@ class login extends base_controller {
         $pr = new \models\password_reset;
 
         $g = new \classes\genericHelper;
-        $password_token = $g->generateRandomCode(32);
+        $password_token = $g->generate_random_code(32);
 
         $pr->getRecordByPassword_token($password_token);
 
         while(count($pr->recordSet) > 0) {
-            $password_token = $g->generateRandomCode(32);
+            $password_token = $g->generate_random_code(32);
             $pr->getRecordByPassword_token($password_token);
         }
 

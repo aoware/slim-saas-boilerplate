@@ -39,8 +39,8 @@ function login(channel) {
     		data: 'login_email=' + encodeURIComponent($('#email').val()) + '&login_password=' + encodeURIComponent($('#password').val()),
     		success: function(result) {
 
-    			// $('#login_cog').html('');
-    			// $('#login_button').prop('disabled', false);
+    			$('#login_cog').html('');
+    			$('#login_button').prop('disabled', false);
 
                 if (result.success === false) {
                 	$("#email").addClass("is-invalid");

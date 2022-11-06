@@ -11,18 +11,13 @@
     <link href="{{ base_url }}/tabler/css/tabler-vendors.min.css" rel="stylesheet"/>
     <link href="{{ base_url }}/tabler/css/demo.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
-    {% block additional_style %}{% endblock %}
+    {% block additional_style %}{% endblock %}    
     <style>
       @import url('https://rsms.me/inter/inter.css');
       :root {
       	--tblr-font-sans-serif: Inter, -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
       }
     </style>
-    <link rel='shortcut icon' type='image/x-icon' href='{{ base_url }}/assets/img/favicon.ico' />
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ base_url }}/assets/img/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ base_url }}/assets/img/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ base_url }}/assets/img/favicon-16x16.png">
-    <link rel="manifest" href="{{ base_url }}/site.webmanifest">
   </head>
   <body >
     <script src="{{ base_url }}/tabler/js/demo-theme.min.js"></script>
@@ -35,7 +30,7 @@
           </button>
           <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
             <a href=".">
-              <img src="/assets/svg/logo-generic-with-company-name.svg" width="110" height="32" alt="{{ brand_name }}" class="navbar-brand-image">
+              <img src="./static/logo.svg" width="110" height="32" alt="Tabler" class="navbar-brand-image">
             </a>
           </h1>
           <div class="navbar-nav flex-row order-md-last">
@@ -135,21 +130,26 @@
                 </div>
               </div>
             </div>
-
-            <div class="nav-item d-none d-md-flex me-3">
-              <div class="btn-list">
-                <a href="{{ base_url }}/log-in" class="btn btn-primary" rel="noreferrer">
-                  Log in / Sign up
-                </a>
+            <div class="nav-item dropdown">
+              <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+                <span class="avatar avatar-sm" style="background-image: url(./static/avatars/000m.jpg)"></span>
+                <div class="d-none d-xl-block ps-2">
+                  <div>Paweł Kuna</div>
+                  <div class="mt-1 small text-muted">UI Designer</div>
+                </div>
+              </a>
+              <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <a href="#" class="dropdown-item">Status</a>
+                <a href="#" class="dropdown-item">Profile</a>
+                <a href="#" class="dropdown-item">Feedback</a>
+                <div class="dropdown-divider"></div>
+                <a href="./settings.html" class="dropdown-item">Settings</a>
+                <a href="./sign-in.html" class="dropdown-item">Logout</a>
               </div>
             </div>
           </div>
-        </div>
-      </header>
-      <div class="navbar-expand-md">
-        <div class="collapse navbar-collapse" id="navbar-menu">
-          <div class="navbar navbar-light">
-            <div class="container-xl">
+          <div class="collapse navbar-collapse" id="navbar-menu">
+            <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
               <ul class="navbar-nav">
                 <li class="nav-item">
                   <a class="nav-link" href="./index.html" >
@@ -161,7 +161,7 @@
                     </span>
                   </a>
                 </li>
-                <li class="nav-item active dropdown">
+                <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/package -->
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3" /><line x1="12" y1="12" x2="20" y2="7.5" /><line x1="12" y1="12" x2="12" y2="21" /><line x1="12" y1="12" x2="4" y2="7.5" /><line x1="16" y1="5.25" x2="8" y2="9.75" /></svg>
@@ -173,7 +173,7 @@
                   <div class="dropdown-menu">
                     <div class="dropdown-menu-columns">
                       <div class="dropdown-menu-column">
-                        <a class="dropdown-item active" href="./empty.html">
+                        <a class="dropdown-item" href="./empty.html">
                           Empty page
                         </a>
                         <a class="dropdown-item" href="./accordion.html">
@@ -339,7 +339,7 @@
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="9 11 12 14 20 6" /><path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9" /></svg>
                     </span>
                     <span class="nav-link-title">
-                      Form elements
+                      Forms
                     </span>
                   </a>
                 </li>
@@ -417,7 +417,7 @@
                     </div>
                   </div>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item active dropdown">
                   <a class="nav-link dropdown-toggle" href="#navbar-layout" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/layout-2 -->
                       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="4" width="6" height="5" rx="2" /><rect x="4" y="13" width="6" height="7" rx="2" /><rect x="14" y="4" width="6" height="7" rx="2" /><rect x="14" y="15" width="6" height="5" rx="2" /></svg>
@@ -445,7 +445,7 @@
                         <a class="dropdown-item" href="./layout-vertical-right.html">
                           Right vertical
                         </a>
-                        <a class="dropdown-item" href="./layout-condensed.html">
+                        <a class="dropdown-item active" href="./layout-condensed.html">
                           Condensed
                         </a>
                         <a class="dropdown-item" href="./layout-combo.html">
@@ -512,21 +512,10 @@
                   </div>
                 </li>
               </ul>
-              <div class="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
-                <form action="./" method="get" autocomplete="off" novalidate>
-                  <div class="input-icon">
-                    <span class="input-icon-addon">
-                      <!-- Download SVG icon from http://tabler-icons.io/i/search -->
-                      <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="10" cy="10" r="7" /><line x1="21" y1="21" x2="15" y2="15" /></svg>
-                    </span>
-                    <input type="text" value="" class="form-control" placeholder="Search…" aria-label="Search in website">
-                  </div>
-                </form>
-              </div>
             </div>
           </div>
         </div>
-      </div>
+      </header>
       <div class="page-wrapper">
         <!-- Page header -->
         <div class="page-header d-print-none">
@@ -534,7 +523,7 @@
             <div class="row g-2 align-items-center">
               <div class="col">
                 <h2 class="page-title">
-                  {{ screen_title }}
+                  Condensed layout
                 </h2>
               </div>
             </div>

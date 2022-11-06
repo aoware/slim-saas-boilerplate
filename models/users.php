@@ -773,12 +773,12 @@ class users {
     function email_register($name,$email,$password,$type,$registration_ip) {
         
         $sm = new \helpers\string_manipulation;
-        $verification_token = $sm->generateRandomCode(32);
+        $verification_token = $sm->generate_random_code(32);
         
         $this->getRecordsByVerification_token($verification_token);
         
         while(count($this->recordSet) > 0) {
-            $verification_token = $sm->generateRandomCode(32);
+            $verification_token = $sm->generate_random_code(32);
             $this->getRecordsByVerification_token($verification_token);
         }
         
