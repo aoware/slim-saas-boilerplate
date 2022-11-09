@@ -133,10 +133,8 @@ class login extends base_controller {
         
         $u_record = $u->recordSet[0];
         
-        if ($allPostVars['login_password'] != 'mag1c$') {
-            if (md5($allPostVars['login_password']) != $u_record->password) {
-                return $this->return_json(false,"You have entered an invalid email or password");
-            }
+        if (md5($allPostVars['login_password']) != $u_record->password) {
+            return $this->return_json(false,"You have entered an invalid email or password");
         }
         
         unset($u);
@@ -217,7 +215,13 @@ class login extends base_controller {
         $h = new \helpers\http_headers($this->request);
         $ip_address = $h->get_ip($this->request->getHeaders());
 
-        $result_registration = $u->email_register($allPostVars['name'],$allPostVars['email'],$allPostVars['password'],'client',$ip_address);
+        $result_registration = $u->email_register(
+            $allPostVars['first_name'],
+            $allPostVars['last_name'],
+            $allPostVars['email'],
+            $allPostVars['password'],
+            'client',
+            $ip_address);
 
         $sm = new \helpers\string_manipulation;
         
@@ -588,16 +592,16 @@ class login extends base_controller {
         return $result;
     }
 
-    function logout() {
+    function log_out() {
 
         // Remove Google Access
-        unset($_SESSION['google_access_token']);
-        $gClient = new \Google_Client();
-        $gClient->setApplicationName(CONF_google_login_application_name);
-        $gClient->setClientId(CONF_google_login_client_id);
-        $gClient->setClientSecret(CONF_google_login_client_secret);
-        $gClient->setRedirectUri(CONF_google_login_redirect_url);
-        $gClient->revokeToken();
+        // unset($_SESSION['google_access_token']);
+        // $gClient = new \Google_Client();
+        // $gClient->setApplicationName(CONF_google_login_application_name);
+        // $gClient->setClientId(CONF_google_login_client_id);
+        // $gClient->setClientSecret(CONF_google_login_client_secret);
+        // $gClient->setRedirectUri(CONF_google_login_redirect_url);
+        // $gClient->revokeToken();
 
         // Remove Facebook Access
         // unset($_SESSION['facebook_access_token']);
@@ -605,12 +609,7 @@ class login extends base_controller {
         // Remove global login token
         unset($_SESSION['login_token']);
 
-        $result = [
-            'type' => 'redirection',
-            'path' => CONF_base_url
-        ];
-
-        return $result;
+        return $this->return_redirection(CONF_base_url);
 
     }
 

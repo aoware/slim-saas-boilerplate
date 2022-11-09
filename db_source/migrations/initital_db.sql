@@ -1,12 +1,14 @@
 CREATE TABLE `account_users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `account_id` int NOT NULL,
-  `user_id` int NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `account_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `created` datetime NOT NULL,
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `IDX_account_users_account_id_user_id` (`account_id`,`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+  UNIQUE KEY `IDX_account_users_account_id_user_id` (`account_id`,`user_id`),
+  KEY `IDX_account_users_account_id` (`account_id`),
+  KEY `IDX_account_users_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
 
 CREATE TABLE `accounts` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -79,7 +81,7 @@ CREATE TABLE `email_attachments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='save attachments for a given email';
 
 CREATE TABLE `emails` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `view_online_id` char(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `recipient_email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
   `recipient_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
@@ -87,7 +89,7 @@ CREATE TABLE `emails` (
   `trigger_date` datetime NOT NULL COMMENT 'Different than creation_date when required to send in the future',
   `sent_date` datetime DEFAULT NULL COMMENT 'date when the communication is sent to the SMTP server or the SMS gateway',
   `status` enum('awaiting','processing','sent','error') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT 'Communication status. Possible value are ''awaiting'', ''processing'', ''sent'' and ''error''',
-  `status_description` varchar(256) COMMENT 'status description. Should only be populated when status = ''error''',
+  `status_description` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT 'status description. Should only be populated when status = ''error''',
   `subject` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT 'email subject',
   `content` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT 'rendered version ',
   PRIMARY KEY (`id`),
@@ -95,11 +97,12 @@ CREATE TABLE `emails` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Record all emails sent from the system';
 
 CREATE TABLE `users` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `oauth_provider` enum('','github','facebook','google','linkedin','email') NOT NULL,
   `oauth_uid` varchar(100) NOT NULL,
   `password` char(32) NOT NULL,
-  `name` varchar(50) NOT NULL,
+  `first_name` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `last_name` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `username` varchar(50) NOT NULL,
   `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `location` varchar(100) NOT NULL,
@@ -121,5 +124,5 @@ CREATE TABLE `users` (
   UNIQUE KEY `IDX_users_verification_token` (`verification_token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
-INSERT INTO `users` (`id`, `oauth_provider`, `oauth_uid`, `password`, `name`, `username`, `email`, `location`, `picture`, `link`, `type`, `created`, `modified`, `last_login`, `registration_ip`, `verification_token`, `verification_date`, `verification_ip`, `login_token`) VALUES
-(1,	'email',	'administrator@aoware.co.uk',	'',	'',	'',	'administrator@aoware.co.uk',	'',	'',	'',	'agent',	'2022-01-01 00:00:01',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL);
+INSERT INTO `users` (`id`, `oauth_provider`, `oauth_uid`, `password`, `first_name`, `last_name`, `username`, `email`, `location`, `picture`, `link`, `type`, `created`, `modified`, `last_login`, `registration_ip`, `verification_token`, `verification_date`, `verification_ip`, `login_token`) VALUES
+(1,	'email',	'administrator@aoware.co.uk',	'3cc31cd246149aec68079241e71e98f6',	'Administrator',	'',	'',	'administrator@aoware.co.uk',	'',	'',	'',	'agent',	'0000-00-00 00:00:00',	NULL,	'2022-11-08 21:59:47',	NULL,	NULL,	NULL,	NULL,	NULL),

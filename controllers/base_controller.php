@@ -18,7 +18,7 @@ class base_controller {
     }
 
     function return_html($view,$content) {
-               
+                
         $final_content = array_merge($this->template_options,$content);
         
         return $this->view->render($this->response, $view, $final_content);
@@ -60,10 +60,13 @@ class base_controller {
     
     function check_login_session() {
         
-        $this->template_options['is_logged'] = false;
-        $this->template_options['user_type'] = null;
-        $this->template_options['user_id']   = null;
-        $this->template_options['user_name'] = null;
+        $this->template_options['is_logged']    = false;
+        $this->template_options['user_type']    = null;
+        $this->template_options['user_id']      = null;
+        $this->template_options['user_name']    = null;
+        $this->template_options['user_picture'] = null;
+        $this->template_options['account_id']   = null;
+        $this->template_options['account_name'] = null;
         
         if (isset($_SESSION['login_token'])) {
             $u = new \models\users;
@@ -89,7 +92,26 @@ class base_controller {
                 $this->template_options['is_logged'] = true;
                 $this->template_options['user_type'] = $u_record->type;
                 $this->template_options['user_id']   = $u_record->id;
-                $this->template_options['user_name'] = $u_record->email;
+                $this->template_options['user_name'] = trim($u_record->first_name . ' ' . $u_record->last_name);
+                
+                if ($u_record->picture == '') {
+                    $u_record->picture = "https://eu.ui-avatars.com/api/?background=0D8ABC&color=fff&size=250&name=" . urlencode(trim($u_record->first_name . ' ' . $u_record->last_name));
+                }
+
+                $this->template_options['user_picture'] = $u_record->picture;
+                
+                if ($u_record->type == 'agent') {
+                    $au = new \models\account_users;
+                    $au->getRecordsByUser_id($u_record->id);
+                    $au_record = $au->recordSet[0];
+                    
+                    $a = new \models\accounts;
+                    $a->getRecordById($au_record->account_id);
+                    $a_record = $a->recordSet[0];
+                    
+                    $this->template_options['account_id']   = $a_record->id;
+                    $this->template_options['account_name'] = $a_record->name;
+                }
                 
             }
         }

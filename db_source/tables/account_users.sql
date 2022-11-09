@@ -5,5 +5,7 @@ CREATE TABLE `account_users` (
   `created` datetime NOT NULL,
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `IDX_account_users_account_id_user_id` (`account_id`,`user_id`)
+  UNIQUE KEY `IDX_account_users_account_id_user_id` (`account_id`,`user_id`),
+  KEY `IDX_account_users_account_id` (`account_id`),
+  KEY `IDX_account_users_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3

@@ -130,6 +130,224 @@ class account_users {
 
     }
 
+    function getRecordByAccount_id($key) {
+
+        $sql = "SELECT `id`,`account_id`,`user_id`,`created`,`modified` FROM `account_users` WHERE `account_id` = ?";
+
+        $stmt = $this->mysqli->prepare($sql);
+        if ($stmt === false) {
+            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
+        }
+
+       $bind = $stmt->bind_param("s", $key);
+        if ($bind === false) {
+            return "MYSQL BIND ERROR : " . $stmt->error;
+        }
+
+        $execute = $stmt->execute();
+        if ($execute === false) {
+            return "MYSQL EXECUTE ERROR : " . $stmt->error;
+        }
+
+        $bind = $stmt->bind_result($this->id,$this->account_id,$this->user_id,$this->created,$this->modified);
+        if ($bind === false) {
+            return "MYSQL BIND ERROR : " . $stmt->error;
+        }
+
+        if ($stmt->fetch()) {
+            $record = new account_users_record;
+            $record->id         = $this->id;
+            $record->account_id = $this->account_id;
+            $record->user_id    = $this->user_id;
+            $record->created    = $this->created;
+            $record->modified   = $this->modified;
+            array_push($this->recordSet, $record);
+        }
+
+        $stmt->close();
+
+        return true;
+
+    }
+
+    function getRecordsByAccount_id($key,$orderBy = "") {
+
+        $sql = "SELECT `id`,`account_id`,`user_id`,`created`,`modified` FROM `account_users` WHERE `account_id` = ?";
+
+        if ($orderBy != "") {
+            $sql .= " order by " . $orderBy;
+        }
+
+        $stmt = $this->mysqli->prepare($sql);
+        if ($stmt === false) {
+            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
+        }
+
+       $bind = $stmt->bind_param("s", $key);
+        if ($bind === false) {
+            return "MYSQL BIND ERROR : " . $stmt->error;
+        }
+
+        $execute = $stmt->execute();
+        if ($execute === false) {
+            return "MYSQL EXECUTE ERROR : " . $stmt->error;
+        }
+
+        $bind = $stmt->bind_result($this->id,$this->account_id,$this->user_id,$this->created,$this->modified);
+        if ($bind === false) {
+            return "MYSQL BIND ERROR : " . $stmt->error;
+        }
+
+        while ($stmt->fetch()) {
+            $record = new account_users_record;
+            $record->id         = $this->id;
+            $record->account_id = $this->account_id;
+            $record->user_id    = $this->user_id;
+            $record->created    = $this->created;
+            $record->modified   = $this->modified;
+            array_push($this->recordSet, $record);
+        }
+
+        $stmt->close();
+
+        return true;
+
+    }
+
+    function deleteRecordByAccount_id($key) {
+
+        $sql = "delete from `account_users` WHERE `account_id` = ?";
+
+        $stmt = $this->mysqli->prepare($sql);
+        if ($stmt === false) {
+            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
+        }
+
+        $bind = $stmt->bind_param("i",$key);
+        if ($bind === false) {
+            return "MYSQL BIND ERROR : " . $stmt->error;
+        }
+
+        $execute = $stmt->execute();
+        if ($execute === false) {
+            return "MYSQL EXECUTE ERROR : " . $stmt->error;
+        }
+
+        $stmt->close();
+
+        return true;
+
+    }
+
+    function getRecordByUser_id($key) {
+
+        $sql = "SELECT `id`,`account_id`,`user_id`,`created`,`modified` FROM `account_users` WHERE `user_id` = ?";
+
+        $stmt = $this->mysqli->prepare($sql);
+        if ($stmt === false) {
+            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
+        }
+
+       $bind = $stmt->bind_param("s", $key);
+        if ($bind === false) {
+            return "MYSQL BIND ERROR : " . $stmt->error;
+        }
+
+        $execute = $stmt->execute();
+        if ($execute === false) {
+            return "MYSQL EXECUTE ERROR : " . $stmt->error;
+        }
+
+        $bind = $stmt->bind_result($this->id,$this->account_id,$this->user_id,$this->created,$this->modified);
+        if ($bind === false) {
+            return "MYSQL BIND ERROR : " . $stmt->error;
+        }
+
+        if ($stmt->fetch()) {
+            $record = new account_users_record;
+            $record->id         = $this->id;
+            $record->account_id = $this->account_id;
+            $record->user_id    = $this->user_id;
+            $record->created    = $this->created;
+            $record->modified   = $this->modified;
+            array_push($this->recordSet, $record);
+        }
+
+        $stmt->close();
+
+        return true;
+
+    }
+
+    function getRecordsByUser_id($key,$orderBy = "") {
+
+        $sql = "SELECT `id`,`account_id`,`user_id`,`created`,`modified` FROM `account_users` WHERE `user_id` = ?";
+
+        if ($orderBy != "") {
+            $sql .= " order by " . $orderBy;
+        }
+
+        $stmt = $this->mysqli->prepare($sql);
+        if ($stmt === false) {
+            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
+        }
+
+       $bind = $stmt->bind_param("s", $key);
+        if ($bind === false) {
+            return "MYSQL BIND ERROR : " . $stmt->error;
+        }
+
+        $execute = $stmt->execute();
+        if ($execute === false) {
+            return "MYSQL EXECUTE ERROR : " . $stmt->error;
+        }
+
+        $bind = $stmt->bind_result($this->id,$this->account_id,$this->user_id,$this->created,$this->modified);
+        if ($bind === false) {
+            return "MYSQL BIND ERROR : " . $stmt->error;
+        }
+
+        while ($stmt->fetch()) {
+            $record = new account_users_record;
+            $record->id         = $this->id;
+            $record->account_id = $this->account_id;
+            $record->user_id    = $this->user_id;
+            $record->created    = $this->created;
+            $record->modified   = $this->modified;
+            array_push($this->recordSet, $record);
+        }
+
+        $stmt->close();
+
+        return true;
+
+    }
+
+    function deleteRecordByUser_id($key) {
+
+        $sql = "delete from `account_users` WHERE `user_id` = ?";
+
+        $stmt = $this->mysqli->prepare($sql);
+        if ($stmt === false) {
+            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
+        }
+
+        $bind = $stmt->bind_param("i",$key);
+        if ($bind === false) {
+            return "MYSQL BIND ERROR : " . $stmt->error;
+        }
+
+        $execute = $stmt->execute();
+        if ($execute === false) {
+            return "MYSQL EXECUTE ERROR : " . $stmt->error;
+        }
+
+        $stmt->close();
+
+        return true;
+
+    }
+
     function getAllRecords($orderBy = "") {
 
         $sql = "SELECT `id`,`account_id`,`user_id`,`created`,`modified` FROM `account_users`";
