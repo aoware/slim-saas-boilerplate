@@ -122,35 +122,35 @@ class login extends base_controller {
     }
 
     function login_email() {
-        
+
         $allPostVars = $this->request->getParsedBody();
-        
+
         $u = new \models\users;
         $u->getRecordsByOauth_provider_oauth_uid('email',$allPostVars['login_email']);
         if (count($u->recordSet) == 0) {
             return $this->return_json(false,"You have entered an invalid email or password");
         }
-        
+
         $u_record = $u->recordSet[0];
-        
+
         if (md5($allPostVars['login_password']) != $u_record->password) {
             return $this->return_json(false,"You have entered an invalid email or password");
         }
-        
+
         unset($u);
-        
+
         $u = new \models\users;
-        
+
         $sm = new \helpers\string_manipulation;
         $login_token = $sm->generate_random_code(32);
-        
+
         $u->getRecordsByLogin_token($login_token);
-        
+
         while(count($u->recordSet) > 0) {
             $login_token = $sm->generate_random_code(32);
             $u->getRecordsByLogin_token($login_token);
         }
-        
+
         $u->oauth_provider     = $u_record->oauth_provider;
         $u->oauth_uid          = $u_record->oauth_uid;
         $u->password           = $u_record->password;
@@ -170,25 +170,25 @@ class login extends base_controller {
         $u->verification_date  = $u_record->verification_date;
         $u->verification_ip    = $u_record->verification_ip;
         $u->login_token        = $login_token;
-        
+
         $u->updateRecord($u_record->id);
-        
+
         $_SESSION['login_token'] = $login_token;
-        
+
         $response = [
             "redirection" => 'dashboard'
         ];
-        
+
         return $this->return_json(true,"Log in Success",$response);
-        
+
     }
-    
+
     function sign_up() {
 
         $allPostVars = $this->request->getParsedBody();
 
         $pos = strpos($allPostVars['email'],"@");
-        if ($pos === false) {          
+        if ($pos === false) {
             return $this->return_json(false,"Invalid email");
         }
 
@@ -224,41 +224,47 @@ class login extends base_controller {
             $ip_address);
 
         $sm = new \helpers\string_manipulation;
-        
-        $a = new \models\accounts();        
+
+        $a = new \models\accounts();
         $a->name     = $allPostVars['name'];
         $a->slug     = $sm->slugify($allPostVars['name']);
         $a->created  = date('Y-m-d H:i:s');
         $a->modified = null;
-        
+
         $result_account = $a->saveRecord();
-        
+
         if ($result_account !== true) {
             throw new \Exception($result_account);
             return false;
         }
-        
-        $au = new \models\account_users();        
+
+        $au = new \models\account_users();
         $au->account_id = $a->inserted_id;
         $au->user_id    = $result_registration['user_id'];
         $au->created  = date('Y-m-d H:i:s');
         $au->modified = null;
 
         $result_account_user = $au->saveRecord();
-        
+
         if ($result_account_user !== true) {
             throw new \Exception($result_account);
             return false;
         }
-        
-        $recipient_name  = $allPostVars['name'];
+
+        $recipient_name  = trim($allPostVars['first_name'] . " " . $allPostVars['last_name']);
         $recipient_email = $allPostVars['email'];
-        $params          = [
+        $params = array_merge($this->template_options,[
             "token" => $result_registration['verification_token'],
-        ];
+        ]);
         $e = new \helpers\email;
-        $result_email = $e->send_email('user_verification',$recipient_name,$recipient_email,$params);
-       
+        $result_email = $e->send_email(
+            'user_verification',
+            $recipient_name,
+            $recipient_email,
+            $params,
+            $this->email_template_processor
+        );
+
         return $this->return_json(true,"Sign up Success");
     }
 

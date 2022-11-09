@@ -30,6 +30,12 @@ $(document).ready(function(){
 		$('#verify_error').addClass("d-none").hide();
 	});
 
+	$("#first_name").change(function() {
+		$("#first_name").removeClass("is-invalid");
+		$('#first_name_error').addClass("d-none").hide();
+		$('#verify_error').addClass("d-none").hide();
+	});
+
 	$("#email").change(function() {
 		$("#email").removeClass("is-invalid");
 		$('#email_error').addClass("d-none").hide();
@@ -77,7 +83,7 @@ function signup(channel) {
     	error = true;
     }
     else {
-		    	
+
     	$.ajax({
     	    type: 'POST',
     		url: base_url + '/sign-up/email-validation',
@@ -96,6 +102,18 @@ function signup(channel) {
         });
     }
 
+    if ($('#last_name').val() == '') {
+    	$("#last_name").addClass("is-invalid");
+    	$('#last_name').focus();
+    	error = true;
+    }
+
+    if ($('#first_name').val() == '') {
+    	$("#first_name").addClass("is-invalid");
+    	$('#first_name').focus();
+    	error = true;
+    }
+
     if ($('#name').val() == '') {
     	$("#name").addClass("is-invalid");
     	$('#name').focus();
@@ -107,12 +125,14 @@ function signup(channel) {
     	$.ajax({
     	    type: 'POST',
     		url: base_url + '/sign-up',
-    		data: 'name=' + encodeURIComponent($('#name').val()) + '&email=' + encodeURIComponent($('#email').val()) + '&password=' + encodeURIComponent($('#password').val()),
+    		data: 'name=' + encodeURIComponent($('#name').val()) + '&first_name=' + encodeURIComponent($('#first_name').val()) + '&last_name=' + encodeURIComponent($('#last_name').val()) + '&email=' + encodeURIComponent($('#email').val()) + '&password=' + encodeURIComponent($('#password').val()),
     		success: function(result) {
     			$('#signup_cog').html('');
                 if (result.success === true) {
 					$('#name').val('');
 					$('#name').focus();
+					$('#first_name').val('');
+					$('#last_name').val('');
 					$('#email').val('');
 					$('#password').val('');
 					$('#tandc').prop('checked', false);
@@ -126,10 +146,10 @@ function signup(channel) {
         });
 
     }
-    
+
     $('#signup_cog').html('');
     $('#signup_button').prop('disabled', false);
-    
+
     return false;
 
 }

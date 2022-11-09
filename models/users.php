@@ -780,19 +780,19 @@ class users {
     }
 
     // =-=- Custom Code Start -=-=
-    
-    function email_register($name,$email,$password,$type,$registration_ip) {
-        
+
+    function email_register($first_name,$last_name,$email,$password,$type,$registration_ip) {
+
         $sm = new \helpers\string_manipulation;
         $verification_token = $sm->generate_random_code(32);
-        
+
         $this->getRecordsByVerification_token($verification_token);
-        
+
         while(count($this->recordSet) > 0) {
             $verification_token = $sm->generate_random_code(32);
             $this->getRecordsByVerification_token($verification_token);
         }
-        
+
         // Trying to retrieve picture url from gravater
         $picture = "";
         $g = new \apis\gravatar();
@@ -801,11 +801,12 @@ class users {
         if ($g->error === false) {
             $picture = $g->urlImage . "?s=250";
         }
-        
+
         $this->oauth_provider     = 'email';
         $this->oauth_uid          = $email;
         $this->password           = md5($password);
-        $this->name               = $name;
+        $this->first_name         = $first_name;
+        $this->last_name          = $last_name;
         $this->username           = "";
         $this->email              = $email;
         $this->location           = "";
@@ -820,19 +821,19 @@ class users {
         $this->verification_date  = null;
         $this->verification_ip    = null;
         $this->login_token        = null;
-        
+
         $result = $this->saveRecord();
-        
+
         if ($result !== true) {
             throw new \Exception($result);
             return false;
         }
-        
+
         return [
             'user_id'            => $this->inserted_id,
             'verification_token' => $verification_token
         ];
-        
+
     }
     // =-=- Custom Code End -=-=
 

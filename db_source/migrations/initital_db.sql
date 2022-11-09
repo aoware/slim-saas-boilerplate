@@ -18,16 +18,18 @@ CREATE TABLE `config_definition` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `config_definition` (`id`, `group`, `name`, `type`, `comment`) VALUES
-(1 ,	'smtp',	'CONF_smtp_host',	'string',	''),
-(2 ,	'smtp',	'CONF_smtp_port',	'integer',	''),
-(3 ,	'smtp',	'CONF_smtp_username',	'string',	''),
-(4 ,	'smtp',	'CONF_smtp_password',	'string',	''),
-(5 ,	'telegram',	'CONF_telegram_bot_id',	'integer',	''),
-(6 ,	'telegram',	'CONF_telegram_bot_token',	'string',	''),
-(7 ,	'telegram',	'CONF_telegram_admin_id',	'integer',	''),
-(8 ,	'telegram',	'CONF_telegram_alert_ids',	'array',	''),
-(9 ,	'bac',	'CONF_bac_key',	'string',	''),
-(10,	'bac',	'CONF_bac_password',	'string',	'');
+(1, 'smtp', 'CONF_smtp_host',   'string',   ''),
+(2, 'smtp', 'CONF_smtp_port',   'integer',  ''),
+(3, 'smtp', 'CONF_smtp_username',   'string',   ''),
+(4, 'smtp', 'CONF_smtp_password',   'string',   ''),
+(5, 'smtp', 'CONF_smtp_sender_email',   'string',   ''),
+(6, 'smtp', 'CONF_smtp_sender_name',    'string',   ''),
+(7, 'telegram', 'CONF_telegram_bot_id', 'integer',  ''),
+(8, 'telegram', 'CONF_telegram_bot_token',  'string',   ''),
+(9, 'telegram', 'CONF_telegram_admin_id',   'integer',  ''),
+(10,    'telegram', 'CONF_telegram_alert_ids',  'array',    ''),
+(11,    'bac',  'CONF_bac_key', 'string',   ''),
+(12,    'bac',  'CONF_bac_password',    'string',   '');
 
 CREATE TABLE `config_value` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -43,16 +45,18 @@ CREATE TABLE `config_value` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `config_value` (`id`, `config_definition_id`, `profile`, `effective_start_date`, `effective_end_date`, `key`, `value`) VALUES
-(1,	1 ,	'Live',	NULL,	NULL,	'',	''),
-(2,	2 ,	'Live',	NULL,	NULL,	'',	''),
-(3,	3 ,	'Live',	NULL,	NULL,	'',	''),
-(4,	4 ,	'Live',	NULL,	NULL,	'',	''),
-(5,	5 ,	'Live',	NULL,	NULL,	'',	''),
-(6,	6 ,	'Live',	NULL,	NULL,	'',	''),
-(7,	7 ,	'Live',	NULL,	NULL,	'',	''),
-(8,	8 ,	'Live',	NULL,	NULL,	'0',	''),
-(9,	9 ,	'Live',	NULL,	NULL,	'',	'guest'),
-(10,	10,	'Live',	NULL,	NULL,	'',	'guest');
+(1, 1,  'Live', NULL,   NULL,   '', ''),
+(2, 2,  'Live', NULL,   NULL,   '', ''),
+(3, 3,  'Live', NULL,   NULL,   '', ''),
+(4, 4,  'Live', NULL,   NULL,   '', ''),
+(5, 5,  'Live', NULL,   NULL,   '', 'administrator@aoware.co.uk'),
+(6, 6,  'Live', NULL,   NULL,   '', 'Slim Saas Boilerplate'),
+(7, 7,  'Live', NULL,   NULL,   '', ''),
+(8, 8,  'Live', NULL,   NULL,   '', ''),
+(9, 9,  'Live', NULL,   NULL,   '', ''),
+(10,    10, 'Live', NULL,   NULL,   '0',    ''),
+(11,    11, 'Live', NULL,   NULL,   '', 'guest'),
+(12,    12, 'Live', NULL,   NULL,   '', 'guest');
 
 CREATE TABLE `emails` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
