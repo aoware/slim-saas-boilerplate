@@ -1,15 +1,3 @@
-CREATE TABLE `account_users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `account_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `created` datetime NOT NULL,
-  `modified` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `IDX_account_users_account_id_user_id` (`account_id`,`user_id`),
-  KEY `IDX_account_users_account_id` (`account_id`),
-  KEY `IDX_account_users_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
-
 CREATE TABLE `accounts` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
@@ -18,7 +6,7 @@ CREATE TABLE `accounts` (
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `IDX_accounts_slug` (`slug`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `config_definition` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -27,7 +15,7 @@ CREATE TABLE `config_definition` (
   `type` enum('number','string','boolean','html','integer','array') NOT NULL DEFAULT 'string' COMMENT 'n = number, s = string, b = boolean, h=html, i=integer, b=boolean, a=array',
   `comment` varchar(256) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `config_definition` (`id`, `group`, `name`, `type`, `comment`) VALUES
 (1 ,	'smtp',	'CONF_smtp_host',	'string',	''),
@@ -52,7 +40,7 @@ CREATE TABLE `config_value` (
   PRIMARY KEY (`id`),
   KEY `IDX_config_value_config_definition_id` (`config_definition_id`),
   CONSTRAINT `CONST_config_value_config_definition` FOREIGN KEY (`config_definition_id`) REFERENCES `config_definition` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `config_value` (`id`, `config_definition_id`, `profile`, `effective_start_date`, `effective_end_date`, `key`, `value`) VALUES
 (1,	1 ,	'Live',	NULL,	NULL,	'',	''),
@@ -65,20 +53,6 @@ INSERT INTO `config_value` (`id`, `config_definition_id`, `profile`, `effective_
 (8,	8 ,	'Live',	NULL,	NULL,	'0',	''),
 (9,	9 ,	'Live',	NULL,	NULL,	'',	'guest'),
 (10,	10,	'Live',	NULL,	NULL,	'',	'guest');
-
-CREATE TABLE `email_attachments` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `email_id` int NOT NULL DEFAULT '0',
-  `sequence` int NOT NULL DEFAULT '0',
-  `mime_type` varchar(128) NOT NULL DEFAULT '',
-  `filename` varchar(128) NOT NULL DEFAULT '',
-  `encoding` varchar(128) NOT NULL DEFAULT '',
-  `content` mediumblob NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `IDX_email_attachments_email_id_sequence` (`email_id`,`sequence`),
-  KEY `IDX_email_attachments_email_id` (`email_id`),
-  CONSTRAINT `email_attachments_ibfk_1` FOREIGN KEY (`email_id`) REFERENCES `emails` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='save attachments for a given email';
 
 CREATE TABLE `emails` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -94,7 +68,21 @@ CREATE TABLE `emails` (
   `content` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT 'rendered version ',
   PRIMARY KEY (`id`),
   UNIQUE KEY `IDX_emails_view_online_id` (`view_online_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Record all emails sent from the system';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Record all emails sent from the system';
+
+CREATE TABLE `email_attachments` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `email_id` int NOT NULL DEFAULT '0',
+  `sequence` int NOT NULL DEFAULT '0',
+  `mime_type` varchar(128) NOT NULL DEFAULT '',
+  `filename` varchar(128) NOT NULL DEFAULT '',
+  `encoding` varchar(128) NOT NULL DEFAULT '',
+  `content` mediumblob NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IDX_email_attachments_email_id_sequence` (`email_id`,`sequence`),
+  KEY `IDX_email_attachments_email_id` (`email_id`),
+  CONSTRAINT `email_attachments_ibfk_1` FOREIGN KEY (`email_id`) REFERENCES `emails` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='save attachments for a given email';
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -122,7 +110,19 @@ CREATE TABLE `users` (
   UNIQUE KEY `IDX_users_email` (`email`),
   UNIQUE KEY `IDX_users_login_token` (`login_token`),
   UNIQUE KEY `IDX_users_verification_token` (`verification_token`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `users` (`id`, `oauth_provider`, `oauth_uid`, `password`, `first_name`, `last_name`, `username`, `email`, `location`, `picture`, `link`, `type`, `created`, `modified`, `last_login`, `registration_ip`, `verification_token`, `verification_date`, `verification_ip`, `login_token`) VALUES
-(1,	'email',	'administrator@aoware.co.uk',	'3cc31cd246149aec68079241e71e98f6',	'Administrator',	'',	'',	'administrator@aoware.co.uk',	'',	'',	'',	'agent',	'0000-00-00 00:00:00',	NULL,	'2022-11-08 21:59:47',	NULL,	NULL,	NULL,	NULL,	NULL),
+(1,	'email',	'administrator@aoware.co.uk',	'3cc31cd246149aec68079241e71e98f6',	'Administrator',	'',	'',	'administrator@aoware.co.uk',	'',	'',	'',	'agent',	'0000-00-00 00:00:00',	NULL,	'2022-11-08 21:59:47',	NULL,	NULL,	NULL,	NULL,	NULL);
+
+CREATE TABLE `account_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `account_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IDX_account_users_account_id_user_id` (`account_id`,`user_id`),
+  KEY `IDX_account_users_account_id` (`account_id`),
+  KEY `IDX_account_users_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -7,6 +7,7 @@ A PHP-based user-authenticated Saas boilerplate by [aoWare](https://www.aoware.c
 * [JWT Authentication](https://github.com/tuupola/slim-jwt-auth) / [PHP-JWT](https://github.com/firebase/php-jwt)
 * [Play](https://github.com/uideck/play-bootstrap) bootstrap template
 * [Tabler](https://github.com/tabler/tabler) bootstrap template
+* [https://github.com/konsav/email-templates](https://github.com/konsav/email-templates) email template
 
 ## System Requirements
 
