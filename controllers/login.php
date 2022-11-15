@@ -175,8 +175,17 @@ class login extends base_controller {
 
         $_SESSION['login_token'] = $login_token;
 
+        switch($u_record->type) {
+            case 'agent' :
+                $redirection = 'backoffice';
+                break;
+            case 'client' :
+                $redirection = 'dashboard';
+                break;
+        }
+        
         $response = [
-            "redirection" => 'dashboard'
+            "redirection" => $redirection
         ];
 
         return $this->return_json(true,"Log in Success",$response);
