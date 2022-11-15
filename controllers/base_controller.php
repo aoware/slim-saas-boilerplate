@@ -51,11 +51,19 @@ class base_controller {
 
     function return_custom_content($view,$content,$mime_type) {
 
-        $final_content = array_merge($this->app->get('template_options'),$content);
+        $loader = new \Twig\Loader\FilesystemLoader('../views');
 
-        $this->app->response->headers->set('Content-Type', $mime_type);
+        $custom_twig = new \Twig\Environment($loader, [
+            'cache' => false
+        ]);
 
-        return $this->view->render($this->response, $view, $final_content);
+        $custom_template = $custom_twig->load($view);
+        $final_content   = array_merge($this->app->get('template_options'), $content);
+        $final_rendered  = $custom_template->render($final_content);
+
+        $this->response->getBody()->write($final_rendered);
+
+        return $this->response->withHeader('Content-Type', $mime_type);
 
     }
 
