@@ -2,6 +2,14 @@
 
 {% set screen_title = 'Home' %}
 
+{% block main_menu %}
+{% include "backoffice_main_menu.html" %}
+{% endblock %}
+
+{% block user_menu %}
+{% include "backoffice_user_menu.html" %}
+{% endblock %}
+
 {% block page_content %}
 <p>Demo for tabler can be found <a href='{{ base_url }}/tabler_demo'>here</a></p>
 {% endblock %}

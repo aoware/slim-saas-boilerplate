@@ -2,6 +2,10 @@
 
 {% set screen_title = 'Home' %}
 
+{% block user_menu %}
+{% include "dashboard_user_menu.html" %}
+{% endblock %}
+
 {% block page_content %}
 <p>Demo for tabler can be found <a href='{{ base_url }}/tabler_demo'>here</a></p>
 {% endblock %}
