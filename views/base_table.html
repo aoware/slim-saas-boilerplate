@@ -1,0 +1,79 @@
+                <div class="card">
+                  <div class="card-body border-bottom py-3">
+                    <div class="d-flex">
+                      <div class="text-muted my-auto">
+                        Search:
+                        <div class="ms-2 d-inline-block">
+                          <input type="text" class="form-control form-control-sm" aria-label="Search" id="filter-{{ table_id }}">
+                        </div>
+                      </div>
+                      <div class="ms-auto text-muted">
+	                    <button class="btn btn-primary"
+	                     {% if new_record_url|first == '#' %}
+	                     onclick="$('{{ new_record_url }}').modal('show');"
+	                     {% elseif new_record_url|last == ';' %}
+	                     onclick="{{ new_record_url|raw }}"
+	                     {% else %}
+	                     onclick="window.location='{{ base_url }}{{ new_record_url }}'"
+	                     {% endif %}
+	                     >{% if new_record_label is defined %}{{ new_record_label }}{% else %}New{% endif %}
+	                    </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap datatable" id="{{ table_id }}">
+                      <thead>
+                        <tr>
+                        {% for column in table_columns %}
+                          <th>{{ column.name }}</th>
+                        {% endfor %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for record in table_recordset %}
+                        <tr>
+                          {% for name , value in record %}
+                          <td>
+		                      {% if name == 'actions' %}
+			                     <div class="dropdown">
+	                               <button class="btn dropdown-toggle align-text-top" data-bs-toggle="dropdown">
+	                                 Actions
+	                               </button>
+	                               <div class="dropdown-menu dropdown-menu-end">
+			                        {% for action in value %}
+			                         {% if action.action|last == ';' %}
+			                          <a class="dropdown-item" href="javascript:void(0)" onclick="{{ action.action }}"><i class='fas fa-{{ action.icon }}'></i>&nbsp;&nbsp;{{ action.label }}</a>
+			                         {% else %}
+			                          <a class="dropdown-item" href="{{ action.action }}"><i class='fas fa-{{ action.icon }}'></i>&nbsp;&nbsp;{{ action.label }}</a>
+			                         {% endif %}
+			                        {% endfor %}
+	                               </div>
+	                             </div>		                        
+		                      {% else %}
+		                        {% if name == 'action' %}
+		                          {{ value[0]['label'] }}
+		                          <a href="{{ value['action'] }}" class="btn">{{ value['label'] }}</a>
+		                        {% else %}
+		                          {{ value|raw }}
+		                        {% endif %}
+		                      {% endif %}
+                          </td>
+                          {% endfor %}
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>     
+                
+                <script>
+                $(document).ready(function(){
+				    $("#filter-{{ table_id }}").on("keyup", function() {
+				        var value = $(this).val().toLowerCase();
+				        $("#{{ table_id }} > tbody > tr").filter(function() {
+				            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+				        });
+				    });
+				});
+                </script>     

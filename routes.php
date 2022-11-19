@@ -31,6 +31,17 @@
         return $c->render('backoffice','agent');
         
     });
+
+// =============================================================== //
+// Backoffice pages                                                //
+// =============================================================== //
+        
+    $app->get('/backoffice/administrators', function ($request, $response, $args) {
+        
+        $c = new \controllers\administrators($this,$request, $response, $args);
+        return $c->list();
+        
+    });
     
 // =============================================================== //
 // Tools - Compress                                                //

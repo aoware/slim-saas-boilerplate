@@ -628,6 +628,145 @@ class users {
 
     }
 
+    function getRecordByType($key) {
+
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`username`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `type` = ?";
+
+        $stmt = $this->mysqli->prepare($sql);
+        if ($stmt === false) {
+            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
+        }
+
+       $bind = $stmt->bind_param("s", $key);
+        if ($bind === false) {
+            return "MYSQL BIND ERROR : " . $stmt->error;
+        }
+
+        $execute = $stmt->execute();
+        if ($execute === false) {
+            return "MYSQL EXECUTE ERROR : " . $stmt->error;
+        }
+
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->username,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        if ($bind === false) {
+            return "MYSQL BIND ERROR : " . $stmt->error;
+        }
+
+        if ($stmt->fetch()) {
+            $record = new users_record;
+            $record->id                 = $this->id;
+            $record->oauth_provider     = $this->oauth_provider;
+            $record->oauth_uid          = $this->oauth_uid;
+            $record->password           = $this->password;
+            $record->first_name         = $this->first_name;
+            $record->last_name          = $this->last_name;
+            $record->username           = $this->username;
+            $record->email              = $this->email;
+            $record->location           = $this->location;
+            $record->picture            = $this->picture;
+            $record->link               = $this->link;
+            $record->type               = $this->type;
+            $record->created            = $this->created;
+            $record->modified           = $this->modified;
+            $record->last_login         = $this->last_login;
+            $record->registration_ip    = $this->registration_ip;
+            $record->verification_token = $this->verification_token;
+            $record->verification_date  = $this->verification_date;
+            $record->verification_ip    = $this->verification_ip;
+            $record->login_token        = $this->login_token;
+            array_push($this->recordSet, $record);
+        }
+
+        $stmt->close();
+
+        return true;
+
+    }
+
+    function getRecordsByType($key,$orderBy = "") {
+
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`username`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `type` = ?";
+
+        if ($orderBy != "") {
+            $sql .= " order by " . $orderBy;
+        }
+
+        $stmt = $this->mysqli->prepare($sql);
+        if ($stmt === false) {
+            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
+        }
+
+       $bind = $stmt->bind_param("s", $key);
+        if ($bind === false) {
+            return "MYSQL BIND ERROR : " . $stmt->error;
+        }
+
+        $execute = $stmt->execute();
+        if ($execute === false) {
+            return "MYSQL EXECUTE ERROR : " . $stmt->error;
+        }
+
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->username,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        if ($bind === false) {
+            return "MYSQL BIND ERROR : " . $stmt->error;
+        }
+
+        while ($stmt->fetch()) {
+            $record = new users_record;
+            $record->id                 = $this->id;
+            $record->oauth_provider     = $this->oauth_provider;
+            $record->oauth_uid          = $this->oauth_uid;
+            $record->password           = $this->password;
+            $record->first_name         = $this->first_name;
+            $record->last_name          = $this->last_name;
+            $record->username           = $this->username;
+            $record->email              = $this->email;
+            $record->location           = $this->location;
+            $record->picture            = $this->picture;
+            $record->link               = $this->link;
+            $record->type               = $this->type;
+            $record->created            = $this->created;
+            $record->modified           = $this->modified;
+            $record->last_login         = $this->last_login;
+            $record->registration_ip    = $this->registration_ip;
+            $record->verification_token = $this->verification_token;
+            $record->verification_date  = $this->verification_date;
+            $record->verification_ip    = $this->verification_ip;
+            $record->login_token        = $this->login_token;
+            array_push($this->recordSet, $record);
+        }
+
+        $stmt->close();
+
+        return true;
+
+    }
+
+    function deleteRecordByType($key) {
+
+        $sql = "delete from `users` WHERE `type` = ?";
+
+        $stmt = $this->mysqli->prepare($sql);
+        if ($stmt === false) {
+            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
+        }
+
+        $bind = $stmt->bind_param("s",$key);
+        if ($bind === false) {
+            return "MYSQL BIND ERROR : " . $stmt->error;
+        }
+
+        $execute = $stmt->execute();
+        if ($execute === false) {
+            return "MYSQL EXECUTE ERROR : " . $stmt->error;
+        }
+
+        $stmt->close();
+
+        return true;
+
+    }
+
     function getAllRecords($orderBy = "") {
 
         $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`username`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users`";
