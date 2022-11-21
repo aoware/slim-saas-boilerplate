@@ -25,22 +25,57 @@
         
     });
 
-    $app->get('/backoffice', function ($request, $response, $args) {
-        
-        $c = new \controllers\static_pages($this,$request, $response, $args);
-        return $c->render('backoffice','agent');
-        
-    });
+
 
 // =============================================================== //
 // Backoffice pages                                                //
 // =============================================================== //
+
+    $app->group('/backoffice', function (\Slim\Routing\RouteCollectorProxy $backoffice) {
+
+        $backoffice->get('', function ($request, $response, $args) {
+            
+            $c = new \controllers\static_pages($this,$request, $response, $args);
+            return $c->render('backoffice','agent');
+            
+        });
         
-    $app->get('/backoffice/administrators', function ($request, $response, $args) {
+        $backoffice->get('/administrators', function ($request, $response, $args) {
+            
+            $c = new \controllers\administrators($this,$request, $response, $args);
+            return $c->list();
+            
+        });
+
+        $backoffice->group('/administrator', function (\Slim\Routing\RouteCollectorProxy $administrator) {
         
-        $c = new \controllers\administrators($this,$request, $response, $args);
-        return $c->list();
+            $administrator->get('/new', function ($request, $response, $args) {
+                
+                $c = new \controllers\administrators($this,$request, $response, $args);
+                return $c->display();
+                
+            });
         
+            $administrator->get('/{id}/update', function ($request, $response, $args) {
+                
+                $id = $args['id'];
+                
+                $c = new \controllers\administrators($this,$request, $response, $args);
+                return $c->display($id);
+                
+            });
+        
+            $administrator->post('/{id}/update', function ($request, $response, $args) {
+                
+                $id = $args['id'];
+                
+                $c = new \controllers\administrators($this,$request, $response, $args);
+                return $c->update($id);
+                
+            });
+            
+        });
+    
     });
     
 // =============================================================== //
@@ -143,8 +178,7 @@
     });
 
     $app->get('/set-password/{token}', function ($request, $response, $args) {
-        // Which one of the 2 is working
-        $token = $request->getAttribute('token');
+
         $token = $args['token'];
         
         $c = new \controllers\login($this,$request, $response, $args);
@@ -153,8 +187,7 @@
     });
                                                             
     $app->get('/verify/{token}', function ($request, $response, $args) {
-        // Which one of the 2 is working
-        $token = $request->getAttribute('token');
+
         $token = $args['token'];
         
         $c = new \controllers\login($this,$request, $response, $args);

@@ -58,4 +58,30 @@ class administrators extends base_controller {
         
     }
     
+    function display($administrator_id = null) {
+        
+        $session = $this->check_login_session();
+        
+        if ($session['is_logged'] === false) {
+            return $this->return_redirection(CONF_base_url);
+        }
+        if ($session['user_type'] !== 'agent') {
+            return $this->return_redirection(CONF_base_url);
+        }
+        
+        if (is_null($administrator_id)) {
+            $u_record = null;
+        }
+        else {
+            $u = new \models\users();
+            $u->getRecordById($administrator_id);
+            $u_record = $u->recordSet[0];
+        }
+        
+        return $this->return_html('administrator_display.html',[
+            'administrator_id'  => $administrator_id,
+            'administrator'     => $u_record
+        ]);
+        
+    }
 }

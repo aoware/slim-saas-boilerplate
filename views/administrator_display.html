@@ -1,0 +1,40 @@
+{% extends "base_tabler.html" %}
+
+{% set screen_title = 'Home' %}
+
+{% block page_title %}
+Setup / Administrators / {{ admininstrator_id }}
+{% endblock %}
+
+{% block main_menu %}
+{% include "backoffice_main_menu.html" %}
+{% endblock %}
+
+{% block user_menu %}
+{% include "backoffice_user_menu.html" %}
+{% endblock %}
+
+{% block page_content %}
+	<fieldset class="form-fieldset">
+	  <div class="mb-3">
+	    <label class="form-label required">Full name</label>
+	    <input type="text" class="form-control" autocomplete="off"/>
+	  </div>
+	  <div class="mb-3">
+	    <label class="form-label required">Company</label>
+	    <input type="text" class="form-control"  autocomplete="off"/>
+	  </div>
+	  <div class="mb-3">
+	    <label class="form-label required">Email</label>
+	    <input type="email" class="form-control"  autocomplete="off"/>
+	  </div>
+	  <div class="mb-3">
+	    <label class="form-label">Phone number</label>
+	    <input type="tel" class="form-control" autocomplete="off"/>
+	  </div>
+	  <label class="form-check">
+	    <input type="checkbox" class="form-check-input"/>
+	    <span class="form-check-label required">I agree to the Terms & Conditions</span>
+	  </label>
+	</fieldset>
+{% endblock %}
