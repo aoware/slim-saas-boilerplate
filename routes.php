@@ -91,6 +91,21 @@
             return $c->list();
             
         });
+        
+        $backoffice->get('/your-profile', function ($request, $response, $args) {
+            
+            $c = new \controllers\your_profile($this,$request, $response, $args);
+            return $c->display('backoffice');
+            
+        });
+        
+        $backoffice->post('/your-profile', function ($request, $response, $args) {
+            
+            $c = new \controllers\your_profile($this,$request, $response, $args);
+            return $c->update('backoffice');
+            
+        });
+        
     });
     
 // =============================================================== //
