@@ -1,0 +1,26 @@
+{% set active_menu = 'Setup' %}
+
+{% extends "base_tabler.html" %}
+
+{% block page_title %}
+Setup / Administrators
+{% endblock %}
+
+{% block main_menu %}
+{% include "backoffice_main_menu.html" %}
+{% endblock %}
+
+{% block user_menu %}
+{% include "backoffice_user_menu.html" %}
+{% endblock %}
+
+{% block page_content %}
+
+    {% set table_id        = 'main_table' %}
+    {% set table_columns   = users_table.columns %}
+    {% set table_recordset = users_table.recordset %}
+    {% set new_record_url  = users_table.new_record_url %}
+
+    {% include 'base_table.html' %}
+
+{% endblock %}

@@ -11,6 +11,7 @@
     <link href="{{ base_url }}/tabler/css/tabler-vendors.min.css" rel="stylesheet"/>
     <link href="{{ base_url }}/tabler/css/demo.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <script src="{{ base_url }}/assets/js/jquery-3.6.0.min.js"></script>
     {% block additional_style %}{% endblock %}    
     <style>
       @import url('https://rsms.me/inter/inter.css');
@@ -160,7 +161,7 @@
             <div class="row g-2 align-items-center">
               <div class="col">
                 <h2 class="page-title">
-                  Condensed layout
+                  {% block page_title %}{% endblock %}
                 </h2>
               </div>
             </div>
@@ -211,7 +212,6 @@
     <input type='hidden' id='base_url' value='{{ base_url }}' />
     <script src="{{ base_url }}/tabler/js/tabler.min.js" defer></script>
     <script src="{{ base_url }}/tabler/js/demo.min.js" defer></script>
-    <script src="{{ base_url }}/assets/js/jquery-3.6.0.min.js"></script>
     {% block additional_js %}{% endblock %}
   </body>
 </html>

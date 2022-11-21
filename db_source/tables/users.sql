@@ -23,5 +23,6 @@ CREATE TABLE `users` (
   UNIQUE KEY `IDX_users_oauth_provider_oauth_uid` (`oauth_provider`,`oauth_uid`),
   UNIQUE KEY `IDX_users_email` (`email`),
   UNIQUE KEY `IDX_users_login_token` (`login_token`),
-  UNIQUE KEY `IDX_users_verification_token` (`verification_token`)
+  UNIQUE KEY `IDX_users_verification_token` (`verification_token`),
+  KEY `IDX_users_type` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3

@@ -18,7 +18,8 @@
         "slim/twig-view": "^3.2.0",
         "php-di/php-di": "^6",
         "nextras/dbal": "v4.0.5",
-        "phpmailer/phpmailer": "^6.5"
+        "phpmailer/phpmailer": "^6.5",
+        "wixel/gump": "v2.0.0"
     },
     "autoload": {
         "psr-4": {
