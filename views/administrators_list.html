@@ -1,6 +1,8 @@
-{% set active_menu = 'Setup' %}
+{% set active_menu = 'Settings' %}
 
 {% extends "base_tabler.html" %}
+
+{% set screen_title = 'Administrators List' %}
 
 {% block page_title %}
 Setup / Administrators
@@ -23,4 +25,8 @@ Setup / Administrators
 
     {% include 'base_table.html' %}
 
+{% endblock %}
+
+{% block additional_js %}
+<script src="{{ base_url }}/assets/js/administrators.js?v={{ version }}"></script>
 {% endblock %}

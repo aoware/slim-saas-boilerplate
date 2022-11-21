@@ -6,10 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>{{ brand_name }} - {{ screen_title }}</title>
     <link href="{{ base_url }}/tabler/css/tabler.min.css" rel="stylesheet"/>
-    <link href="{{ base_url }}/tabler/css/tabler-flags.min.css" rel="stylesheet"/>
-    <link href="{{ base_url }}/tabler/css/tabler-payments.min.css" rel="stylesheet"/>
-    <link href="{{ base_url }}/tabler/css/tabler-vendors.min.css" rel="stylesheet"/>
-    <link href="{{ base_url }}/tabler/css/demo.min.css" rel="stylesheet"/>
+    <link href="{{ base_url }}/assets/css/tabler_custom.css?v={{ version }}" rel="stylesheet"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
     <script src="{{ base_url }}/assets/js/jquery-3.6.0.min.js"></script>
     {% block additional_style %}{% endblock %}    
@@ -19,9 +16,11 @@
       	--tblr-font-sans-serif: Inter, -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
       }
     </style>
+    <script src="{{ base_url }}/assets/js/alertifyjs/alertify.min.js"></script>
+    <link  href="{{ base_url }}/assets/js/alertifyjs/css/alertify.min.css" rel="stylesheet"/>
+    <link  href="{{ base_url }}/assets/js/alertifyjs/css/themes/default.min.css" rel="stylesheet"/>
   </head>
   <body >
-    <script src="{{ base_url }}/tabler/js/demo-theme.min.js"></script>
     <div class="page">
       <!-- Navbar -->
       <header class="navbar navbar-expand-md navbar-light d-print-none">
@@ -211,7 +210,6 @@
     </div>
     <input type='hidden' id='base_url' value='{{ base_url }}' />
     <script src="{{ base_url }}/tabler/js/tabler.min.js" defer></script>
-    <script src="{{ base_url }}/tabler/js/demo.min.js" defer></script>
     {% block additional_js %}{% endblock %}
   </body>
 </html>

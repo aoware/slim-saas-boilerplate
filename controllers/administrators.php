@@ -30,7 +30,7 @@ class administrators extends base_controller {
                 'last_login'   => $u_record->last_login,
                 'actions' => array(
                     array('label' => 'View/Update' ,'icon' => 'edit'      ,'action' => CONF_base_url . '/backoffice/administrator/' . $u_record->id . '/update') ,
-                    array('label' => 'Delete'      ,'icon' => 'trash-alt' ,'action' => CONF_base_url . '/backoffice/administrator/' . $u_record->id . '/delete')
+                    array('label' => 'Delete'      ,'icon' => 'trash-alt' ,'action' => 'delete_administrator(' . $u_record->id . ');')
                 )
                 
             );
@@ -84,4 +84,27 @@ class administrators extends base_controller {
         ]);
         
     }
+    
+    function delete($administrator_id) {
+        
+        $session = $this->check_login_session();
+        
+        if ($session['is_logged'] === false) {
+            return $this->return_json(false,'Session expired. Please login again.');
+        }
+        if ($session['user_type'] !== 'agent') {
+            return $this->return_json(false,'Session expired. Please login again.');
+        }
+        
+        $u = new \models\users();
+        $result_delete = $u->deleteRecord($administrator_id);
+        
+        if ($result_delete !== true) {
+            throw new \Exception($result_delete);
+        }
+        
+        return $this->return_json(true,'Administrator deleted');
+        
+    }
+    
 }

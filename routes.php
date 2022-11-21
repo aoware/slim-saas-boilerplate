@@ -73,9 +73,24 @@
                 return $c->update($id);
                 
             });
+
+            $administrator->get('/{id}/delete', function ($request, $response, $args) {
+                
+                $id = $args['id'];
+                
+                $c = new \controllers\administrators($this,$request, $response, $args);
+                return $c->delete($id);
+                
+            });
             
         });
-    
+
+        $backoffice->get('/configuration', function ($request, $response, $args) {
+            
+            $c = new \controllers\configuration($this,$request, $response, $args);
+            return $c->list();
+            
+        });
     });
     
 // =============================================================== //

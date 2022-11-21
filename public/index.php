@@ -70,7 +70,7 @@ $container->set('dbal', function() {
          'current_month'     => date('m'),
          'brand_name'        => 'Slim Saas Boilerplate',
      //  'is_mobile'         => $is_mobile,
-         'version'           => 0.001
+         'version'           => 0.002
      ];
 
      return $template_options;
