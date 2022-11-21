@@ -82,6 +82,7 @@ $app = \Slim\Factory\AppFactory::create();
 
 // Add Twig-View Middleware
 $app->add(\Slim\Views\TwigMiddleware::createFromContainer($app,'twig'));
+$app->addBodyParsingMiddleware();
 $app->addRoutingMiddleware();
 $app->addErrorMiddleware(true, true, true);
 
