@@ -5,7 +5,7 @@
 {% set screen_title = 'Settings' %}
 
 {% block page_title %}
-Setup&nbsp;/&nbsp;<a href='{{ base_url }}/backoffice/administrators'>Administrators</a>&nbsp;/&nbsp;{{ administrator_id }}
+Setup&nbsp;/&nbsp;<a href='{{ base_url }}/backoffice/administrators'>Administrators</a>
 {% endblock %}
 
 {% block main_menu %}
@@ -19,71 +19,50 @@ Setup&nbsp;/&nbsp;<a href='{{ base_url }}/backoffice/administrators'>Administrat
 {% block page_content %}
               <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Horizontal form</h3>
+                  <h3 class="card-title">{% if administrator_id is null %}Creating new administrator{% else %}Updating administrator ID {{ administrator_id }}{% endif %}</h3>
                 </div>
                 <div class="card-body">
-                  <form>
+                  <form id="administrator_form">
+                    <div class="row mb-3">
+                        <div class="col-3"></div>
+                        <div class="col-9">
+				            <div class="alert alert-danger d-none" role="alert" id="errors">
+							  <p id="error_messages"></p>
+							</div>
+						</div>
+					</div>
+                    <div class="form-group mb-3 row">
+                      <label class="col-3 col-form-label required">First Name</label>
+                      <div class="col">
+                        <input type="text" class="form-control" placeholder="John" name="first_name"  id="first_name" value="{{ administrator.first_name }}">
+                      </div>
+                    </div>
+                    <div class="form-group mb-3 row">
+                      <label class="col-3 col-form-label required">Last Name</label>
+                      <div class="col">
+                        <input type="text" class="form-control" placeholder="Smith" name="last_name"  id="last_name" value="{{ administrator.last_name }}">
+                      </div>
+                    </div>                                      
                     <div class="form-group mb-3 row">
                       <label class="col-3 col-form-label required">Email address</label>
                       <div class="col">
-                        <input type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email">
-                        <small class="form-hint">We'll never share your email with anyone else.</small>
+                        <input type="text" class="form-control" placeholder="name@domain.com" name="email"  id="email" value="{{ administrator.email }}">
                       </div>
-                    </div>
-                    <div class="form-group mb-3 row">
-                      <label class="col-3 col-form-label required">Password</label>
-                      <div class="col">
-                        <input type="password" class="form-control" placeholder="Password">
-                        <small class="form-hint">
-                          Your password must be 8-20 characters long, contain letters and numbers, and must not contain
-                          spaces, special characters, or emoji.
-                        </small>
-                      </div>
-                    </div>
-                    <div class="form-group mb-3 row">
-                      <label class="col-3 col-form-label">Select</label>
-                      <div class="col">
-                        <select class="form-select">
-                          <option>Option 1</option>
-                          <optgroup label="Optgroup 1">
-                            <option>Option 1</option>
-                            <option>Option 2</option>
-                          </optgroup>
-                          <option>Option 2</option>
-                          <optgroup label="Optgroup 2">
-                            <option>Option 1</option>
-                            <option>Option 2</option>
-                          </optgroup>
-                          <optgroup label="Optgroup 3">
-                            <option>Option 1</option>
-                            <option>Option 2</option>
-                          </optgroup>
-                          <option>Option 3</option>
-                          <option>Option 4</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-3 col-form-label pt-0">Checkboxes</label>
-                      <div class="col">
-                        <label class="form-check">
-                          <input class="form-check-input" type="checkbox" checked>
-                          <span class="form-check-label">Option 1</span>
-                        </label>
-                        <label class="form-check">
-                          <input class="form-check-input" type="checkbox">
-                          <span class="form-check-label">Option 2</span>
-                        </label>
-                        <label class="form-check">
-                          <input class="form-check-input" type="checkbox" disabled>
-                          <span class="form-check-label">Option 3</span>
-                        </label>
-                      </div>
-                    </div>
-                    <div class="form-footer">
-                      <button type="submit" class="btn btn-primary">Update</button>
                     </div>
                   </form>
                 </div>
+                <div class="card-footer text-end">
+                  <div class="d-flex">
+                    <a href="{{ base_url }}/backoffice/administrators" class="btn btn-link">Cancel</a>
+                    <button type="button" class="btn btn-primary ms-auto" onclick="action('{% if administrator_id is null %}new{% else %}{{ administrator_id}}/update{% endif %}')">
+                      {% if administrator_id is null %}Save{% else %}Update{% endif %}
+                      <span id="action_cog"></span>
+                    </button>
+                  </div>
+                </div>
               </div>
+{% endblock %}
+
+{% block additional_js %}
+<script src="{{ base_url }}/assets/js/administrator.js?v={{ version }}"></script>
 {% endblock %}

@@ -30,7 +30,6 @@ function reset() {
     	error = true;
     }
     else {
-    	var base_url = $("#base_url").val();
 
     	$.ajax({
     	    type: 'POST',
@@ -49,7 +48,7 @@ function reset() {
 
     if (error === false) {
 
-		$('#reset_cog').html('<i class="fa fa-spin fa-cog tdd-cog"></i>');
+		$('#reset_cog').html('<i class="fa fa-spin fa-cog"></i>');
     	$('#reset_button').prop('disabled', true);
 
     	$.ajax({

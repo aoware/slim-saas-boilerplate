@@ -10,9 +10,9 @@ class login extends base_controller {
 
     function login_google() {
 
-        $allGetVars = $this->request->getQueryParams();
+        $get_variables = $this->request->getQueryParams();
 
-        if (isset($allGetVars['code'])) {
+        if (isset($get_variables['code'])) {
 
             $gClient = new \Google_Client();
             $gClient->setApplicationName(CONF_google_login_application_name);
@@ -20,7 +20,7 @@ class login extends base_controller {
             $gClient->setClientSecret(CONF_google_login_client_secret);
             $gClient->setRedirectUri(CONF_google_login_redirect_url);
 
-            $gClient->fetchAccessTokenWithAuthCode($allGetVars['code']);
+            $gClient->fetchAccessTokenWithAuthCode($get_variables['code']);
 
             // Exchange the auth code for a token
             $_SESSION['google_access_token'] = $gClient->getAccessToken();
@@ -55,12 +55,12 @@ class login extends base_controller {
 
     function login_facebook() {
 
-        $allGetVars = $this->request->getQueryParams();
+        $get_variables = $this->request->getQueryParams();
 
-        if (isset($allGetVars['error'])) {
+        if (isset($get_variables['error'])) {
 
             $t = new \apis\telegram(CONF_telegram_bot_id,CONF_telegram_bot_token);
-            $t->sendMessage(CONF_telegram_admin_id, "FB login error " . $allGetVars['error'] . " with description " . $allGetVars['error_description'] . " - " . $allGetVars['error_reason']);
+            $t->sendMessage(CONF_telegram_admin_id, "FB login error " . $get_variables['error'] . " with description " . $get_variables['error_description'] . " - " . $get_variables['error_reason']);
 
             $result = [
                 'type' => 'redirection',
@@ -123,17 +123,17 @@ class login extends base_controller {
 
     function login_email() {
 
-        $allPostVars = $this->request->getParsedBody();
+        $post_variables = $this->request->getParsedBody();
 
         $u = new \models\users;
-        $u->getRecordsByOauth_provider_oauth_uid('email',$allPostVars['login_email']);
+        $u->getRecordsByOauth_provider_oauth_uid('email',$post_variables['login_email']);
         if (count($u->recordSet) == 0) {
             return $this->return_json(false,"You have entered an invalid email or password");
         }
 
         $u_record = $u->recordSet[0];
 
-        if (md5($allPostVars['login_password']) != $u_record->password) {
+        if (md5($post_variables['login_password']) != $u_record->password) {
             return $this->return_json(false,"You have entered an invalid email or password");
         }
 
@@ -156,7 +156,6 @@ class login extends base_controller {
         $u->password           = $u_record->password;
         $u->first_name         = $u_record->first_name;
         $u->last_name          = $u_record->last_name;
-        $u->username           = $u_record->username;
         $u->email              = $u_record->email;
         $u->location           = $u_record->location;
         $u->picture            = $u_record->picture;
@@ -194,30 +193,24 @@ class login extends base_controller {
 
     function sign_up() {
 
-        $allPostVars = $this->request->getParsedBody();
+        $post_variables = $this->request->getParsedBody();
 
-        $pos = strpos($allPostVars['email'],"@");
-        if ($pos === false) {
+        $ev = new \helpers\email_validation;
+        $result_ev = $ev->validate($post_variables['email']);
+        
+        if ($result_ev['validation'] === false) {
             return $this->return_json(false,"Invalid email");
         }
 
-        $arr = explode('@',$allPostVars['email'],2);
-
-        if (strlen($arr[0]) == 0) {
-            return $this->return_json(false,"Invalid email");        }
-
-        if (!checkdnsrr($arr[1],'MX')) {
-            return $this->return_json(false,"Invalid email's domain");        }
-
         $u = new \models\users;
-        $u->getRecordsByOauth_provider_oauth_uid('email',$allPostVars['email']);
+        $u->getRecordsByOauth_provider_oauth_uid('email',$post_variables['email']);
         if (count($u->recordSet) > 0) {
             return $this->return_json(false,"Email already registered");
         }
 
         $passwordReg = "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/";
 
-        if (!preg_match($passwordReg, $allPostVars['password'])) {
+        if (!preg_match($passwordReg, $post_variables['password'])) {
             return $this->return_json(false,"Invalid password");
         }
 
@@ -225,18 +218,18 @@ class login extends base_controller {
         $ip_address = $h->get_ip($this->request->getHeaders());
 
         $result_registration = $u->email_register(
-            $allPostVars['first_name'],
-            $allPostVars['last_name'],
-            $allPostVars['email'],
-            $allPostVars['password'],
+            $post_variables['first_name'],
+            $post_variables['last_name'],
+            $post_variables['email'],
+            $post_variables['password'],
             'client',
             $ip_address);
 
         $sm = new \helpers\string_manipulation;
 
         $a = new \models\accounts();
-        $a->name     = $allPostVars['name'];
-        $a->slug     = $sm->slugify($allPostVars['name']);
+        $a->name     = $post_variables['name'];
+        $a->slug     = $sm->slugify($post_variables['name']);
         $a->created  = date('Y-m-d H:i:s');
         $a->modified = null;
 
@@ -260,8 +253,8 @@ class login extends base_controller {
             return false;
         }
 
-        $recipient_name  = trim($allPostVars['first_name'] . " " . $allPostVars['last_name']);
-        $recipient_email = $allPostVars['email'];
+        $recipient_name  = trim($post_variables['first_name'] . " " . $post_variables['last_name']);
+        $recipient_email = $post_variables['email'];
         $params = array_merge($this->template_options,[
             "token" => $result_registration['verification_token'],
         ]);
@@ -348,7 +341,6 @@ class login extends base_controller {
                 $u->password           = $u_record->password;
                 $u->first_name         = $u_record->first_name;
                 $u->last_name          = $u_record->last_name;
-                $u->username           = $u_record->username;
                 $u->email              = $u_record->email;
                 $u->location           = $u_record->location;
                 $u->picture            = $u_record->picture;
@@ -399,7 +391,7 @@ class login extends base_controller {
 
     function reset_password() {
 
-        $allPostVars = $this->request->getParsedBody();
+        $post_variables = $this->request->getParsedBody();
 
         $h = new \helpers\http_headers;
         $ip_address = $h->get_ip($this->request->getHeaders());
@@ -408,7 +400,7 @@ class login extends base_controller {
         // ALWAYS return a positive outcome to not disclose email is in our DB
 
         $u = new \models\users;
-        $u->getRecordsByOauth_provider_oauth_uid('email',$allPostVars['email']);
+        $u->getRecordsByOauth_provider_oauth_uid('email',$post_variables['email']);
         if (count($u->recordSet) == 0) {
             $result = [
                 "type" => "json",
@@ -418,7 +410,7 @@ class login extends base_controller {
             ];
 
             $t = new \apis\telegram(CONF_telegram_bot_id,CONF_telegram_bot_token);
-            $t->sendMessage(CONF_telegram_admin_id, "Someone with IP $ip_address is trying to reset password for email '" . $allPostVars['email'] . "' which is not in our database.");
+            $t->sendMessage(CONF_telegram_admin_id, "Someone with IP $ip_address is trying to reset password for email '" . $post_variables['email'] . "' which is not in our database.");
 
             return $result;
         }
@@ -465,7 +457,7 @@ class login extends base_controller {
 
             $template_id     = 4;
             $recipient_name  = null;
-            $recipient_email = $allPostVars['email'];
+            $recipient_email = $post_variables['email'];
             $params          = [
                 "token"      => $password_token,
                 "ip_address" => $ip_address,
@@ -528,13 +520,13 @@ class login extends base_controller {
 
     function set_password() {
 
-        $allPostVars = $this->request->getParsedBody();
+        $post_variables = $this->request->getParsedBody();
 
         $h = new \helpers\http_headers;
         $ip_address = $h->get_ip($this->request->getHeaders());
 
         $pr = new \models\password_reset;
-        $pr->getRecordByPassword_token($allPostVars['token']);
+        $pr->getRecordByPassword_token($post_variables['token']);
 
         if (count($pr->recordSet) == 0) {
             $result = [
@@ -564,10 +556,9 @@ class login extends base_controller {
 
                 $u->oauth_provider     = $u_record->oauth_provider;
                 $u->oauth_uid          = $u_record->oauth_uid;
-                $u->password           = md5($allPostVars['password']);
+                $u->password           = md5($post_variables['password']);
                 $u->first_name         = $u_record->first_name;
                 $u->last_name          = $u_record->last_name;
-                $u->username           = $u_record->username;
                 $u->email              = $u_record->email;
                 $u->location           = $u_record->location;
                 $u->picture            = $u_record->picture;
@@ -641,7 +632,7 @@ class login extends base_controller {
             $u->getRecordByEmail($email);
             if (count($u->recordSet) > 0) {
                 $result_ev['validation'] = false;
-                $result_ev['message']    = 'user already registered';
+                $result_ev['message']    = 'User already registered';
             }
         }
 

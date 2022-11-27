@@ -55,7 +55,14 @@
                 return $c->display();
                 
             });
-        
+
+            $administrator->post('/new', function ($request, $response, $args) {
+                
+                $c = new \controllers\administrators($this,$request, $response, $args);
+                return $c->insert();
+                
+            });
+            
             $administrator->get('/{id}/update', function ($request, $response, $args) {
                 
                 $id = $args['id'];
@@ -92,17 +99,24 @@
             
         });
         
-        $backoffice->get('/your-profile', function ($request, $response, $args) {
+        $backoffice->get('/my-profile', function ($request, $response, $args) {
             
-            $c = new \controllers\your_profile($this,$request, $response, $args);
+            $c = new \controllers\my_profile($this,$request, $response, $args);
             return $c->display('backoffice');
             
         });
         
-        $backoffice->post('/your-profile', function ($request, $response, $args) {
+        $backoffice->post('/my-profile', function ($request, $response, $args) {
             
-            $c = new \controllers\your_profile($this,$request, $response, $args);
+            $c = new \controllers\my_profile($this,$request, $response, $args);
             return $c->update('backoffice');
+            
+        });
+
+        $backoffice->post('/my-profile-password', function ($request, $response, $args) {
+            
+            $c = new \controllers\my_profile($this,$request, $response, $args);
+            return $c->update_password('backoffice');
             
         });
         
@@ -240,5 +254,12 @@
         
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_manifest();
+        
+    });
+    
+    $app->get('/global.js', function ($request, $response, $args) {
+        
+        $c = new \controllers\static_pages($this,$request, $response, $args);
+        return $c->render_global();
         
     });

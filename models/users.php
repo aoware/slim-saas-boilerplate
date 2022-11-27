@@ -15,7 +15,6 @@ class users_record {
     public $password;
     public $first_name;
     public $last_name;
-    public $username;
     public $email;
     public $location;
     public $picture;
@@ -40,7 +39,6 @@ class users {
     public $password;
     public $first_name;
     public $last_name;
-    public $username;
     public $email;
     public $location;
     public $picture;
@@ -99,7 +97,7 @@ class users {
 
     function getRecordById($key) {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`username`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `id` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `id` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -116,7 +114,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->username,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -129,7 +127,6 @@ class users {
             $record->password           = $this->password;
             $record->first_name         = $this->first_name;
             $record->last_name          = $this->last_name;
-            $record->username           = $this->username;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -154,7 +151,7 @@ class users {
 
     function getRecordsByOauth_provider_oauth_uid($oauth_provider,$oauth_uid,$orderBy = "") {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`username`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `oauth_provider` = ? and `oauth_uid` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `oauth_provider` = ? and `oauth_uid` = ?";
 
         if ($orderBy != "") {
             $sql .= " order by " . $orderBy;
@@ -175,7 +172,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->username,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -188,7 +185,6 @@ class users {
             $record->password           = $this->password;
             $record->first_name         = $this->first_name;
             $record->last_name          = $this->last_name;
-            $record->username           = $this->username;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -213,7 +209,7 @@ class users {
 
     function getRecordByEmail($key) {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`username`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `email` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `email` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -230,7 +226,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->username,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -243,7 +239,6 @@ class users {
             $record->password           = $this->password;
             $record->first_name         = $this->first_name;
             $record->last_name          = $this->last_name;
-            $record->username           = $this->username;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -268,7 +263,7 @@ class users {
 
     function getRecordsByEmail($key,$orderBy = "") {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`username`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `email` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `email` = ?";
 
         if ($orderBy != "") {
             $sql .= " order by " . $orderBy;
@@ -289,7 +284,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->username,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -302,7 +297,6 @@ class users {
             $record->password           = $this->password;
             $record->first_name         = $this->first_name;
             $record->last_name          = $this->last_name;
-            $record->username           = $this->username;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -352,7 +346,7 @@ class users {
 
     function getRecordByLogin_token($key) {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`username`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `login_token` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `login_token` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -369,7 +363,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->username,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -382,7 +376,6 @@ class users {
             $record->password           = $this->password;
             $record->first_name         = $this->first_name;
             $record->last_name          = $this->last_name;
-            $record->username           = $this->username;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -407,7 +400,7 @@ class users {
 
     function getRecordsByLogin_token($key,$orderBy = "") {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`username`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `login_token` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `login_token` = ?";
 
         if ($orderBy != "") {
             $sql .= " order by " . $orderBy;
@@ -428,7 +421,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->username,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -441,7 +434,6 @@ class users {
             $record->password           = $this->password;
             $record->first_name         = $this->first_name;
             $record->last_name          = $this->last_name;
-            $record->username           = $this->username;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -491,7 +483,7 @@ class users {
 
     function getRecordByVerification_token($key) {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`username`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `verification_token` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `verification_token` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -508,7 +500,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->username,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -521,7 +513,6 @@ class users {
             $record->password           = $this->password;
             $record->first_name         = $this->first_name;
             $record->last_name          = $this->last_name;
-            $record->username           = $this->username;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -546,7 +537,7 @@ class users {
 
     function getRecordsByVerification_token($key,$orderBy = "") {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`username`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `verification_token` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `verification_token` = ?";
 
         if ($orderBy != "") {
             $sql .= " order by " . $orderBy;
@@ -567,7 +558,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->username,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -580,7 +571,6 @@ class users {
             $record->password           = $this->password;
             $record->first_name         = $this->first_name;
             $record->last_name          = $this->last_name;
-            $record->username           = $this->username;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -630,7 +620,7 @@ class users {
 
     function getRecordByType($key) {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`username`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `type` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `type` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -647,7 +637,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->username,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -660,7 +650,6 @@ class users {
             $record->password           = $this->password;
             $record->first_name         = $this->first_name;
             $record->last_name          = $this->last_name;
-            $record->username           = $this->username;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -685,7 +674,7 @@ class users {
 
     function getRecordsByType($key,$orderBy = "") {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`username`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `type` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `type` = ?";
 
         if ($orderBy != "") {
             $sql .= " order by " . $orderBy;
@@ -706,7 +695,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->username,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -719,7 +708,6 @@ class users {
             $record->password           = $this->password;
             $record->first_name         = $this->first_name;
             $record->last_name          = $this->last_name;
-            $record->username           = $this->username;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -769,7 +757,7 @@ class users {
 
     function getAllRecords($orderBy = "") {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`username`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users`";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users`";
 
         if ($orderBy != "") {
             $sql .= " order by " . $orderBy;
@@ -785,7 +773,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->username,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -798,7 +786,6 @@ class users {
             $record->password           = $this->password;
             $record->first_name         = $this->first_name;
             $record->last_name          = $this->last_name;
-            $record->username           = $this->username;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -823,14 +810,14 @@ class users {
 
     function saveRecord() {
 
-        $sql = "INSERT INTO `users` (`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`username`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token`) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $sql = "INSERT INTO `users` (`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token`) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-        $bind = $stmt->bind_param("sssssssssssssssssss",$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->username,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_param("ssssssssssssssssss",$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -850,14 +837,14 @@ class users {
 
     function updateRecord($key) {
 
-        $sql = "UPDATE `users` SET `oauth_provider` = ?,`oauth_uid` = ?,`password` = ?,`first_name` = ?,`last_name` = ?,`username` = ?,`email` = ?,`location` = ?,`picture` = ?,`link` = ?,`type` = ?,`created` = ?,`modified` = ?,`last_login` = ?,`registration_ip` = ?,`verification_token` = ?,`verification_date` = ?,`verification_ip` = ?,`login_token` = ? WHERE `id` = ?";
+        $sql = "UPDATE `users` SET `oauth_provider` = ?,`oauth_uid` = ?,`password` = ?,`first_name` = ?,`last_name` = ?,`email` = ?,`location` = ?,`picture` = ?,`link` = ?,`type` = ?,`created` = ?,`modified` = ?,`last_login` = ?,`registration_ip` = ?,`verification_token` = ?,`verification_date` = ?,`verification_ip` = ?,`login_token` = ? WHERE `id` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-        $bind = $stmt->bind_param("sssssssssssssssssssi",$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->username,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token,$key);
+        $bind = $stmt->bind_param("ssssssssssssssssssi",$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token,$key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -985,7 +972,6 @@ class users {
         $u->password           = $u_record->password;
         $u->first_name         = $u_record->first_name;
         $u->last_name          = $u_record->last_name;
-        $u->username           = $u_record->username;
         $u->email              = $u_record->email;
         $u->location           = $u_record->location;
         $u->picture            = $u_record->picture;

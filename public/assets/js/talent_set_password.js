@@ -19,8 +19,6 @@ $(window).resize(function () {
 
 function set() {
 
-	var base_url = $("#base_url").val();
-
 	var error = false;
 
     if ($('#password').val() == '') {
@@ -41,7 +39,7 @@ function set() {
 
     if (error === false) {
 
-		$('#set_cog').html('<i class="fa fa-spin fa-cog tdd-cog"></i>');
+		$('#set_cog').html('<i class="fa fa-spin fa-cog"></i>');
     	$('#set_button').prop('disabled', true);
 
     	$.ajax({

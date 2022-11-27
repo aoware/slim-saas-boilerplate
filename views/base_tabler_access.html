@@ -23,6 +23,10 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{{ base_url }}/assets/img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ base_url }}/assets/img/favicon-16x16.png">
     <link rel="manifest" href="{{ base_url }}/site.webmanifest">
+    <script src="{{ base_url }}/assets/js/alertifyjs/alertify.min.js"></script>
+    <link  href="{{ base_url }}/assets/js/alertifyjs/css/alertify.min.css" rel="stylesheet"/>
+    <link  href="{{ base_url }}/assets/js/alertifyjs/css/themes/default.min.css" rel="stylesheet"/>
+    <script src="{{ base_url }}/global.js"></script>
   </head>
   <body  class="d-flex flex-column">
     <script src="{{ base_url }}/tabler/js/demo-theme.min.js"></script>
@@ -34,7 +38,6 @@
         {% block page_content %}{% endblock %}
       </div>
     </div>
-    <input type='hidden' id='base_url' value='{{ base_url }}' />
     <script src="{{ base_url }}/tabler/js/tabler.min.js" defer></script>
     <script src="{{ base_url }}/tabler/js/demo.min.js" defer></script>
     <script src="{{ base_url }}/assets/js/jquery-3.6.0.min.js"></script>

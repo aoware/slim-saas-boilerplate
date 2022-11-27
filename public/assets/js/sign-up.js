@@ -57,8 +57,6 @@ function signup(channel) {
     $('#signup_cog').html('<i class="fa fa-spin fa-cog"></i>');
 	$('#signup_button').prop('disabled', true);
 
-	var base_url = $("#base_url").val();
-
 	var error = false;
 
     if ($('#password').val() == '') {

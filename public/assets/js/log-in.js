@@ -12,8 +12,6 @@ $(document).ready(function(){
 
 function login(channel) {
 
-	var base_url = $("#base_url").val();
-
 	var error = false;
 
     if ($('#password').val() == '') {
@@ -30,7 +28,7 @@ function login(channel) {
 
     if (error === false) {
 
-		$('#login_cog').html('<i class="fa fa-spin fa-cog tdd-cog"></i>');
+		$('#login_cog').html('<i class="fa fa-spin fa-cog"></i>');
     	$('#login_button').prop('disabled', true);
 
     	$.ajax({

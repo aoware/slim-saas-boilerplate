@@ -1,0 +1,90 @@
+{% extends "base_tabler.html" %}
+
+{% set screen_title = 'My Profile' %}
+
+{% block main_menu %}
+{% include "backoffice_main_menu.html" %}
+{% endblock %}
+
+{% block user_menu %}
+{% include "backoffice_user_menu.html" %}
+{% endblock %}
+
+{% block page_content %}
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">My Profile</h3>
+                </div>
+                <div class="card-body">
+                  <form id="my_profile_form">
+                    <div class="row mb-3">
+                        <div class="col-3"></div>
+                        <div class="col-9">
+				            <div class="alert alert-danger d-none" role="alert" id="errors">
+							  <p id="error_messages"></p>
+							</div>
+						</div>
+					</div>
+                    <div class="form-group mb-3 row">
+                      <label class="col-3 col-form-label required">First Name</label>
+                      <div class="col">
+                        <input type="text" class="form-control" placeholder="John" name="first_name"  id="first_name" value="{{ user.first_name }}">
+                      </div>
+                    </div>
+                    <div class="form-group mb-3 row">
+                      <label class="col-3 col-form-label required">Last Name</label>
+                      <div class="col">
+                        <input type="text" class="form-control" placeholder="Smith" name="last_name"  id="last_name" value="{{ user.last_name }}">
+                      </div>
+                    </div>                                      
+                    <div class="form-group mb-3 row">
+                      <label class="col-3 col-form-label required">Email address</label>
+                      <div class="col">
+                        <input type="text" class="form-control" placeholder="name@domain.com" name="email"  id="email" value="{{ user.email }}">
+                      </div>
+                    </div>
+                    <div class="form-group mb-3 row">
+                      <label class="col-3 col-form-label">Password</label>
+                      <div class="col">
+                        <button type="button" class="btn btn-secondary ms-auto" onclick="change_password('backoffice');">Change Password</button>
+                      </div>
+                    </div>                    
+                  </form>
+                </div>
+                <div class="card-footer text-end">
+                  <div class="d-flex">
+                    <button type="button" class="btn btn-primary ms-auto" onclick="update('backoffice');">
+                      Update
+                      <span id="action_cog"></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+   <div class="d-none">
+     <form id="confirm_content">
+       <div class="form-group mb-3 row">
+         <label class="col-5 col-form-label">Old Password</label>
+         <div class="col">
+           <input type="text" class="form-control" name="old_password"  id="old_password">
+         </div>
+       </div>
+       <div class="form-group mb-3 row">
+         <label class="col-5 col-form-label">New Password</label>
+         <div class="col">
+           <input type="text" class="form-control" name="new_password"  id="new_password">
+         </div>
+       </div>                                      
+       <div class="form-group mb-3 row">
+         <label class="col-5 col-form-label">Confirm New Password</label>
+         <div class="col">
+           <input type="text" class="form-control" name="confirmed_password"  id="confirmed_password">
+         </div>
+       </div>
+     </form>
+  </div>
+{% endblock %}
+
+{% block additional_js %}
+<script src="{{ base_url }}/assets/js/my-profile.js?v={{ version }}"></script>
+{% endblock %}

@@ -24,4 +24,10 @@ class static_pages extends base_controller {
 
     }
 
+    function render_global() {
+        
+        return $this->return_custom_content('global.js', [], 'application/javascript');
+        
+    }
+    
 }
