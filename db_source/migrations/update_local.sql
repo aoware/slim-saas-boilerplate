@@ -1,7 +1,7 @@
 UPDATE `config_value` SET `value` = 'smtp.sendgrid.net'                                                     WHERE `id` = '1';
 UPDATE `config_value` SET `value` = '587'                                                                   WHERE `id` = '2';
-UPDATE `config_value` SET `value` = 'apikey'                                                                WHERE `id` = '3';
-UPDATE `config_value` SET `value` = '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' WHERE `id` = '4';
+UPDATE `config_value` SET `value` = ''                                                                WHERE `id` = '3';
+UPDATE `config_value` SET `value` = '' WHERE `id` = '4';
 -- UPDATE `config_value` SET `value` = '' WHERE `id` = '7';
 -- UPDATE `config_value` SET `value` = '' WHERE `id` = '8';
 -- UPDATE `config_value` SET `value` = '' WHERE `id` = '9';
