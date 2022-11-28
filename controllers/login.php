@@ -161,6 +161,7 @@ class login extends base_controller {
         $u->picture            = $u_record->picture;
         $u->link               = $u_record->link;
         $u->type               = $u_record->type;
+        $u->active             = $u_record->active;
         $u->created            = $u_record->created;
         $u->modified           = $u_record->modified;
         $u->registration_ip    = $u_record->registration_ip;
@@ -346,6 +347,7 @@ class login extends base_controller {
                 $u->picture            = $u_record->picture;
                 $u->link               = $u_record->link;
                 $u->type               = $u_record->type;
+                $u->active             = $u_record->active;
                 $u->created            = $u_record->created;
                 $u->modified           = $u_record->modified;
                 $u->last_login         = $u_record->last_login;
@@ -564,6 +566,7 @@ class login extends base_controller {
                 $u->picture            = $u_record->picture;
                 $u->link               = $u_record->link;
                 $u->type               = $u_record->type;
+                $u->active             = $u_record->active;
                 $u->created            = $u_record->created;
                 $u->modified           = date('Y-m-d H:i:s');
                 $u->last_login         = $u_record->last_login;

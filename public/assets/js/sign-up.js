@@ -54,7 +54,7 @@ $(document).ready(function(){
 
 function signup(channel) {
 
-    $('#signup_cog').html('<i class="fa fa-spin fa-cog"></i>');
+    $('#signup_cog').html('&nbsp;&nbsp;<i class="fa fa-spin fa-cog"></i>');
 	$('#signup_button').prop('disabled', true);
 
 	var error = false;

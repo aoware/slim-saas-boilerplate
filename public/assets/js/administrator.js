@@ -2,6 +2,9 @@ $(document).ready(function(){
 
 	$("#first_name").focus();
 
+	var elem = document.querySelector('.js-switch');
+    var switchery = new Switchery(elem,  { color : '#206bc4', size: 'small' });
+
 });
 
 function action(endPoint) {

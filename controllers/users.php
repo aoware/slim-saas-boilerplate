@@ -2,7 +2,7 @@
 
 namespace controllers;
 
-class administrators extends base_controller {
+class users extends base_controller {
 
     function list() {
        
@@ -14,53 +14,71 @@ class administrators extends base_controller {
         if ($session['user_type'] !== 'agent') {
             return $this->return_redirection(CONF_base_url);
         }
-        
-        $u = new \models\users();
-        $u->getRecordsByType('agent');
-        
+
         $recordSet = array();
-        foreach($u->recordSet as $u_record) {
+        
+        $query = "select 
+                    a.id as 'user_id',
+                    first_name,
+                    last_name,
+                    email,
+                    a.created,
+                    a.modified,
+                    last_login,
+                    c.id as 'account_id',
+                    name
+                  from users as a, account_users as b, accounts as c
+                  where type = 'client'
+                  and a.id = b.user_id
+                  and b.account_id = c.id";
+        $query_result = $this->dbal->query($query);
+        
+        foreach ($query_result as $row) { 
             
-            $active = "<input type='checkbox' class='js-switch' disabled";
-            if ($u_record->active == 1) {
-                $active .= " checked";
+            $date_updated = null;
+            if (!is_null($row->modified)){
+                $date_updated = date('Y-m-d H:i:s',strtotime($row->modified));
             }
-            $active .= " />";
+
+            $last_login = null;
+            if (!is_null($row->last_login)){
+                $last_login = date('Y-m-d H:i:s',strtotime($row->last_login));
+            }
             
             $record = array(
-                'email'        => $u_record->email,
-                'first_name'   => $u_record->first_name,
-                'last_name'    => $u_record->last_name,
-                'active'       => $active,
-                'date_created' => $u_record->created,
-                'date_updated' => $u_record->modified,
-                'last_login'   => $u_record->last_login,
+                'account'      => "<a href='" . CONF_base_url . "/backoffice/account/" . $row->account_id . "/update'>" . $row->name . "</a>",
+                'email'        => $row->email,
+                'first_name'   => $row->first_name,
+                'last_name'    => $row->last_name,
+                'date_created' => date('Y-m-d H:i:s',strtotime($row->created)),
+                'date_updated' => $date_updated,
+                'last_login'   => $last_login,
                 'actions' => array(
-                    array('label' => 'View/Update' ,'icon' => 'edit'      ,'action' => CONF_base_url . '/backoffice/administrator/' . $u_record->id . '/update') ,
-                    array('label' => 'Delete'      ,'icon' => 'trash-alt' ,'action' => 'delete_administrator(' . $u_record->id . ');')
+                    array('label' => 'View/Update' ,'icon' => 'edit'      ,'action' => CONF_base_url . '/backoffice/user/' . $row->user_id . '/update') ,
+                    array('label' => 'Delete'      ,'icon' => 'trash-alt' ,'action' => 'delete_user(' . $row->user_id . ');')
                 )
                 
             );
             array_push($recordSet,$record);
             
         }
-        
+
         $table = [
             'columns' => [
+                ['name' => 'Account'   ,'sortable' => true],
                 ['name' => 'Email'     ,'sortable' => true],
                 ['name' => 'First Name','sortable' => true],
                 ['name' => 'Last Name' ,'sortable' => true],
-                ['name' => 'Active'    ,'sortable' => true],
                 ['name' => 'Created'   ,'sortable' => true],
                 ['name' => 'Updated'   ,'sortable' => true],
                 ['name' => 'Last Login','sortable' => true],
                 ['name' => 'Actions'   ,'sortable' => false]
             ],
             'recordset'      => $recordSet,
-            'new_record_url' => '/backoffice/administrator/new'
+            'new_record_url' => null
         ];
         
-        return $this->return_html('administrators_list.html',[
+        return $this->return_html('users_list.html',[
             'users_table'  => $table
         ]);
         
@@ -92,79 +110,11 @@ class administrators extends base_controller {
         ]);
         
     }
-
-    function insert() {
-        
-        $post_variables = $this->request->getParsedBody();
-        
-        $session = $this->check_login_session();
-        
-        if ($session['is_logged'] === false) {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-        
-        $ev = new \helpers\email_validation;
-        $result_ev = $ev->validate($post_variables['email']);
-        
-        // If email is valid, let's check if already in the DB
-        if ($result_ev['validation'] === false) {
-            return $this->return_json(false,"Invalid email");
-        }
-        
-        $u = new \models\users();
-        $u->getRecordByEmail($post_variables['email']);
-        if (count($u->recordSet) > 0) {
-            return $this->return_json(false,"User already registered");
-        }
-        
-        $active = 0;
-        if (isset($post_variables['active'])) {
-            if ($post_variables['active'] == 'on') {
-                $active = 1;
-            }
-        }
-        
-        $u->oauth_provider     = 'email';
-        $u->oauth_uid          = $post_variables['email'];
-        $u->password           = '';
-        $u->first_name         = $post_variables['first_name'];
-        $u->last_name          = $post_variables['last_name'];
-        $u->email              = $post_variables['email'];
-        $u->location           = null;
-        $u->picture            = null;
-        $u->link               = null;
-        $u->type               = 'agent';
-        $u->active             = $active;
-        $u->created            = date('Y-m-d H:i:s');
-        $u->modified           = null;
-        $u->last_login         = null;
-        $u->registration_ip    = null;
-        $u->verification_token = null;
-        $u->verification_date  = null;
-        $u->verification_ip    = null;
-        $u->login_token        = null;
-        
-        $result_save = $u->saveRecord();
-        
-        if ($result_save !== true) {
-            throw new \Exception($result_save);
-        }
-        
-        $data = [
-            'redirection' => CONF_base_url . "/backoffice/administrators"
-        ];
-        
-        return $this->return_json(true,'Administrator created',$data);
-        
-    }
     
     function update($administrator_id) {
         
         $post_variables = $this->request->getParsedBody();
-        
+               
         $session = $this->check_login_session();
         
         if ($session['is_logged'] === false) {
@@ -196,13 +146,6 @@ class administrators extends base_controller {
             throw new \Exception($result_read);
         }
         
-        $active = 0;
-        if (isset($post_variables['active'])) {
-            if ($post_variables['active'] == 'on') {
-                $active = 1;
-            }
-        }
-        
         $u_record = $u->recordSet[0];
         $u->oauth_provider     = $u_record->oauth_provider;
         $u->oauth_uid          = $u_record->oauth_uid;
@@ -214,7 +157,7 @@ class administrators extends base_controller {
         $u->picture            = $u_record->picture;
         $u->link               = $u_record->link;
         $u->type               = $u_record->type;
-        $u->active             = $active;
+        $u->active             = $u_record->active;
         $u->created            = $u_record->created;
         $u->modified           = date('Y-m-d H:i:s');
         $u->last_login         = $u_record->last_login;

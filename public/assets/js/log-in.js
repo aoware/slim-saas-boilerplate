@@ -28,7 +28,7 @@ function login(channel) {
 
     if (error === false) {
 
-		$('#login_cog').html('<i class="fa fa-spin fa-cog"></i>');
+		$('#login_cog').html('&nbsp;&nbsp;<i class="fa fa-spin fa-cog"></i>');
     	$('#login_button').prop('disabled', true);
 
     	$.ajax({

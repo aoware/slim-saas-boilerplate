@@ -10,6 +10,7 @@ CREATE TABLE `users` (
   `picture` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `link` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `type` enum('agent','client') NOT NULL,
+  `active` tinyint(1) NOT NULL,
   `created` datetime NOT NULL,
   `modified` datetime DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,

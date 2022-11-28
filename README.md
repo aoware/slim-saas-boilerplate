@@ -9,6 +9,8 @@ A PHP-based user-authenticated Saas boilerplate by [aoWare](https://www.aoware.c
 * [https://github.com/konsav/email-templates](https://github.com/konsav/email-templates) email template
 * [nextras/dbal](https://packagist.org/packages/nextras/dbal) as a light database abstraction layer
 * TODO: [JWT Authentication](https://github.com/tuupola/slim-jwt-auth) / [PHP-JWT](https://github.com/firebase/php-jwt)
+* [Alertify](https://alertifyjs.com/) pretty browser dialogs and notifications
+* [Switchery](https://github.com/abpetkov/switchery) iOs 7 Switches
 
 ## System Requirements
 

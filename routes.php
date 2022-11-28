@@ -92,6 +92,13 @@
             
         });
 
+        $backoffice->get('/users', function ($request, $response, $args) {
+            
+            $c = new \controllers\users($this,$request, $response, $args);
+            return $c->list();
+            
+        });
+        
         $backoffice->get('/configuration', function ($request, $response, $args) {
             
             $c = new \controllers\configuration($this,$request, $response, $args);

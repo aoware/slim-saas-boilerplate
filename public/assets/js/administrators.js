@@ -1,3 +1,10 @@
+$(document).ready(function(){
+
+	var elem = document.querySelector('.js-switch');
+    var switchery = new Switchery(elem,  { color : '#206bc4', size: 'small' });
+
+});
+
 function delete_administrator(id) {
 
     var administrator_id = id;

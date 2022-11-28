@@ -49,6 +49,12 @@ Setup&nbsp;/&nbsp;<a href='{{ base_url }}/backoffice/administrators'>Administrat
                         <input type="text" class="form-control" placeholder="name@domain.com" name="email"  id="email" value="{{ administrator.email }}">
                       </div>
                     </div>
+                    <div class="form-group mb-3 row">
+                      <label class="col-3 col-form-label required">Active</label>
+                      <div class="col">
+	                    <input type="checkbox" class="js-switch" name="active" id="active" {% if administrator.active == 1 %}checked{% endif %} />
+                      </div>
+                    </div>                    
                   </form>
                 </div>
                 <div class="card-footer text-end">
@@ -63,6 +69,11 @@ Setup&nbsp;/&nbsp;<a href='{{ base_url }}/backoffice/administrators'>Administrat
               </div>
 {% endblock %}
 
+{% block additional_css %}
+<link rel="stylesheet" href="{{ base_url }}/assets/js/switchery/dist/switchery.min.css" />
+{% endblock %}
+
 {% block additional_js %}
 <script src="{{ base_url }}/assets/js/administrator.js?v={{ version }}"></script>
+<script src="{{ base_url }}/assets/js/switchery/dist/switchery.min.js"></script>
 {% endblock %}

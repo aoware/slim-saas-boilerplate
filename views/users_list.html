@@ -1,11 +1,11 @@
-{% set active_menu = 'Settings' %}
+{% set active_menu = 'Users' %}
 
 {% extends "base_tabler.html" %}
 
-{% set screen_title = 'Administrators List' %}
+{% set screen_title = 'Users List' %}
 
 {% block page_title %}
-Setup / Administrators
+Users
 {% endblock %}
 
 {% block main_menu %}
@@ -27,11 +27,6 @@ Setup / Administrators
 
 {% endblock %}
 
-{% block additional_css %}
-<link rel="stylesheet" href="{{ base_url }}/assets/js/switchery/dist/switchery.min.css" />
-{% endblock %}
-
 {% block additional_js %}
-<script src="{{ base_url }}/assets/js/administrators.js?v={{ version }}"></script>
-<script src="{{ base_url }}/assets/js/switchery/dist/switchery.min.js"></script>
+<script src="{{ base_url }}/assets/js/users.js?v={{ version }}"></script>
 {% endblock %}
