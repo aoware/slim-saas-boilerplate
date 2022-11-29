@@ -952,7 +952,7 @@ class users {
         $this->picture            = $picture;
         $this->link               = "";
         $this->type               = $type;
-        $this->active             = 1;
+        $this->active             = 0;
         $this->created            = date('Y-m-d H:i:s');
         $this->modified           = null;
         $this->last_login         = null;

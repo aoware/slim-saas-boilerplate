@@ -257,7 +257,7 @@ class login extends base_controller {
         $recipient_name  = trim($post_variables['first_name'] . " " . $post_variables['last_name']);
         $recipient_email = $post_variables['email'];
         $params = array_merge($this->template_options,[
-            "token" => $result_registration['verification_token'],
+            "verification_token" => $result_registration['verification_token']
         ]);
         $e = new \helpers\email;
         $result_email = $e->send_email(

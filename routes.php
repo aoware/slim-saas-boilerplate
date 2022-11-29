@@ -236,7 +236,14 @@
         return $c->verify_password_token($token);
 
     });
-                                                            
+
+    $app->get('/verify', function ($request, $response, $args) {
+        
+        $c = new \controllers\login($this,$request, $response, $args);
+        return $c->verify();
+        
+    });
+    
     $app->get('/verify/{token}', function ($request, $response, $args) {
 
         $token = $args['token'];

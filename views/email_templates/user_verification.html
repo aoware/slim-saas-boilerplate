@@ -1,15 +1,16 @@
 {% extends "base_email.html" %}
 
-{% block content%}
-You have requested a code you can enter on the Government Gateway screen to confirm your email address.
+{% block paragraph_before %}
+<p>You have requested a code you can enter on the <strong>{{ brand_name }}</strong> site to confirm your email address.</p>
+<p>Your verification code is:</p>
+<p><strong>{{ verification_token }}<strong></p>
+{% endblock %}
 
-Your confirmation code is:
+{% set button_label = 'Confirm your email address' %}
+{% set button_url   = base_url ~ '/verify/' ~ verification_token %}
 
-DKJFYG
-
-This code will expire in 30 minutes.
-
-If this email account is not shared, and you did not request this code, you need to contact HMRC.
-
-This is an automated email - do not reply.
+{% block paragraph_after %}
+<p>This code will expire in 30 minutes.</p>
+<p>If this email account is not shared, and you did not request this code, you need to contact <strong>{{ brand_name }}</strong>.</p>
+<p>This is an automated email - do not reply.</p>
 {% endblock %}

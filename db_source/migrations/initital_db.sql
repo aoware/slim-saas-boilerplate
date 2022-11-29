@@ -45,15 +45,15 @@ CREATE TABLE `config_value` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `config_value` (`id`, `config_definition_id`, `profile`, `effective_start_date`, `effective_end_date`, `key`, `value`) VALUES
-(1, 1,  'Live', NULL,   NULL,   '', ''),
-(2, 2,  'Live', NULL,   NULL,   '', ''),
-(3, 3,  'Live', NULL,   NULL,   '', ''),
-(4, 4,  'Live', NULL,   NULL,   '', ''),
-(5, 5,  'Live', NULL,   NULL,   '', 'administrator@aoware.co.uk'),
-(6, 6,  'Live', NULL,   NULL,   '', 'Slim Saas Boilerplate'),
-(7, 7,  'Live', NULL,   NULL,   '', ''),
-(8, 8,  'Live', NULL,   NULL,   '', ''),
-(9, 9,  'Live', NULL,   NULL,   '', ''),
+(1,      1,  'Live', NULL,   NULL,   '', ''),
+(2,      2,  'Live', NULL,   NULL,   '', ''),
+(3,      3,  'Live', NULL,   NULL,   '', ''),
+(4,      4,  'Live', NULL,   NULL,   '', ''),
+(5,      5,  'Live', NULL,   NULL,   '', 'administrator@aoware.co.uk'),
+(6,      6,  'Live', NULL,   NULL,   '', 'Slim Saas Boilerplate'),
+(7,      7,  'Live', NULL,   NULL,   '', ''),
+(8,      8,  'Live', NULL,   NULL,   '', ''),
+(9,      9,  'Live', NULL,   NULL,   '', ''),
 (10,    10, 'Live', NULL,   NULL,   '0',    ''),
 (11,    11, 'Live', NULL,   NULL,   '', 'guest'),
 (12,    12, 'Live', NULL,   NULL,   '', 'guest');
