@@ -1,5 +1,6 @@
 config.php
 composer.lock
+db_source/migrations/update_local.sql
 vendor
 .buildpath
 .project
