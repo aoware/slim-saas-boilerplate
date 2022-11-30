@@ -67,6 +67,17 @@ class base_controller {
 
     }
 
+    function return_file($file_path,$file_name,$mime_type) {
+
+        $stream = new \Slim\Psr7\Factory\StreamFactory;
+
+        $response = $this->response->withHeader('Content-Type', $mime_type)
+        ->withHeader('Content-Disposition', 'attachment; filename="' . $file_name . '"');
+
+        return $response->withBody($stream->createStreamFromFile($file_path, 'r'));
+
+    }
+
     function check_login_session() {
 
         $this->template_options['is_logged']    = false;
