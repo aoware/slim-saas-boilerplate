@@ -18,7 +18,7 @@ class base_controller {
 
     }
 
-    function return_html($view,$content) {
+    function return_html($view,$content = []) {
 
         $final_content = array_merge($this->template_options,$content);
 

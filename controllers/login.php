@@ -273,60 +273,8 @@ class login extends base_controller {
 
     function verify($token) {
 
-        $h = new \helpers\http_headers;
-        $ip_address = $h->get_ip($this->request->getHeaders());
-
-        $sendinblue = [
-            '185.107.232.160',
-            '185.107.232.161',
-            '185.107.232.162',
-            '185.107.232.163',
-            '185.107.232.164',
-            '185.107.232.165',
-            '185.107.232.166',
-            '185.107.232.167',
-            '185.107.232.168',
-            '185.107.232.169',
-            '185.107.232.170',
-        ];
-
-        if (in_array($ip_address,$sendinblue)) {
-            $result = [
-                "type" => "json",
-                "success" => false,
-                "message" => "sendinblue IP verifying in lieu of customer",
-                "response" => null
-            ];
-
-            $t = new \apis\telegram(CONF_telegram_bot_id,CONF_telegram_bot_token);
-            $t->sendMessage(CONF_telegram_admin_id, "Sendinblue IP $ip_address verifying token $token");
-
-            return $result;
-        }
-
-        $eip = new \apis\extremeiplookup;
-        $eip_result = $eip->getIp4($ip_address);
-
-        if ($eip_result['status'] == 'fail') {
-            $t = new \apis\telegram(CONF_telegram_bot_id,CONF_telegram_bot_token);
-            $t->sendMessage(CONF_telegram_admin_id, "ExtremeIpLooup failed for $ip_address with message " . $eip_result['message']);
-        }
-
-        if($eip_result['status'] == 'success') {
-            if ($eip_result['businessName'] == 'SendInBlue SAS') {
-                $result = [
-                    "type" => "json",
-                    "success" => false,
-                    "message" => "sendinblue IP verifying in lieu of customer",
-                    "response" => null
-                ];
-
-                $t = new \apis\telegram(CONF_telegram_bot_id,CONF_telegram_bot_token);
-                $t->sendMessage(CONF_telegram_admin_id, "Sendinblue NEW IP $ip_address verifying token $token");
-
-                return $result;
-            }
-        }
+        $h = new \helpers\http_headers($this->request);
+        $ip_address = $h->get_ip();
 
         $u = new \models\users;
         $u->getRecordsByVerification_token($token);
@@ -337,6 +285,7 @@ class login extends base_controller {
 
             if (is_null($u_record->verification_date)) {
 
+                $u->id                 = $u_record->id;
                 $u->oauth_provider     = $u_record->oauth_provider;
                 $u->oauth_uid          = $u_record->oauth_uid;
                 $u->password           = $u_record->password;
@@ -355,38 +304,22 @@ class login extends base_controller {
                 $u->verification_token = $u_record->verification_token;
                 $u->verification_date  = date('Y-m-d H:i:s');
                 $u->verification_ip    = $ip_address;
-                $u->login_token        = null;
-
+                $u->login_token        = $u_record->login_token;
+                
                 $result_update = $u->updateRecord($u_record->id);
 
+                if ($result_update !== true) {
+                    throw new \Exception($result_update);
+                }
+                
             }
 
-            $result = [
-                'type' => 'html',
-                'response' => $this->app->view->render($this->response, 'talent_login.html',
-                    array_merge($this->app->template_options,
-                        [
-                            'verify' => true
-                        ])
-                    )
-            ];
-
+            return $this->return_html("verify_confirmed.html");
         }
         else {
-
-            $result = [
-                'type' => 'html',
-                'response' => $this->app->view->render($this->response, 'talent_registration.html',
-                    array_merge($this->app->template_options,
-                        [
-                            'verify' => true
-                        ])
-                    )
-            ];
-
+            return $this->return_html("log_inx.html");
         }
 
-        return $result;
     }
 
 
