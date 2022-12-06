@@ -1,0 +1,87 @@
+{% set active_menu = 'Settings' %}
+
+{% extends "base_tabler.html" %}
+
+{% set screen_title = 'Configuration Details' %}
+
+{% block page_title %}
+Setup&nbsp;/&nbsp;<a href='{{ base_url }}/backoffice/configurations'>Configurations</a>
+{% endblock %}
+
+{% block main_menu %}
+{% include "backoffice_main_menu.html" %}
+{% endblock %}
+
+{% block user_menu %}
+{% include "backoffice_user_menu.html" %}
+{% endblock %}
+
+{% block page_content %}
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">{% if definition_id is null %}Creating new configuration{% else %}Updating Configuration Definition ID {{ definition_id }}{% endif %}</h3>
+                </div>
+                <div class="card-body">
+                  <form id="administrator_form">
+                    <div class="row mb-3">
+                        <div class="col-3"></div>
+                        <div class="col-9">
+				            <div class="alert alert-danger d-none" role="alert" id="errors">
+							  <p id="error_messages"></p>
+							</div>
+						</div>
+					</div>
+                    <div class="form-group mb-3 row">
+                      <label class="col-3 col-form-label required">Group</label>
+                      <div class="col">
+                        <input type="text" class="form-control" name="group"  id="group" value="{{ definition.group }}">
+                      </div>
+                    </div>
+                    <div class="form-group mb-3 row">
+                      <label class="col-3 col-form-label required">Name</label>
+                      <div class="col">
+                        <input type="text" class="form-control" name="name"  id="name" value="{{ definition.name }}">
+                      </div>
+                    </div>
+                    <div class="form-group mb-3 row">
+                      <label class="col-3 col-form-label required">Type</label>
+                      <div class="col">
+                        <select class="form-select" name="type" id="type">
+                        {% for enum in type_enums %}
+                          <option value="{{ enum }}"{% if enum == definition.type %} selected{% endif %}>{{ enum }}</option>
+                        {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div class="card-footer text-end">
+                  <div class="d-flex">
+                    <a href="{{ base_url }}/backoffice/administrators" class="btn btn-link">Cancel</a>
+                    <button type="button" class="btn btn-primary ms-auto" onclick="action('{% if definition_id is null %}new{% else %}{{ definition_id}}/update{% endif %}')">
+                      {% if definition_id is null %}Save{% else %}Update{% endif %}
+                      <span id="action_cog"></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+    {% if definition_id is not null %}
+
+        <br /><br />
+
+	    {% set table_id        = 'main_table' %}
+
+	    {% set table_columns   = values_table.columns %}
+	    {% set table_recordset = values_table.recordset %}
+	    {% set new_record_url  = values_table.new_record_url %}
+
+	    {% include 'base_table.html' %}
+
+    {% endif %}
+
+{% endblock %}
+
+{% block additional_js %}
+<script src="{{ base_url }}/assets/js/configuration.js?v={{ version }}"></script>
+{% endblock %}

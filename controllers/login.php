@@ -126,7 +126,7 @@ class login extends base_controller {
         $post_variables = $this->request->getParsedBody();
 
         $u = new \models\users;
-        $u->getRecordsByOauth_provider_oauth_uid('email',$post_variables['login_email']);
+        $result = $u->getRecordsByOauth_provider_oauth_uid('email',$post_variables['login_email']);
         if (count($u->recordSet) == 0) {
             return $this->return_json(false,"You have entered an invalid email or password");
         }
@@ -134,6 +134,10 @@ class login extends base_controller {
         $u_record = $u->recordSet[0];
 
         if (md5($post_variables['login_password']) != $u_record->password) {
+            return $this->return_json(false,"You have entered an invalid email or password");
+        }
+
+        if ($u_record->active == 0) {
             return $this->return_json(false,"You have entered an invalid email or password");
         }
 
@@ -183,7 +187,7 @@ class login extends base_controller {
                 $redirection = 'dashboard';
                 break;
         }
-        
+
         $response = [
             "redirection" => $redirection
         ];
@@ -198,7 +202,7 @@ class login extends base_controller {
 
         $ev = new \helpers\email_validation;
         $result_ev = $ev->validate($post_variables['email']);
-        
+
         if ($result_ev['validation'] === false) {
             return $this->return_json(false,"Invalid email");
         }
@@ -305,13 +309,13 @@ class login extends base_controller {
                 $u->verification_date  = date('Y-m-d H:i:s');
                 $u->verification_ip    = $ip_address;
                 $u->login_token        = $u_record->login_token;
-                
+
                 $result_update = $u->updateRecord($u_record->id);
 
                 if ($result_update !== true) {
                     throw new \Exception($result_update);
                 }
-                
+
             }
 
             return $this->return_html("verify_confirmed.html");

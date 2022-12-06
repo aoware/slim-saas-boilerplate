@@ -1,0 +1,32 @@
+{% set active_menu = 'Settings' %}
+
+{% extends "base_tabler.html" %}
+
+{% set screen_title = 'Configurations List' %}
+
+{% block page_title %}
+Setup / Configurations
+{% endblock %}
+
+{% block main_menu %}
+{% include "backoffice_main_menu.html" %}
+{% endblock %}
+
+{% block user_menu %}
+{% include "backoffice_user_menu.html" %}
+{% endblock %}
+
+{% block page_content %}
+
+    {% set table_id        = 'main_table' %}
+    {% set table_columns   = configurations_table.columns %}
+    {% set table_recordset = configurations_table.recordset %}
+    {% set new_record_url  = configurations_table.new_record_url %}
+
+    {% include 'base_table.html' %}
+
+{% endblock %}
+
+{% block additional_js %}
+<script src="{{ base_url }}/assets/js/configurations.js?v={{ version }}"></script>
+{% endblock %}
