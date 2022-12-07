@@ -27,7 +27,7 @@ function action(endPoint) {
 
     	$.ajax({
     	    type: 'POST',
-    		url: base_url + '/backoffice/administrator/' + endPoint,
+    		url: base_url + '/backoffice/configuration/' + endPoint,
     		data: $('#administrator_form').serialize(),
     		success: function(result) {
 
@@ -58,5 +58,4 @@ function action(endPoint) {
 
 function new_value() {
 	alert('New Value');
-}
 }

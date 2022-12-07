@@ -7,6 +7,7 @@
                           <input type="text" class="form-control form-control-sm" aria-label="Search" id="filter-{{ table_id }}">
                         </div>
                       </div>
+                      {% if new_record_url is not null %}
                       <div class="ms-auto text-muted">
 	                    <button class="btn btn-primary"
 	                     {% if new_record_url|first == '#' %}
@@ -19,6 +20,7 @@
 	                     >{% if new_record_label is defined %}{{ new_record_label }}{% else %}New{% endif %}
 	                    </button>
                       </div>
+                      {% endif %}
                     </div>
                   </div>
                   <div class="table-responsive">
