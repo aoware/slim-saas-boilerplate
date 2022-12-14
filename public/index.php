@@ -80,12 +80,73 @@ $container->set('dbal', function() {
 // Create App
 $app = \Slim\Factory\AppFactory::create();
 
+$app->addRoutingMiddleware();
+
+$app->addBodyParsingMiddleware();
+
 // Add Twig-View Middleware
 $app->add(\Slim\Views\TwigMiddleware::createFromContainer($app,'twig'));
-$app->addBodyParsingMiddleware();
-$app->addRoutingMiddleware();
-$app->addErrorMiddleware(true, true, true);
 
+//Error Middleware - Present clean and clear error messages within slim 4.
+/*
+$errorMiddleware = new \Slim\Middleware\ErrorMiddleware(
+    $app->getCallableResolver(),
+    $app->getResponseFactory(),
+    true,
+    false,
+    false
+    );
+
+$errorMiddleware->setErrorHandler(\Slim\Exception\HttpNotFoundException::class, function($request, $exception) use ($container){
+    
+    $response = new \Slim\Psr7\Response();
+    return $container->get('twig')->render($response->withStatus(404), '404.html');
+});
+
+$app->add($errorMiddleware);
+*/
+
+// https://stackoverflow.com/questions/57648078/replacement-for-notfoundhandler-setting
+
+$customErrorHandler = function (
+    Psr\Http\Message\ServerRequestInterface $request,
+    \Throwable $exception,
+    bool $displayErrorDetails,
+    bool $logErrors,
+    bool $logErrorDetails
+    ) use ($container) {
+        
+        if ($exception instanceof \Slim\Exception\HttpNotFoundException) {
+            $variable_content = array_merge($container->get('template_options'),
+              [
+                  'screen_title' => 'Page not Found'
+              ]);
+            $response = new \Slim\Psr7\Response();
+            return $container->get('twig')->render($response->withStatus(404), '404.html',$variable_content );
+        } 
+        else {
+            $variable_content = array_merge($container->get('template_options'),
+                [
+                    'screen_title' => 'Unable to handle this request',
+                    'message'      => $exception->getMessage()
+                ]);
+            $response = new \Slim\Psr7\Response();
+            return $container->get('twig')->render($response->withStatus(404), '500.html',$variable_content );
+        }
+        if ($exception instanceof \Slim\Exception\HttpMethodNotAllowedException) {
+            $message = 'not allowed';
+            $code = 403;
+        }
+        // ...other status codes, messages, or generally other responses for other types of exceptions
+        
+        $response->getBody()->write($message);
+        return $response->withStatus($code);
+};
+
+$errorMiddleware = $app->addErrorMiddleware(true, true, true);
+$errorMiddleware->setDefaultErrorHandler($customErrorHandler);
+
+// Define all the routes
 require_once('../routes.php');
 
 // Run app
