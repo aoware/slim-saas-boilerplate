@@ -44,8 +44,7 @@ class communication_tracking {
     public function __construct($mysqli = null) {
 
         if ($mysqli === null) {
-            global $db;
-            $this->mysqli = $db;
+            $this->mysqli = new \mysqli(CONF_mysql_host,CONF_mysql_user,CONF_mysql_password,CONF_mysql_database);
         }
         else {
             $this->mysqli = $mysqli;

@@ -7,23 +7,25 @@
 
 namespace models;
 
-class accounts_record {
+class api_access_keys_record {
 
     public $id;
+    public $key;
+    public $password;
     public $name;
-    public $slug;
-    public $created;
-    public $modified;
+    public $created_timestamp;
+    public $amended_timestamp;
 
 }
 
-class accounts {
+class api_access_keys {
 
     public $id;
+    public $key;
+    public $password;
     public $name;
-    public $slug;
-    public $created;
-    public $modified;
+    public $created_timestamp;
+    public $amended_timestamp;
 
     public $recordSet;
 
@@ -47,7 +49,7 @@ class accounts {
 
     function getRecordById($key) {
 
-        $sql = "SELECT `id`,`name`,`slug`,`created`,`modified` FROM `accounts` WHERE `id` = ?";
+        $sql = "SELECT `id`,`key`,`password`,`name`,`created_timestamp`,`amended_timestamp` FROM `api_access_keys` WHERE `id` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -64,18 +66,19 @@ class accounts {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->name,$this->slug,$this->created,$this->modified);
+        $bind = $stmt->bind_result($this->id,$this->key,$this->password,$this->name,$this->created_timestamp,$this->amended_timestamp);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
 
         if ($stmt->fetch()) {
-            $record = new accounts_record;
-            $record->id       = $this->id;
-            $record->name     = $this->name;
-            $record->slug     = $this->slug;
-            $record->created  = $this->created;
-            $record->modified = $this->modified;
+            $record = new api_access_keys_record;
+            $record->id                = $this->id;
+            $record->key               = $this->key;
+            $record->password          = $this->password;
+            $record->name              = $this->name;
+            $record->created_timestamp = $this->created_timestamp;
+            $record->amended_timestamp = $this->amended_timestamp;
             array_push($this->recordSet, $record);
         }
 
@@ -85,9 +88,9 @@ class accounts {
 
     }
 
-    function getRecordBySlug($key) {
+    function getRecordByKey($key) {
 
-        $sql = "SELECT `id`,`name`,`slug`,`created`,`modified` FROM `accounts` WHERE `slug` = ?";
+        $sql = "SELECT `id`,`key`,`password`,`name`,`created_timestamp`,`amended_timestamp` FROM `api_access_keys` WHERE `key` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -104,18 +107,19 @@ class accounts {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->name,$this->slug,$this->created,$this->modified);
+        $bind = $stmt->bind_result($this->id,$this->key,$this->password,$this->name,$this->created_timestamp,$this->amended_timestamp);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
 
         if ($stmt->fetch()) {
-            $record = new accounts_record;
-            $record->id       = $this->id;
-            $record->name     = $this->name;
-            $record->slug     = $this->slug;
-            $record->created  = $this->created;
-            $record->modified = $this->modified;
+            $record = new api_access_keys_record;
+            $record->id                = $this->id;
+            $record->key               = $this->key;
+            $record->password          = $this->password;
+            $record->name              = $this->name;
+            $record->created_timestamp = $this->created_timestamp;
+            $record->amended_timestamp = $this->amended_timestamp;
             array_push($this->recordSet, $record);
         }
 
@@ -125,9 +129,9 @@ class accounts {
 
     }
 
-    function getRecordsBySlug($key,$orderBy = "") {
+    function getRecordsByKey($key,$orderBy = "") {
 
-        $sql = "SELECT `id`,`name`,`slug`,`created`,`modified` FROM `accounts` WHERE `slug` = ?";
+        $sql = "SELECT `id`,`key`,`password`,`name`,`created_timestamp`,`amended_timestamp` FROM `api_access_keys` WHERE `key` = ?";
 
         if ($orderBy != "") {
             $sql .= " order by " . $orderBy;
@@ -148,18 +152,19 @@ class accounts {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->name,$this->slug,$this->created,$this->modified);
+        $bind = $stmt->bind_result($this->id,$this->key,$this->password,$this->name,$this->created_timestamp,$this->amended_timestamp);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
 
         while ($stmt->fetch()) {
-            $record = new accounts_record;
-            $record->id       = $this->id;
-            $record->name     = $this->name;
-            $record->slug     = $this->slug;
-            $record->created  = $this->created;
-            $record->modified = $this->modified;
+            $record = new api_access_keys_record;
+            $record->id                = $this->id;
+            $record->key               = $this->key;
+            $record->password          = $this->password;
+            $record->name              = $this->name;
+            $record->created_timestamp = $this->created_timestamp;
+            $record->amended_timestamp = $this->amended_timestamp;
             array_push($this->recordSet, $record);
         }
 
@@ -169,9 +174,9 @@ class accounts {
 
     }
 
-    function deleteRecordBySlug($key) {
+    function deleteRecordByKey($key) {
 
-        $sql = "delete from `accounts` WHERE `slug` = ?";
+        $sql = "delete from `api_access_keys` WHERE `key` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -196,7 +201,7 @@ class accounts {
 
     function getAllRecords($orderBy = "") {
 
-        $sql = "SELECT `id`,`name`,`slug`,`created`,`modified` FROM `accounts`";
+        $sql = "SELECT `id`,`key`,`password`,`name`,`created_timestamp`,`amended_timestamp` FROM `api_access_keys`";
 
         if ($orderBy != "") {
             $sql .= " order by " . $orderBy;
@@ -212,18 +217,19 @@ class accounts {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->name,$this->slug,$this->created,$this->modified);
+        $bind = $stmt->bind_result($this->id,$this->key,$this->password,$this->name,$this->created_timestamp,$this->amended_timestamp);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
 
         while ($stmt->fetch()) {
-            $record = new accounts_record;
-            $record->id       = $this->id;
-            $record->name     = $this->name;
-            $record->slug     = $this->slug;
-            $record->created  = $this->created;
-            $record->modified = $this->modified;
+            $record = new api_access_keys_record;
+            $record->id                = $this->id;
+            $record->key               = $this->key;
+            $record->password          = $this->password;
+            $record->name              = $this->name;
+            $record->created_timestamp = $this->created_timestamp;
+            $record->amended_timestamp = $this->amended_timestamp;
             array_push($this->recordSet, $record);
         }
 
@@ -235,14 +241,14 @@ class accounts {
 
     function saveRecord() {
 
-        $sql = "INSERT INTO `accounts` (`name`,`slug`,`created`,`modified`) values (?,?,?,?)";
+        $sql = "INSERT INTO `api_access_keys` (`key`,`password`,`name`,`created_timestamp`,`amended_timestamp`) values (?,?,?,?,?)";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-        $bind = $stmt->bind_param("ssss",$this->name,$this->slug,$this->created,$this->modified);
+        $bind = $stmt->bind_param("sssss",$this->key,$this->password,$this->name,$this->created_timestamp,$this->amended_timestamp);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -262,14 +268,14 @@ class accounts {
 
     function updateRecord($key) {
 
-        $sql = "UPDATE `accounts` SET `name` = ?,`slug` = ?,`created` = ?,`modified` = ? WHERE `id` = ?";
+        $sql = "UPDATE `api_access_keys` SET `key` = ?,`password` = ?,`name` = ?,`created_timestamp` = ?,`amended_timestamp` = ? WHERE `id` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-        $bind = $stmt->bind_param("ssssi",$this->name,$this->slug,$this->created,$this->modified,$key);
+        $bind = $stmt->bind_param("sssssi",$this->key,$this->password,$this->name,$this->created_timestamp,$this->amended_timestamp,$key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -287,7 +293,7 @@ class accounts {
 
     function deleteRecord($key) {
 
-        $sql = "delete from `accounts` WHERE `id` = ?";
+        $sql = "delete from `api_access_keys` WHERE `id` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -312,7 +318,7 @@ class accounts {
 
     function deleteAllRecords() {
 
-        $sql = "truncate table `accounts`";
+        $sql = "truncate table `api_access_keys`";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -336,11 +342,12 @@ class accounts {
 }
 
 /*
-        $a->id       = $a_record->id;
-        $a->name     = $a_record->name;
-        $a->slug     = $a_record->slug;
-        $a->created  = $a_record->created;
-        $a->modified = $a_record->modified;
+        $aak->id                = $aak_record->id;
+        $aak->key               = $aak_record->key;
+        $aak->password          = $aak_record->password;
+        $aak->name              = $aak_record->name;
+        $aak->created_timestamp = $aak_record->created_timestamp;
+        $aak->amended_timestamp = $aak_record->amended_timestamp;
 */
 
 ?>

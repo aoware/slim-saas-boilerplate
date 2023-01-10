@@ -29,7 +29,10 @@ INSERT INTO `config_definition` (`id`, `group`, `name`, `type`, `comment`) VALUE
 (9, 'telegram', 'CONF_telegram_admin_id',   'integer',  ''),
 (10,    'telegram', 'CONF_telegram_alert_ids',  'array',    ''),
 (11,    'bac',  'CONF_bac_key', 'string',   ''),
-(12,    'bac',  'CONF_bac_password',    'string',   '');
+(12,    'bac',  'CONF_bac_password',    'string',   ''),
+(13,    'jwt',  'CONF_jwt_secret',    'string',   ''),
+(14,    'jwt',  'CONF_jwt_secret',    'bolean',   ''),
+(15,    'encryption',  'CONF_encryption_key',    'string',   '');
 
 CREATE TABLE `config_value` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -54,22 +57,26 @@ INSERT INTO `config_value` (`id`, `config_definition_id`, `profile`, `effective_
 (7,      7,  'Live', NULL,   NULL,   '', ''),
 (8,      8,  'Live', NULL,   NULL,   '', ''),
 (9,      9,  'Live', NULL,   NULL,   '', ''),
-(10,    10, 'Live', NULL,   NULL,   '0',    ''),
-(11,    11, 'Live', NULL,   NULL,   '', 'guest'),
-(12,    12, 'Live', NULL,   NULL,   '', 'guest');
+(10,    10,  'Live', NULL,   NULL,   '0',    ''),
+(11,    11,  'Live', NULL,   NULL,   '', 'guest'),
+(12,    12,  'Live', NULL,   NULL,   '', 'guest'),
+(13,    13,  'Live', NULL,   NULL,   '', ''),
+(14,    14,  'Live', NULL,   NULL,   '', 'true'),
+(15,    14,  'Test', NULL,   NULL,   '', 'false'),
+(16,    15,  'Test', NULL,   NULL,   '', 'ThisIsAnEncryptionKey');
 
 CREATE TABLE `emails` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `view_online_id` char(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
-  `recipient_email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
-  `recipient_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `view_online_id` char(32) NOT NULL,
+  `recipient_email` varchar(255) NOT NULL DEFAULT '',
+  `recipient_name` varchar(64) NOT NULL,
   `creation_date` datetime NOT NULL,
   `trigger_date` datetime NOT NULL COMMENT 'Different than creation_date when required to send in the future',
   `sent_date` datetime DEFAULT NULL COMMENT 'date when the communication is sent to the SMTP server or the SMS gateway',
-  `status` enum('awaiting','processing','sent','error') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT 'Communication status. Possible value are ''awaiting'', ''processing'', ''sent'' and ''error''',
-  `status_description` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT 'status description. Should only be populated when status = ''error''',
-  `subject` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT 'email subject',
-  `content` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT 'rendered version ',
+  `status` enum('awaiting','processing','sent','error') NOT NULL COMMENT 'Communication status. Possible value are ''awaiting'', ''processing'', ''sent'' and ''error''',
+  `status_description` varchar(256) DEFAULT NULL COMMENT 'status description. Should only be populated when status = ''error''',
+  `subject` varchar(256) NOT NULL COMMENT 'email subject',
+  `content` text NOT NULL COMMENT 'rendered version ',
   PRIMARY KEY (`id`),
   UNIQUE KEY `IDX_emails_view_online_id` (`view_online_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Record all emails sent from the system';
@@ -93,14 +100,14 @@ CREATE TABLE `users` (
   `oauth_provider` enum('','github','facebook','google','linkedin','email') NOT NULL,
   `oauth_uid` varchar(100) NOT NULL,
   `password` char(32) NOT NULL,
-  `first_name` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
-  `last_name` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
-  `location` varchar(100) NOT NULL,
-  `picture` varchar(255) NOT NULL,
-  `link` varchar(255) NOT NULL,
+  `first_name_crypted` varchar(250) NOT NULL,
+  `last_name_crypted` varchar(250) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `location` varchar(100) DEFAULT NULL,
+  `picture` varchar(255) DEFAULT NULL,
+  `link` varchar(255) DEFAULT NULL,
   `type` enum('agent','client') NOT NULL,
+  `active` tinyint(1) NOT NULL,
   `created` datetime NOT NULL,
   `modified` datetime DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,
@@ -113,7 +120,8 @@ CREATE TABLE `users` (
   UNIQUE KEY `IDX_users_oauth_provider_oauth_uid` (`oauth_provider`,`oauth_uid`),
   UNIQUE KEY `IDX_users_email` (`email`),
   UNIQUE KEY `IDX_users_login_token` (`login_token`),
-  UNIQUE KEY `IDX_users_verification_token` (`verification_token`)
+  UNIQUE KEY `IDX_users_verification_token` (`verification_token`),
+  KEY `IDX_users_type` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `users` (`id`, `oauth_provider`, `oauth_uid`, `password`, `first_name`, `last_name`, `username`, `email`, `location`, `picture`, `link`, `type`, `created`, `modified`, `last_login`, `registration_ip`, `verification_token`, `verification_date`, `verification_ip`, `login_token`) VALUES

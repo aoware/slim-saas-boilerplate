@@ -85,8 +85,7 @@ class users {
     public function __construct($mysqli = null) {
 
         if ($mysqli === null) {
-            global $db;
-            $this->mysqli = $db;
+            $this->mysqli = new \mysqli(CONF_mysql_host,CONF_mysql_user,CONF_mysql_password,CONF_mysql_database);
         }
         else {
             $this->mysqli = $mysqli;
@@ -99,7 +98,7 @@ class users {
 
     function getRecordById($key) {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `id` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `id` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -122,13 +121,14 @@ class users {
         }
 
         if ($stmt->fetch()) {
+            $ed = new \helpers\encrypt_decrypt;
             $record = new users_record;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $this->first_name;
-            $record->last_name          = $this->last_name;
+            $record->first_name         = $ed->decrypt($this->first_name);
+            $record->last_name          = $ed->decrypt($this->last_name);
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -154,7 +154,7 @@ class users {
 
     function getRecordsByOauth_provider_oauth_uid($oauth_provider,$oauth_uid,$orderBy = "") {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `oauth_provider` = ? and `oauth_uid` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `oauth_provider` = ? and `oauth_uid` = ?";
 
         if ($orderBy != "") {
             $sql .= " order by " . $orderBy;
@@ -181,13 +181,14 @@ class users {
         }
 
         while ($stmt->fetch()) {
+            $ed = new \helpers\encrypt_decrypt;
             $record = new users_record;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $this->first_name;
-            $record->last_name          = $this->last_name;
+            $record->first_name         = $ed->decrypt($this->first_name);
+            $record->last_name          = $ed->decrypt($this->last_name);
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -213,7 +214,7 @@ class users {
 
     function getRecordByEmail($key) {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `email` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `email` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -236,13 +237,14 @@ class users {
         }
 
         if ($stmt->fetch()) {
+            $ed = new \helpers\encrypt_decrypt;
             $record = new users_record;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $this->first_name;
-            $record->last_name          = $this->last_name;
+            $record->first_name         = $ed->decrypt($this->first_name);
+            $record->last_name          = $ed->decrypt($this->last_name);
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -268,7 +270,7 @@ class users {
 
     function getRecordsByEmail($key,$orderBy = "") {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `email` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `email` = ?";
 
         if ($orderBy != "") {
             $sql .= " order by " . $orderBy;
@@ -296,12 +298,13 @@ class users {
 
         while ($stmt->fetch()) {
             $record = new users_record;
+            $ed = new \helpers\encrypt_decrypt;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $this->first_name;
-            $record->last_name          = $this->last_name;
+            $record->first_name         = $ed->decrypt($this->first_name);
+            $record->last_name          = $ed->decrypt($this->last_name);
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -352,7 +355,7 @@ class users {
 
     function getRecordByLogin_token($key) {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `login_token` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `login_token` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -375,13 +378,14 @@ class users {
         }
 
         if ($stmt->fetch()) {
+            $ed = new \helpers\encrypt_decrypt;
             $record = new users_record;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $this->first_name;
-            $record->last_name          = $this->last_name;
+            $record->first_name         = $ed->decrypt($this->first_name);
+            $record->last_name          = $ed->decrypt($this->last_name);
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -407,7 +411,7 @@ class users {
 
     function getRecordsByLogin_token($key,$orderBy = "") {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `login_token` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `login_token` = ?";
 
         if ($orderBy != "") {
             $sql .= " order by " . $orderBy;
@@ -435,12 +439,13 @@ class users {
 
         while ($stmt->fetch()) {
             $record = new users_record;
+            $ed = new \helpers\encrypt_decrypt;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $this->first_name;
-            $record->last_name          = $this->last_name;
+            $record->first_name         = $ed->decrypt($this->first_name);
+            $record->last_name          = $ed->decrypt($this->last_name);
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -491,7 +496,7 @@ class users {
 
     function getRecordByVerification_token($key) {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `verification_token` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `verification_token` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -514,13 +519,14 @@ class users {
         }
 
         if ($stmt->fetch()) {
+            $ed = new \helpers\encrypt_decrypt;
             $record = new users_record;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $this->first_name;
-            $record->last_name          = $this->last_name;
+            $record->first_name         = $ed->decrypt($this->first_name);
+            $record->last_name          = $ed->decrypt($this->last_name);
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -546,7 +552,7 @@ class users {
 
     function getRecordsByVerification_token($key,$orderBy = "") {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `verification_token` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `verification_token` = ?";
 
         if ($orderBy != "") {
             $sql .= " order by " . $orderBy;
@@ -574,12 +580,13 @@ class users {
 
         while ($stmt->fetch()) {
             $record = new users_record;
+            $ed = new \helpers\encrypt_decrypt;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $this->first_name;
-            $record->last_name          = $this->last_name;
+            $record->first_name         = $ed->decrypt($this->first_name);
+            $record->last_name          = $ed->decrypt($this->last_name);
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -630,7 +637,7 @@ class users {
 
     function getRecordByType($key) {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `type` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `type` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -653,13 +660,14 @@ class users {
         }
 
         if ($stmt->fetch()) {
+            $ed = new \helpers\encrypt_decrypt;
             $record = new users_record;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $this->first_name;
-            $record->last_name          = $this->last_name;
+            $record->first_name         = $ed->decrypt($this->first_name);
+            $record->last_name          = $ed->decrypt($this->last_name);
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -685,7 +693,7 @@ class users {
 
     function getRecordsByType($key,$orderBy = "") {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `type` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `type` = ?";
 
         if ($orderBy != "") {
             $sql .= " order by " . $orderBy;
@@ -713,12 +721,13 @@ class users {
 
         while ($stmt->fetch()) {
             $record = new users_record;
+            $ed = new \helpers\encrypt_decrypt;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $this->first_name;
-            $record->last_name          = $this->last_name;
+            $record->first_name         = $ed->decrypt($this->first_name);
+            $record->last_name          = $ed->decrypt($this->last_name);
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -769,7 +778,7 @@ class users {
 
     function getAllRecords($orderBy = "") {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users`";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users`";
 
         if ($orderBy != "") {
             $sql .= " order by " . $orderBy;
@@ -791,13 +800,14 @@ class users {
         }
 
         while ($stmt->fetch()) {
+            $ed = new \helpers\encrypt_decrypt;
             $record = new users_record;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $this->first_name;
-            $record->last_name          = $this->last_name;
+            $record->first_name         = $ed->decrypt($this->first_name);
+            $record->last_name          = $ed->decrypt($this->last_name);
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -823,12 +833,16 @@ class users {
 
     function saveRecord() {
 
-        $sql = "INSERT INTO `users` (`oauth_provider`,`oauth_uid`,`password`,`first_name`,`last_name`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token`) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $sql = "INSERT INTO `users` (`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token`) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
+
+        $ed = new \helpers\encrypt_decrypt;
+        $this->first_name = $ed->encrypt($this->first_name);
+        $this->last_name = $ed->encrypt($this->last_name);
 
         $bind = $stmt->bind_param("sssssssssssssssssss",$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
         if ($bind === false) {
@@ -850,12 +864,16 @@ class users {
 
     function updateRecord($key) {
 
-        $sql = "UPDATE `users` SET `oauth_provider` = ?,`oauth_uid` = ?,`password` = ?,`first_name` = ?,`last_name` = ?,`email` = ?,`location` = ?,`picture` = ?,`link` = ?,`type` = ?,`active` = ?,`created` = ?,`modified` = ?,`last_login` = ?,`registration_ip` = ?,`verification_token` = ?,`verification_date` = ?,`verification_ip` = ?,`login_token` = ? WHERE `id` = ?";
+        $sql = "UPDATE `users` SET `oauth_provider` = ?,`oauth_uid` = ?,`password` = ?,`first_name_crypted` = ?,`last_name_crypted` = ?,`email` = ?,`location` = ?,`picture` = ?,`link` = ?,`type` = ?,`active` = ?,`created` = ?,`modified` = ?,`last_login` = ?,`registration_ip` = ?,`verification_token` = ?,`verification_date` = ?,`verification_ip` = ?,`login_token` = ? WHERE `id` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
+
+        $ed = new \helpers\encrypt_decrypt;
+        $this->first_name = $ed->encrypt($this->first_name);
+        $this->last_name = $ed->encrypt($this->last_name);
 
         $bind = $stmt->bind_param("sssssssssssssssssssi",$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token,$key);
         if ($bind === false) {
@@ -941,10 +959,12 @@ class users {
             $picture = $g->urlImage . "?s=250";
         }
 
+        $ed = new \helpers\encrypt_decrypt;
+
         $this->oauth_provider     = 'email';
         $this->oauth_uid          = $email;
         $this->password           = md5($password);
-        $this->first_name         = $first_name;
+        $this->first_name         = $ed->decrypt($first_name);
         $this->last_name          = $last_name;
         $this->username           = "";
         $this->email              = $email;

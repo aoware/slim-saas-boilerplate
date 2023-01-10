@@ -18,7 +18,7 @@ $stmt->execute() or die ("unable to execute " . $mysqli->error);
 $stmt->bind_result($table) or die ("no binding here " . $mysqli->error);
 
 while ($stmt->fetch()) {
-    generateModel($table,CONF_mysql_database,'CONF_mysql_database',$mysql_major_version);
+    generateModel($table,CONF_mysql_database,$mysql_major_version);
     $table_create = $mh->generate_table_code($table);
     file_put_contents(dirname(__FILE__) . '/../db_source/tables/' . $table . ".sql",$table_create);
 }
@@ -29,7 +29,7 @@ echo "Ending @ " . date('Y-m-d H:i:s') . "\r\n";
 
 exit;
 
-function generateModel($table,$schema,$schemaConfigName,$mysql_major_version) {
+function generateModel($table,$schema,$mysql_major_version) {
 
     $sm = new \helpers\string_manipulation();
 
@@ -70,36 +70,47 @@ function generateModel($table,$schema,$schemaConfigName,$mysql_major_version) {
     $columns          = [];
 
     while ($stmt->fetch()) {
+
+        $crypted = false;
+        if (substr($field,-8,8) == '_crypted') {
+            $field   = substr($field,0,strlen($field) - 8);
+            $crypted = true;
+        }
+
         $columns[] = [
             'field'   => $field,
             'type'    => $type,
             'key'     => $key,
-            'default' => $default
+            'default' => $default,
+            'crypted' => $crypted
         ];
     }
 
     $stmt->close();
 
-    $columnsProperties       = "";
-    $columnsMysqlList        = "";
-    $columnsPropertiesList   = "";
-    $columnsRecordMoveList   = "";
-    $columnsPropertiesSample = "/*\r\n";
+    $columnsProperties             = "";
+    $columnsMysqlList              = "";
+    $columnsPropertiesList         = "";
+    $columnsRecordMoveList         = "";
+    $columnsRecordMoveList_crypted = "";
+    $columnsPropertiesSample       = "/*\r\n";
 
-    $columnsMysqlUpdateList  = "";
-    $columnsMysqlUpdateType  = "";
-    $columnsMysqlUpdateBind  = "";
+    $columnsMysqlUpdateList        = "";
+    $columnsMysqlUpdateType        = "";
+    $columnsMysqlUpdateBind        = "";
 
-    $columnsMysqlInsertList  = "";
-    $columnsMysqlInsertQues  = "";
-    $columnsMysqlInsertType  = "";
-    $columnsMysqlInsertBind  = "";
+    $columnsMysqlInsertList        = "";
+    $columnsMysqlInsertQues        = "";
 
-    // Longest column name
+    // Identify some properties for the rest of the logic
     $column_length = 0;
+    $crypted_columns = false;
     foreach($columns as $column) {
         if (strlen($column['field']) > $column_length) {
             $column_length = strlen($column['field']);
+        }
+        if ($column['crypted']) {
+            $crypted_columns = true;
         }
     }
 
@@ -107,16 +118,30 @@ function generateModel($table,$schema,$schemaConfigName,$mysql_major_version) {
     foreach($columns as $column) {
 
         $columnsProperties       .= "    public \$" . $column['field'] . ";\r\n";
-        $columnsMysqlList        .= "`" . $column['field'] . "`,";
+        if ($column['crypted']) {
+            $columnsMysqlList    .= "`" . $column['field'] . "_crypted`,";
+        }
+        else {
+            $columnsMysqlList    .= "`" . $column['field'] . "`,";
+        }
         $columnsPropertiesList   .= '$this->' . $column['field'] . ',';
         $columnsRecordMoveList   .= '            $record->' . str_pad($column['field'],$column_length) . ' = $this->' . $column['field'] . ";\r\n";
+        if ($column['crypted']) {
+            $columnsRecordMoveList_crypted .= '            $this->' . str_pad($column['field'],$column_length + 2) . ' = $ed->decrypt($this->' . $column['field'] . ");\r\n";
+        }
         $columnsPropertiesSample .= "        \$$table_acronym->" . str_pad($column['field'],$column_length) . ' = $' . $table_acronym . '_record->' . $column['field'] . ";\r\n";
 
         $columnsType[$column['field']] = $column['type'];
 
         if ($column['key'] != "PRI") {
-            $columnsMysqlUpdateList .= '`' . $column['field'] . '` = ?,';
-            $columnsMysqlInsertList .= '`' . $column['field'] . '`,';
+            if ($column['crypted']) {
+                $columnsMysqlUpdateList .= '`' . $column['field'] . '_crypted` = ?,';
+                $columnsMysqlInsertList .= '`' . $column['field'] . '_crypted`,';
+            }
+            else {
+                $columnsMysqlUpdateList .= '`' . $column['field'] . '` = ?,';
+                $columnsMysqlInsertList .= '`' . $column['field'] . '`,';
+            }
             $columnsMysqlInsertQues .= '?,';
             if ((substr($column['type'],0,3) == 'int') or (substr($column['type'],0,6) == 'bigint')) {
                 $columnsMysqlUpdateType .= 'i';
@@ -154,7 +179,7 @@ function generateModel($table,$schema,$schemaConfigName,$mysql_major_version) {
     $columnsPropertiesList  = substr($columnsPropertiesList,0,strlen($columnsPropertiesList)-1);
 
     // Build the model files
-    $modelTemplate  = addStart($table,$columnsProperties,$schemaConfigName,$enumsDefinitions);
+    $modelTemplate  = addStart($table,$columnsProperties,$enumsDefinitions);
 
     // Identifying indexes for the table
     $array_index = array();
@@ -179,15 +204,15 @@ function generateModel($table,$schema,$schemaConfigName,$mysql_major_version) {
             $array_index[$ind_keyName] = $ind_columnName;
         }
     }
-    echo $table . "\r\n";
+    echo $table . " - " . $crypted_columns . "\r\n";
+
     foreach($array_index as $ind_keyName => $ind_columnNames) {
-        echo "  $ind_keyName => $ind_columnNames \r\n";
+
         $array_columnNames = explode(",",$ind_columnNames);
         if ($ind_keyName == "PRIMARY") {
-            $modelTemplate .= addGet(ucfirst($array_columnNames[0]),$columnsMysqlList,$table,$array_columnNames[0],$columnsType[$array_columnNames[0]],$columnsPropertiesList,$columnsRecordMoveList);
+            $modelTemplate .= addGet(ucfirst($array_columnNames[0]),$columnsMysqlList,$table,$array_columnNames[0],$columnsType[$array_columnNames[0]],$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted);
         }
         else {
-            print_r($array_columnNames);
             switch(count($array_columnNames)) {
                 case 0 :
                     echo "Error in table $table for index '$ind_keyName' and columns '$ind_columnNames'\r\n";
@@ -200,7 +225,7 @@ function generateModel($table,$schema,$schemaConfigName,$mysql_major_version) {
                         $ind_keyName .= $index_name_array[$i] . "_";
                     }
                     $ind_keyName = substr($ind_keyName,0,strlen($ind_keyName)-1);
-                    $modelTemplate .= addGet(ucfirst($ind_keyName),$columnsMysqlList,$table,$array_columnNames[0],$columnsType[$array_columnNames[0]],$columnsPropertiesList,$columnsRecordMoveList);
+                    $modelTemplate .= addGet(ucfirst($ind_keyName),$columnsMysqlList,$table,$array_columnNames[0],$columnsType[$array_columnNames[0]],$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted);
                     $modelTemplate .= addDelete($table,$array_columnNames[0],$columnsType[$array_columnNames[0]],ucfirst($ind_keyName));
                     break;
                 default :
@@ -211,16 +236,16 @@ function generateModel($table,$schema,$schemaConfigName,$mysql_major_version) {
                         $ind_keyName .= $index_name_array[$i] . "_";
                     }
                     $ind_keyName = substr($ind_keyName,0,strlen($ind_keyName)-1);
-                    $modelTemplate .= addGetMultiple(ucfirst($ind_keyName),$columnsMysqlList,$table,$array_columnNames,$columnsType,$columnsPropertiesList,$columnsRecordMoveList);
+                    $modelTemplate .= addGetMultiple(ucfirst($ind_keyName),$columnsMysqlList,$table,$array_columnNames,$columnsType,$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted);
                     break;
             }
 
         }
     }
 
-    $modelTemplate .= addGetAllRecords($columnsMysqlList,$table,$columnsPropertiesList,$columnsRecordMoveList);
-    $modelTemplate .= addCreate($table,$columnsMysqlInsertList,$columnsMysqlInsertQues,$columnsMysqlUpdateType,$columnsMysqlUpdateBind);
-    $modelTemplate .= addUpdate($table,$keyName,$keyType,$columnsMysqlUpdateList,$columnsMysqlUpdateType,$columnsMysqlUpdateBind);
+    $modelTemplate .= addGetAllRecords($columnsMysqlList,$table,$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted);
+    $modelTemplate .= addCreate($table,$columnsMysqlInsertList,$columnsMysqlInsertQues,$columnsMysqlUpdateType,$columnsMysqlUpdateBind,$crypted_columns,$columns);
+    $modelTemplate .= addUpdate($table,$keyName,$keyType,$columnsMysqlUpdateList,$columnsMysqlUpdateType,$columnsMysqlUpdateBind,$crypted_columns,$columns);
     $modelTemplate .= addDelete($table,$keyName,$keyType);
     $modelTemplate .= addDeleteAllRecords($table);
     $modelTemplate .= addEnd($customCodeFlag,$customCode,$customCodeStart,$customCodeEnd,$columnsPropertiesSample);
@@ -232,7 +257,7 @@ function generateModel($table,$schema,$schemaConfigName,$mysql_major_version) {
 
 }
 
-function addStart($table,$columnsProperties,$schemaConfigName,$enumsDefinitions) {
+function addStart($table,$columnsProperties,$enumsDefinitions) {
 
     $code  = '<?php' . "\r\n";
     $code .= "\r\n";
@@ -277,26 +302,7 @@ function addStart($table,$columnsProperties,$schemaConfigName,$enumsDefinitions)
     $code .= '    public function __construct($mysqli = null) {' . "\r\n";
     $code .= "\r\n";
     $code .= '        if ($mysqli === null) {' . "\r\n";
-
-    switch($schemaConfigName) {
-        case "CONF_mysql_database" :
-            $code .= '            global $db;' . "\r\n";
-            break;
-        case "CONF_mysql_location_db" :
-            $code .= '            $db = new \mysqli(CONF_mysql_host,CONF_mysql_user,CONF_mysql_password,CONF_mysql_location_db);' . "\r\n";
-            $code .= '            if ($db->connect_errno > 0) {' . "\r\n";
-            $code .= '                die("Unable to connect to database [" . $db->connect_error . "]");' . "\r\n";
-            $code .= '            }' . "\r\n";
-            break;
-        case "CONF_mysql_tracking_db" :
-            $code .= '            $db = new \mysqli(CONF_mysql_host,CONF_mysql_user,CONF_mysql_password,CONF_mysql_tracking_db);' . "\r\n";
-            $code .= '            if ($db->connect_errno > 0) {' . "\r\n";
-            $code .= '                die("Unable to connect to database [" . $db->connect_error . "]");' . "\r\n";
-            $code .= '            }' . "\r\n";
-            break;
-    }
-
-    $code .= '            $this->mysqli = $db;' . "\r\n";
+    $code .= '            $this->mysqli = new \mysqli(CONF_mysql_host,CONF_mysql_user,CONF_mysql_password,CONF_mysql_database);' . "\r\n";
     $code .= '        }' . "\r\n";
     $code .= '        else {' . "\r\n";
     $code .= '            $this->mysqli = $mysqli;' . "\r\n";
@@ -312,7 +318,7 @@ function addStart($table,$columnsProperties,$schemaConfigName,$enumsDefinitions)
 
 }
 
-function addGet($keyNameCamelCase,$columnsMysqlList,$table,$keyName,$keyType,$columnsPropertiesList,$columnsRecordMoveList) {
+function addGet($keyNameCamelCase,$columnsMysqlList,$table,$keyName,$keyType,$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted) {
 
     $sm = new \helpers\string_manipulation();
 
@@ -350,7 +356,20 @@ function addGet($keyNameCamelCase,$columnsMysqlList,$table,$keyName,$keyType,$co
     $code .= '            return "MYSQL BIND ERROR : " . $stmt->error;' . "\r\n";
     $code .= '        }' . "\r\n";
     $code .= "\r\n";
+
+    if ($crypted_columns) {
+        $code .= '        $ed = new \helpers\encrypt_decrypt;' . "\r\n";
+        $code .= "\r\n";
+    }
+
     $code .= '        if ($stmt->fetch()) {' . "\r\n";
+
+    if ($crypted_columns) {
+        $code .= "\r\n";
+        $code .= $columnsRecordMoveList_crypted;
+        $code .= "\r\n";
+    }
+
     $code .= '            $record = new ' . $table . '_record;' . "\r\n";
     $code .= $columnsRecordMoveList;
     $code .= '            array_push($this->recordSet, $record);' . "\r\n";
@@ -393,7 +412,20 @@ function addGet($keyNameCamelCase,$columnsMysqlList,$table,$keyName,$keyType,$co
         $code .= '            return "MYSQL BIND ERROR : " . $stmt->error;' . "\r\n";
         $code .= '        }' . "\r\n";
         $code .= "\r\n";
+
+        if ($crypted_columns) {
+            $code .= '        $ed = new \helpers\encrypt_decrypt;' . "\r\n";
+            $code .= "\r\n";
+        }
+
         $code .= '        while ($stmt->fetch()) {' . "\r\n";
+
+        if ($crypted_columns) {
+            $code .= "\r\n";
+            $code .= $columnsRecordMoveList_crypted;
+            $code .= "\r\n";
+        }
+
         $code .= '            $record = new ' . $table . '_record;' . "\r\n";
         $code .= $columnsRecordMoveList;
         $code .= '            array_push($this->recordSet, $record);' . "\r\n";
@@ -411,7 +443,7 @@ function addGet($keyNameCamelCase,$columnsMysqlList,$table,$keyName,$keyType,$co
 
 }
 
-function addGetMultiple($keyNameCamelCase,$columnsMysqlList,$table,$array_keyName,$array_keyType,$columnsPropertiesList,$columnsRecordMoveList) {
+function addGetMultiple($keyNameCamelCase,$columnsMysqlList,$table,$array_keyName,$array_keyType,$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted) {
 
     $selection = '';
     $keys      = '';
@@ -463,7 +495,20 @@ function addGetMultiple($keyNameCamelCase,$columnsMysqlList,$table,$array_keyNam
     $code .= '            return "MYSQL BIND ERROR : " . $stmt->error;' . "\r\n";
     $code .= '        }' . "\r\n";
     $code .= "\r\n";
+
+    if ($crypted_columns) {
+        $code .= '        $ed = new \helpers\encrypt_decrypt;' . "\r\n";
+        $code .= "\r\n";
+    }
+
     $code .= '        while ($stmt->fetch()) {' . "\r\n";
+
+    if ($crypted_columns) {
+        $code .= "\r\n";
+        $code .= $columnsRecordMoveList_crypted;
+        $code .= "\r\n";
+    }
+
     $code .= '            $record = new ' . $table . '_record;' . "\r\n";
     $code .= $columnsRecordMoveList;
     $code .= '            array_push($this->recordSet, $record);' . "\r\n";
@@ -480,7 +525,7 @@ function addGetMultiple($keyNameCamelCase,$columnsMysqlList,$table,$array_keyNam
 
 }
 
-function addGetAllRecords($columnsMysqlList,$table,$columnsPropertiesList,$columnsRecordMoveList) {
+function addGetAllRecords($columnsMysqlList,$table,$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted) {
 
     $code  = '    function getAllRecords($orderBy = "") {' . "\r\n";
     $code .= "\r\n";
@@ -505,7 +550,20 @@ function addGetAllRecords($columnsMysqlList,$table,$columnsPropertiesList,$colum
     $code .= '            return "MYSQL BIND ERROR : " . $stmt->error;' . "\r\n";
     $code .= '        }' . "\r\n";
     $code .= "\r\n";
+
+    if ($crypted_columns) {
+        $code .= '        $ed = new \helpers\encrypt_decrypt;' . "\r\n";
+        $code .= "\r\n";
+    }
+
     $code .= '        while ($stmt->fetch()) {' . "\r\n";
+
+    if ($crypted_columns) {
+        $code .= "\r\n";
+        $code .= $columnsRecordMoveList_crypted;
+        $code .= "\r\n";
+    }
+
     $code .= '            $record = new ' . $table . '_record;' . "\r\n";
     $code .= $columnsRecordMoveList;
     $code .= '            array_push($this->recordSet, $record);' . "\r\n";
@@ -522,7 +580,7 @@ function addGetAllRecords($columnsMysqlList,$table,$columnsPropertiesList,$colum
 
 }
 
-function addUpdate($table,$keyName,$keyType,$columnsMysqlUpdateList,$columnsMysqlUpdateType,$columnsMysqlUpdateBind) {
+function addUpdate($table,$keyName,$keyType,$columnsMysqlUpdateList,$columnsMysqlUpdateType,$columnsMysqlUpdateBind,$crypted_columns,$columns) {
 
     $code  = '    function updateRecord($key) {' . "\r\n";
     $code .= "\r\n";
@@ -533,6 +591,17 @@ function addUpdate($table,$keyName,$keyType,$columnsMysqlUpdateList,$columnsMysq
     $code .= '            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;' . "\r\n";
     $code .= '        }' . "\r\n";
     $code .= "\r\n";
+
+    if ($crypted_columns) {
+        $code .= '        $ed = new \helpers\encrypt_decrypt;' . "\r\n";
+        foreach($columns as $column) {
+            if ($column['crypted']) {
+                $code .= '        $this->' . $column['field'] . ' = $ed->encrypt($this->' . $column['field'] . ');' . "\r\n";
+            }
+        }
+        $code .= "\r\n";
+    }
+
     $code .= '        $bind = $stmt->bind_param("' . $columnsMysqlUpdateType . $keyType . '",' . $columnsMysqlUpdateBind . ',$key);' . "\r\n";
     $code .= '        if ($bind === false) {' . "\r\n";
     $code .= '            return "MYSQL BIND ERROR : " . $stmt->error;' . "\r\n";
@@ -627,7 +696,7 @@ function addDeleteAllRecords($table) {
 
 }
 
-function addCreate($table,$columnsMysqlInsertList,$columnsMysqlInsertQues,$columnsMysqlInsertType,$columnsMysqlInsertBind) {
+function addCreate($table,$columnsMysqlInsertList,$columnsMysqlInsertQues,$columnsMysqlInsertType,$columnsMysqlInsertBind,$crypted_columns,$columns) {
 
     $code  = '    function saveRecord() {' . "\r\n";
     $code .= "\r\n";
@@ -638,6 +707,17 @@ function addCreate($table,$columnsMysqlInsertList,$columnsMysqlInsertQues,$colum
     $code .= '            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;' . "\r\n";
     $code .= '        }' . "\r\n";
     $code .= "\r\n";
+
+    if ($crypted_columns) {
+        $code .= '        $ed = new \helpers\encrypt_decrypt;' . "\r\n";
+        foreach($columns as $column) {
+            if ($column['crypted']) {
+                $code .= '        $this->' . $column['field'] . ' = $ed->encrypt($this->' . $column['field'] . ');' . "\r\n";
+            }
+        }
+        $code .= "\r\n";
+    }
+
     $code .= '        $bind = $stmt->bind_param("' . $columnsMysqlInsertType . '",' . $columnsMysqlInsertBind . ');' . "\r\n";
     $code .= '        if ($bind === false) {' . "\r\n";
     $code .= '            return "MYSQL BIND ERROR : " . $stmt->error;' . "\r\n";
