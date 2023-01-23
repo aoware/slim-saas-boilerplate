@@ -1,0 +1,32 @@
+{% set active_menu = 'Accounts' %}
+
+{% extends "base_tabler.html" %}
+
+{% set screen_title = 'Accounts List' %}
+
+{% block page_title %}
+Accounts
+{% endblock %}
+
+{% block main_menu %}
+{% include "backoffice_main_menu.html" %}
+{% endblock %}
+
+{% block user_menu %}
+{% include "backoffice_user_menu.html" %}
+{% endblock %}
+
+{% block page_content %}
+
+    {% set table_id        = 'main_table' %}
+    {% set table_columns   = accounts_table.columns %}
+    {% set table_recordset = accounts_table.recordset %}
+    {% set new_record_url  = accounts_table.new_record_url %}
+
+    {% include 'base_table.html' %}
+
+{% endblock %}
+
+{% block additional_js %}
+<script src="{{ base_url }}/assets/js/accounts.js?v={{ version }}"></script>
+{% endblock %}

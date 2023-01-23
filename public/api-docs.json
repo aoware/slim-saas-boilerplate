@@ -1,0 +1,1888 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Blocks Online - OpenAPI",
+        "description": "This is Blocks Online Leaseholder API",
+        "contact": {
+            "email": "contact@blocksonline.co.uk"
+        },
+        "license": {
+            "name": "Blocks Online T&S",
+            "url": "https://www.blocksonline.co.uk/terms-of-service/"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api/v1",
+            "description": "API v1"
+        }
+    ],
+    "paths": {
+        "/portal/BlockLogin/switchUnit": {
+            "post": {
+                "tags": [
+                    "BlockLoginController"
+                ],
+                "summary": "Switch between different units across the same user / email",
+                "description": "",
+                "operationId": "switchUnit",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "unit_id"
+                                ],
+                                "properties": {
+                                    "unit_id": {
+                                        "description": "Unit ID",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/BlockLogin/loginAjax": {
+            "post": {
+                "tags": [
+                    "BlockLoginController"
+                ],
+                "summary": "Login to the Block",
+                "description": "",
+                "operationId": "loginAjax",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "txtUID",
+                                    "txtPWD"
+                                ],
+                                "properties": {
+                                    "txtUID": {
+                                        "description": "User e-mail",
+                                        "type": "string"
+                                    },
+                                    "txtPWD": {
+                                        "description": "User Password",
+                                        "type": "string"
+                                    },
+                                    "mode": {
+                                        "description": "Mode - default",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "multipart/form-data": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/BlockLogin/forgotPasswordAjax": {
+            "post": {
+                "tags": [
+                    "BlockLoginController"
+                ],
+                "summary": "Resets User Password",
+                "description": "This method is to reset user password, once that is done we are sending out email with a new password",
+                "operationId": "forgotPassword",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "txtUID"
+                                ],
+                                "properties": {
+                                    "txtUID": {
+                                        "description": "User e-mail",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "multipart/form-data": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                }
+            }
+        },
+        "/portal/BlockLogin/listAllUserUnits": {
+            "get": {
+                "tags": [
+                    "BlockLoginController"
+                ],
+                "summary": "List all other users across all blocks / units under the same email id",
+                "description": "",
+                "operationId": "listAllUserUnits",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/BlockLogin/verifyUnitAccessCode/{access_code}/{email}": {
+            "get": {
+                "tags": [
+                    "BlockLoginController"
+                ],
+                "summary": "Unit Access Token validity check",
+                "description": "We are checking ``urbanown_db.unit_access_code`` table and comparing ``Access_Code`` to confirm access token validity",
+                "operationId": "verifyUnitAccessCode",
+                "parameters": [
+                    {
+                        "name": "access_code",
+                        "in": "path",
+                        "description": "Access Code",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "string"
+                        },
+                        "example": "j*sjJ(2djkds&DDS"
+                    },
+                    {
+                        "name": "email",
+                        "in": "path",
+                        "description": "E-mail",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "string"
+                        },
+                        "example": "test@test.co.uk"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "example": {
+                                            "description": "Schema",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "example": 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/portal/BlockLogin/completeRegistration": {
+            "post": {
+                "tags": [
+                    "BlockLoginController"
+                ],
+                "summary": "Completes user registration",
+                "description": "",
+                "operationId": "completeRegistration",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "accessCode",
+                                    "txtName"
+                                ],
+                                "properties": {
+                                    "accessCode": {
+                                        "description": "Access Code",
+                                        "type": "string"
+                                    },
+                                    "txtName": {
+                                        "description": "Name",
+                                        "type": "string"
+                                    },
+                                    "txtEmail": {
+                                        "description": "E-mail",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "multipart/form-data": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                }
+            }
+        },
+        "/portal/BlockLogin/setFCMtoken": {
+            "put": {
+                "tags": [
+                    "BlockLoginController"
+                ],
+                "summary": "Set FCM Token",
+                "description": "This is to set up `urbanown_db.user_master` `fcm_token` for a given user",
+                "operationId": "setFCMtoken",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "token"
+                                ],
+                                "properties": {
+                                    "token": {
+                                        "description": "Token",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "multipart/form-data": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/BlockLogin/removeFCMToken": {
+            "delete": {
+                "tags": [
+                    "BlockLoginController"
+                ],
+                "summary": "Remove FCM Token",
+                "description": "This is to set up `urbanown_db.user_master` `fcm_token` field to <b>NULL</b>",
+                "operationId": "removeFCMToken",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Dashboard/RegisteredBlocksLogin": {
+            "post": {
+                "tags": [
+                    "DashboardController"
+                ],
+                "summary": "Registered Blocks Login",
+                "description": "",
+                "operationId": "RegisteredBlocksLogin",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "unit_id"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "description": "user_id",
+                                        "type": "integer"
+                                    },
+                                    "unit_id": {
+                                        "description": "unit_id",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Dashboard/RegisteredAgents": {
+            "get": {
+                "tags": [
+                    "DashboardController"
+                ],
+                "summary": "Registered Agents",
+                "description": "",
+                "operationId": "RegisteredBlocks",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Dashboard/getAgentMessagesApp/{limit}/{includeMgmt}/{includeClosed}": {
+            "get": {
+                "tags": [
+                    "DashboardController"
+                ],
+                "summary": "",
+                "description": "",
+                "operationId": "getAgentMessagesApp",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "limit",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "includeMgmt",
+                        "in": "path",
+                        "description": "includeMgmt",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "includeClosed",
+                        "in": "path",
+                        "description": "includeClosed",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Dashboard/getUnitBalanceApp/{fee_type}": {
+            "get": {
+                "tags": [
+                    "DashboardController"
+                ],
+                "summary": "Opening Balance by Unit ID and Fee Collection Type",
+                "description": "Returning opening balance by fee collection type for a given user,<br> <br>Fee Types <br><br>1 = Service Charge / Reserve Fund, 2 = Ground Rent",
+                "operationId": "getUnitBalanceApp",
+                "parameters": [
+                    {
+                        "name": "fee_type",
+                        "in": "path",
+                        "description": "Fee Type",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Dashboard/getUnitLastPaymentAPP": {
+            "get": {
+                "tags": [
+                    "DashboardController"
+                ],
+                "summary": "Returning last transaction",
+                "description": "Returning last transaction from ``block_bank_account_txns`` where Bank_Txns_Type_ID = 11",
+                "operationId": "getUnitLastPaymentAPP",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Dashboard/getBranding": {
+            "get": {
+                "tags": [
+                    "DashboardController"
+                ],
+                "summary": "Branch Branding Details by Branch ID",
+                "description": "Branch Branding Details by ``Branch ID`` from ``branch_master`` table",
+                "operationId": "getBranding",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Dashboard/isReportProblemEnabled": {
+            "get": {
+                "tags": [
+                    "DashboardController"
+                ],
+                "summary": "Checks whether report a problem functionality is enabled for given Branch ID",
+                "description": "Gets the data from ``branch_master`` table and returns status of this functionality",
+                "operationId": "isReportProblemEnabled",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Dashboard/getPropertyDetailsApp": {
+            "get": {
+                "tags": [
+                    "DashboardController"
+                ],
+                "summary": "Returns details about the block,unit,branch and agent",
+                "description": "This is to return some data about the block, unit, agent and branch (Property Details)",
+                "operationId": "getPropertyDetailsApp",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Dashboard/isTicketModuleSubscribed": {
+            "get": {
+                "tags": [
+                    "DashboardController"
+                ],
+                "summary": "This is checking whether agent has Ticket module enabled",
+                "description": "We are checking ``agent_mod_master`` for the status of Ticket Module",
+                "operationId": "isTicketModuleSubscribed",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Dashboard/isCommentEnabledForTicket": {
+            "get": {
+                "tags": [
+                    "DashboardController"
+                ],
+                "summary": "This is to see whether user can add comments to the Ticket",
+                "description": "Check ``branch_master`` table to see the status of ``allowCommentOnTickets``",
+                "operationId": "isCommentEnabledForTicket",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Dashboard/getUserNotification": {
+            "get": {
+                "tags": [
+                    "DashboardController"
+                ],
+                "summary": "This is to get notification by User ID",
+                "description": "Get 100 notifications from ``notification`` table",
+                "operationId": "getUserNotification",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Dashboard/reportAbusiveMessageApp": {
+            "put": {
+                "tags": [
+                    "DashboardController"
+                ],
+                "summary": "Report Abusive Message",
+                "description": "This is to report abusive message.<br><br> <b>Types Available:</b>  <ul><li>TICKET</li><li>AGENT</li><li>POST</li></ul>",
+                "operationId": "reportAbusiveMessageApp",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "messageID",
+                                    "type",
+                                    "explanation"
+                                ],
+                                "properties": {
+                                    "messageID": {
+                                        "description": "Message ID",
+                                        "type": "integer"
+                                    },
+                                    "type": {
+                                        "description": "Type",
+                                        "type": "string"
+                                    },
+                                    "explanation": {
+                                        "description": "explanation",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "multipart/form-data": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Dashboard/updateTermsofService": {
+            "put": {
+                "tags": [
+                    "DashboardController"
+                ],
+                "summary": "This is to update Terms of Service",
+                "description": "We are updating ``user_master`` and setting ``status, updatedAt``",
+                "operationId": "updateTermsofService",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Dashboard/markNotificationAsRead": {
+            "put": {
+                "tags": [
+                    "DashboardController"
+                ],
+                "summary": "Mark notification as read",
+                "description": "This will update ``notification`` table and set status = 2 which is READ",
+                "operationId": "markNotificationAsRead",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "notification_id"
+                                ],
+                                "properties": {
+                                    "notification_id": {
+                                        "description": "Notification ID",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "multipart/form-data": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Directorys": {
+            "get": {
+                "tags": [
+                    "DirectorysController"
+                ],
+                "summary": "Returns list of Directors",
+                "description": "Returns unit list where rel_type = 28 AND (displayNameDirectory = 1 OR displayTelephoneDirectory = 1 OR displayMobileDirectory = 1 OR displayEmailDirectory = 1)",
+                "operationId": "index",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Documents/getPublishedDocumentsApp/{documentType}": {
+            "get": {
+                "tags": [
+                    "DocumentsController"
+                ],
+                "summary": "Returns list of documents by the block agent and branch",
+                "description": "Returns documents from ``stored_documents``",
+                "operationId": "getPublishedDocumentsApp",
+                "parameters": [
+                    {
+                        "name": "documentType",
+                        "in": "path",
+                        "description": "documentType"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Messages/index/{type}/{showClosed}": {
+            "get": {
+                "tags": [
+                    "MessagesController"
+                ],
+                "summary": "Returns messages by the type",
+                "description": "<b>Types Available:</b> <br><br><ul><li>all</li><li>AGENT</li><li>TICKET</li><li>POST</li></ul>",
+                "operationId": "index",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "path",
+                        "description": "Message Type",
+                        "required": true
+                    },
+                    {
+                        "name": "showClosed",
+                        "in": "path",
+                        "description": "Show Closed"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Messages/getAllMessagesApp/{includemgmt}/{includeClosed}": {
+            "get": {
+                "tags": [
+                    "MessagesController"
+                ],
+                "summary": "Returns all messages",
+                "description": "Returns all messages from ``notice_board``",
+                "operationId": "getAllMessagesApp",
+                "parameters": [
+                    {
+                        "parameter": "includemgmt",
+                        "name": "Include Mgmt",
+                        "in": "path",
+                        "description": "",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "parameter": "includeClosed",
+                        "name": "Include Closed",
+                        "in": "path",
+                        "description": "",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Messages/getAgentMessagesApp/{includeArchive}": {
+            "get": {
+                "tags": [
+                    "MessagesController"
+                ],
+                "summary": "Get Agent Messages App",
+                "description": "",
+                "operationId": "getAllMessagesApp",
+                "parameters": [
+                    {
+                        "parameter": "includeArchive",
+                        "name": "Include Archive",
+                        "in": "path",
+                        "description": "",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Messages/getTicketApp/{show_closed}": {
+            "get": {
+                "tags": [
+                    "MessagesController"
+                ],
+                "summary": "Returns all tickets by Unit ID",
+                "description": "Returns tickets where access_type IN (184)",
+                "operationId": "getTicketApp",
+                "parameters": [
+                    {
+                        "name": "show_closed",
+                        "in": "path",
+                        "description": "Show Closed",
+                        "required": false,
+                        "style": "form"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Messages/getPostApp/{includeArchived}": {
+            "get": {
+                "tags": [
+                    "MessagesController"
+                ],
+                "summary": "Returns posts by Block ID",
+                "description": "Returns all posts from ``notice_board``",
+                "operationId": "getPostApp",
+                "parameters": [
+                    {
+                        "name": "includeArchived",
+                        "in": "path",
+                        "description": "Include Archived",
+                        "required": false,
+                        "style": "form",
+                        "schema": {
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Messages/getCommentsApp/{reference_id}/{processing_reference}": {
+            "get": {
+                "tags": [
+                    "MessagesController"
+                ],
+                "summary": "Returns comments by ``processing_reference``",
+                "description": "Returns comments from ``comment_master``<br><br> <b>Processing Reference</b> <ul><li>SUPPINV</li><li>WEBSYSCC</li><li>WEBSYSNB</li><li>WEBSYSTIC</li></ul>",
+                "operationId": "getCommentsApp",
+                "parameters": [
+                    {
+                        "name": "reference_id",
+                        "in": "path",
+                        "description": "Reference ID",
+                        "required": true
+                    },
+                    {
+                        "name": "processing_reference",
+                        "in": "path",
+                        "description": "Type",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Messages/addComment": {
+            "post": {
+                "tags": [
+                    "MessagesController"
+                ],
+                "summary": "Adds comment",
+                "description": "Records comment to the ``comment_master`` table<br><br> <b>Type</b><ul><li>TICKET</li><li>AGENT</li><li>POST</li></ul>",
+                "operationId": "addComment",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "type",
+                                    "referenceID",
+                                    "comment"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "description": "type",
+                                        "type": "string"
+                                    },
+                                    "referenceID": {
+                                        "description": "Reference ID",
+                                        "type": "integer"
+                                    },
+                                    "comment": {
+                                        "description": "Comment",
+                                        "type": "string"
+                                    },
+                                    "myfile": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Messages/updateMessage": {
+            "post": {
+                "tags": [
+                    "MessagesController"
+                ],
+                "summary": "Updates message",
+                "description": "Updates ``ticket_master`` title or ``noticeboard`` depends on the type<br><br><b>Type</b><ul><li>TICKET</li><li>AGENT</li></ul>",
+                "operationId": "updateMessage",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description",
+                                    "referenceID",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "description": "Title",
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "description": "Title",
+                                        "type": "string"
+                                    },
+                                    "referenceID": {
+                                        "description": "Reference ID",
+                                        "type": "integer"
+                                    },
+                                    "type": {
+                                        "description": "Type",
+                                        "type": "string"
+                                    },
+                                    "expiryDate": {
+                                        "description": "Expiry Date",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "multipart/form-data": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Messages/updateComment": {
+            "post": {
+                "tags": [
+                    "MessagesController"
+                ],
+                "summary": "Updates comment",
+                "description": "Updates ``comment_master`` by Comment ID for TICKET",
+                "operationId": "updateComment",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "comment",
+                                    "messageID"
+                                ],
+                                "properties": {
+                                    "comment": {
+                                        "description": "Comment",
+                                        "type": "string"
+                                    },
+                                    "messageID": {
+                                        "description": "Message ID",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "multipart/form-data": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Messages/createPost": {
+            "post": {
+                "tags": [
+                    "MessagesController"
+                ],
+                "summary": "Creates Post",
+                "description": "Creates new Post to the noticeboard",
+                "operationId": "createPost",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "post"
+                                ],
+                                "properties": {
+                                    "expiryDate": {
+                                        "description": "Expiry Date",
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "description": "Title",
+                                        "type": "string"
+                                    },
+                                    "post": {
+                                        "description": "Post",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Messages/removeComment": {
+            "delete": {
+                "tags": [
+                    "MessagesController"
+                ],
+                "summary": "Removes comment",
+                "description": "Removes comment from ``comment_master`` table",
+                "operationId": "removeComment",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "comment_id"
+                                ],
+                                "properties": {
+                                    "comment_id": {
+                                        "description": "Comment ID",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "multipart/form-data": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Messages/deletePost": {
+            "delete": {
+                "tags": [
+                    "MessagesController"
+                ],
+                "summary": "Deletes post",
+                "description": "Deletes post from the noticeboard",
+                "operationId": "deletePost",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "id"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "description": "ID",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "multipart/form-data": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Myaccount/getMyAccountStatement/{type}/{startDate}/{endDate}": {
+            "get": {
+                "tags": [
+                    "MyaccountController"
+                ],
+                "summary": "Returns my account statement",
+                "description": "Returns my account statement for given date range<br><br><b>Start Date/End Date</b> format YYYY-MM-DD or AUTO<br><br><b>Type</b> 8,9,130 or 8 or 9 or 130",
+                "operationId": "getMyAccountStatement",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "path",
+                        "description": "Type",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "startDate",
+                        "in": "path",
+                        "description": "Start Date",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "endDate",
+                        "in": "path",
+                        "description": "End Date",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Myaccount/branchSettings": {
+            "get": {
+                "tags": [
+                    "MyaccountController"
+                ],
+                "summary": "Returns branch settings",
+                "description": "Returns branch settings by Block ID and Agent ID",
+                "operationId": "branchSettings",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Myaccount/permissions": {
+            "get": {
+                "tags": [
+                    "MyaccountController"
+                ],
+                "summary": "Returns permissions",
+                "description": "Returns following permissions = allowCommentOnAgentMessages, allowCommentOnTickets, allowPostOnMessages, reportProblemEnabled",
+                "operationId": "permissions",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Myaccount/displayMyaccountStatement": {
+            "get": {
+                "tags": [
+                    "MyaccountController"
+                ],
+                "summary": "Produces My Account Statement",
+                "description": "Produces PDF document with a statement",
+                "operationId": "displayMyaccountStatement",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Reportproblem/index": {
+            "get": {
+                "tags": [
+                    "ReportproblemController"
+                ],
+                "summary": "Returns ticket visibility for report a problem select dropdown",
+                "description": "This is to return ticket visibility as a JSON",
+                "operationId": "index",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Reportproblem/createReportproblem": {
+            "post": {
+                "tags": [
+                    "ReportproblemController"
+                ],
+                "summary": "Reports a problem",
+                "description": "This is to report a problem",
+                "operationId": "createReportproblem",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "problemSummary",
+                                    "problemDetails"
+                                ],
+                                "properties": {
+                                    "problemSummary": {
+                                        "description": "Problem Summary",
+                                        "type": "string"
+                                    },
+                                    "problemDetails": {
+                                        "description": "Problem Detailsl",
+                                        "type": "string"
+                                    },
+                                    "ticketVisibility": {
+                                        "description": "Ticket Visibility",
+                                        "type": "string"
+                                    },
+                                    "fileIcon[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Settings/profile": {
+            "get": {
+                "tags": [
+                    "SettingsController"
+                ],
+                "summary": "",
+                "description": "",
+                "operationId": "profile",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Settings/getPortalSettings": {
+            "get": {
+                "tags": [
+                    "SettingsController"
+                ],
+                "summary": "Returns portal settings",
+                "description": "Returns portal settings by User ID",
+                "operationId": "getPortalSettings",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Settings/profileApp": {
+            "get": {
+                "tags": [
+                    "SettingsController"
+                ],
+                "summary": "Returns User Profile information",
+                "description": "Returns array of unit_details,person company details and user preferences",
+                "operationId": "profileApp",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Settings/update": {
+            "put": {
+                "tags": [
+                    "SettingsController"
+                ],
+                "summary": "Updates or Inserts settings/preferences",
+                "description": "Updates/ Inserts  <br><br><b>svcgVia<b> <ul><li>paper</li><li>email</li><li>both</li></ul><br><br><b>Prefs<b><ul><li>svcgViapaper</li><li>svcgViaEmail</li><li>receiptsViaEmail</li></ul>",
+                "operationId": "update",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "svcgVia"
+                                ],
+                                "properties": {
+                                    "svcgVia": {
+                                        "description": "Svcg Via",
+                                        "type": "string"
+                                    },
+                                    "receiptsViaEmail": {
+                                        "description": "Receipts Via Email",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Settings/profileUpdate": {
+            "post": {
+                "tags": [
+                    "SettingsController"
+                ],
+                "summary": "Updates user profile",
+                "description": "Inserts / Updates ``person_company_master`` information",
+                "operationId": "profileUpdate",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [],
+                                "properties": {
+                                    "userName": {
+                                        "description": "User Name",
+                                        "type": "string"
+                                    },
+                                    "Telephone_number": {
+                                        "description": "Telephone Number",
+                                        "type": "string"
+                                    },
+                                    "Mobile_Number": {
+                                        "description": "Mobile Number",
+                                        "type": "string"
+                                    },
+                                    "displayNameDirectory": {
+                                        "description": "Display Name Directory",
+                                        "type": "integer"
+                                    },
+                                    "displayTelephoneDirectory": {
+                                        "description": "Display Telephone Directory",
+                                        "type": "integer"
+                                    },
+                                    "displayMobileDirectory": {
+                                        "description": "Display Mobile Directory",
+                                        "type": "integer"
+                                    },
+                                    "displayEmailDirectory": {
+                                        "description": "Display Email Directory",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Settings/updateUserPreferences": {
+            "post": {
+                "tags": [
+                    "SettingsController"
+                ],
+                "summary": "Updates User Preferences",
+                "description": "Updates preferences by the <b>type</b><br><br>When type is 1 - svcgVia [paper/email]]<br><br> Otherwise [notifyAgentBroadcastMessage,notifyMyProblemUpdated,notifyAnyproblemUpdated,notifyMyPostUpdated,notifyPostUpdates']",
+                "operationId": "updateUserPreferences",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "type",
+                                    "svcgVia"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "description": "type",
+                                        "type": "integer"
+                                    },
+                                    "svcgVia": {
+                                        "description": "svcgVia",
+                                        "type": "string"
+                                    },
+                                    "notifyAgentBroadcastMessage": {
+                                        "description": "notifyAgentBroadcastMessage",
+                                        "type": "string"
+                                    },
+                                    "notifyMyProblemUpdated": {
+                                        "description": "notifyMyProblemUpdated",
+                                        "type": "string"
+                                    },
+                                    "notifyAnyproblemUpdated": {
+                                        "description": "notifyAnyproblemUpdated",
+                                        "type": "string"
+                                    },
+                                    "notifyMyPostUpdated": {
+                                        "description": "notifyMyPostUpdated",
+                                        "type": "integer"
+                                    },
+                                    "notifyPostUpdates": {
+                                        "description": "notifyPostUpdates",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/portal/Settings/updatePassword": {
+            "post": {
+                "tags": [
+                    "SettingsController"
+                ],
+                "summary": "Updates User Password",
+                "description": "",
+                "operationId": "updatePassword",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "password"
+                                ],
+                                "properties": {
+                                    "password": {
+                                        "description": "Password",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "examples": {
+            "VehicleStoreEx2": {
+                "summary": "VehicleStoreEx2",
+                "value": {
+                    "name": "vehicle 1",
+                    "model": "Tesla"
+                }
+            }
+        },
+        "securitySchemes": {
+            "global": {
+                "verifyUnitAccessCode": {
+                    "s": "String",
+                    "d": ""
+                }
+            },
+            "passport": {
+                "type": "oauth2",
+                "description": "Laravel passport oauth2 security.",
+                "in": "header",
+                "scheme": "http",
+                "flows": {
+                    "password": {
+                        "authorizationUrl": "https://api.myblockonline.co.uk/oauth/authorize",
+                        "tokenUrl": "https://api.myblockonline.co.uk/oauth/token",
+                        "refreshUrl": "https://api.myblockonline.co.uk/token/refresh",
+                        "scopes": []
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}

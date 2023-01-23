@@ -1,9 +1,9 @@
 {
-	"name": "aoware/slim-saas-boilerplate",
-	"description": "Saas boilerplate built with Slim4",
-	"keywords": ["saas","boilerplate","slim4"],
-	"type": "project",
-	"license": "MIT",
+    "name": "aoware/slim-saas-boilerplate",
+    "description": "Saas boilerplate built with Slim4",
+    "keywords": ["saas","boilerplate","slim4"],
+    "type": "project",
+    "license": "MIT",
     "authors": [
         {
             "name": "Alain Orset",
@@ -19,7 +19,9 @@
         "php-di/php-di": "^6",
         "nextras/dbal": "v4.0.5",
         "phpmailer/phpmailer": "^6.5",
-        "wixel/gump": "v2.0.0"
+        "wixel/gump": "v2.0.0",
+        "tuupola/slim-jwt-auth": "3.6.0",
+        "goldspecdigital/oooas": "v2.10.0"
     },
     "autoload": {
         "psr-4": {

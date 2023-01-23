@@ -120,15 +120,20 @@ class users {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
 
+        $ed = new \helpers\encrypt_decrypt;
+
         if ($stmt->fetch()) {
-            $ed = new \helpers\encrypt_decrypt;
+
+            $this->first_name           = $ed->decrypt($this->first_name);
+            $this->last_name            = $ed->decrypt($this->last_name);
+
             $record = new users_record;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $ed->decrypt($this->first_name);
-            $record->last_name          = $ed->decrypt($this->last_name);
+            $record->first_name         = $this->first_name;
+            $record->last_name          = $this->last_name;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -180,15 +185,20 @@ class users {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
 
+        $ed = new \helpers\encrypt_decrypt;
+
         while ($stmt->fetch()) {
-            $ed = new \helpers\encrypt_decrypt;
+
+            $this->first_name           = $ed->decrypt($this->first_name);
+            $this->last_name            = $ed->decrypt($this->last_name);
+
             $record = new users_record;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $ed->decrypt($this->first_name);
-            $record->last_name          = $ed->decrypt($this->last_name);
+            $record->first_name         = $this->first_name;
+            $record->last_name          = $this->last_name;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -236,15 +246,20 @@ class users {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
 
+        $ed = new \helpers\encrypt_decrypt;
+
         if ($stmt->fetch()) {
-            $ed = new \helpers\encrypt_decrypt;
+
+            $this->first_name           = $ed->decrypt($this->first_name);
+            $this->last_name            = $ed->decrypt($this->last_name);
+
             $record = new users_record;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $ed->decrypt($this->first_name);
-            $record->last_name          = $ed->decrypt($this->last_name);
+            $record->first_name         = $this->first_name;
+            $record->last_name          = $this->last_name;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -296,15 +311,20 @@ class users {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
 
+        $ed = new \helpers\encrypt_decrypt;
+
         while ($stmt->fetch()) {
+
+            $this->first_name           = $ed->decrypt($this->first_name);
+            $this->last_name            = $ed->decrypt($this->last_name);
+
             $record = new users_record;
-            $ed = new \helpers\encrypt_decrypt;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $ed->decrypt($this->first_name);
-            $record->last_name          = $ed->decrypt($this->last_name);
+            $record->first_name         = $this->first_name;
+            $record->last_name          = $this->last_name;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -377,15 +397,20 @@ class users {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
 
+        $ed = new \helpers\encrypt_decrypt;
+
         if ($stmt->fetch()) {
-            $ed = new \helpers\encrypt_decrypt;
+
+            $this->first_name           = $ed->decrypt($this->first_name);
+            $this->last_name            = $ed->decrypt($this->last_name);
+
             $record = new users_record;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $ed->decrypt($this->first_name);
-            $record->last_name          = $ed->decrypt($this->last_name);
+            $record->first_name         = $this->first_name;
+            $record->last_name          = $this->last_name;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -437,15 +462,20 @@ class users {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
 
+        $ed = new \helpers\encrypt_decrypt;
+
         while ($stmt->fetch()) {
+
+            $this->first_name           = $ed->decrypt($this->first_name);
+            $this->last_name            = $ed->decrypt($this->last_name);
+
             $record = new users_record;
-            $ed = new \helpers\encrypt_decrypt;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $ed->decrypt($this->first_name);
-            $record->last_name          = $ed->decrypt($this->last_name);
+            $record->first_name         = $this->first_name;
+            $record->last_name          = $this->last_name;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -518,15 +548,20 @@ class users {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
 
+        $ed = new \helpers\encrypt_decrypt;
+
         if ($stmt->fetch()) {
-            $ed = new \helpers\encrypt_decrypt;
+
+            $this->first_name           = $ed->decrypt($this->first_name);
+            $this->last_name            = $ed->decrypt($this->last_name);
+
             $record = new users_record;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $ed->decrypt($this->first_name);
-            $record->last_name          = $ed->decrypt($this->last_name);
+            $record->first_name         = $this->first_name;
+            $record->last_name          = $this->last_name;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -578,15 +613,20 @@ class users {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
 
+        $ed = new \helpers\encrypt_decrypt;
+
         while ($stmt->fetch()) {
+
+            $this->first_name           = $ed->decrypt($this->first_name);
+            $this->last_name            = $ed->decrypt($this->last_name);
+
             $record = new users_record;
-            $ed = new \helpers\encrypt_decrypt;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $ed->decrypt($this->first_name);
-            $record->last_name          = $ed->decrypt($this->last_name);
+            $record->first_name         = $this->first_name;
+            $record->last_name          = $this->last_name;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -659,15 +699,20 @@ class users {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
 
+        $ed = new \helpers\encrypt_decrypt;
+
         if ($stmt->fetch()) {
-            $ed = new \helpers\encrypt_decrypt;
+
+            $this->first_name           = $ed->decrypt($this->first_name);
+            $this->last_name            = $ed->decrypt($this->last_name);
+
             $record = new users_record;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $ed->decrypt($this->first_name);
-            $record->last_name          = $ed->decrypt($this->last_name);
+            $record->first_name         = $this->first_name;
+            $record->last_name          = $this->last_name;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -719,15 +764,20 @@ class users {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
 
+        $ed = new \helpers\encrypt_decrypt;
+
         while ($stmt->fetch()) {
+
+            $this->first_name           = $ed->decrypt($this->first_name);
+            $this->last_name            = $ed->decrypt($this->last_name);
+
             $record = new users_record;
-            $ed = new \helpers\encrypt_decrypt;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $ed->decrypt($this->first_name);
-            $record->last_name          = $ed->decrypt($this->last_name);
+            $record->first_name         = $this->first_name;
+            $record->last_name          = $this->last_name;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;
@@ -799,15 +849,20 @@ class users {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
 
+        $ed = new \helpers\encrypt_decrypt;
+
         while ($stmt->fetch()) {
-            $ed = new \helpers\encrypt_decrypt;
+
+            $this->first_name           = $ed->decrypt($this->first_name);
+            $this->last_name            = $ed->decrypt($this->last_name);
+
             $record = new users_record;
             $record->id                 = $this->id;
             $record->oauth_provider     = $this->oauth_provider;
             $record->oauth_uid          = $this->oauth_uid;
             $record->password           = $this->password;
-            $record->first_name         = $ed->decrypt($this->first_name);
-            $record->last_name          = $ed->decrypt($this->last_name);
+            $record->first_name         = $this->first_name;
+            $record->last_name          = $this->last_name;
             $record->email              = $this->email;
             $record->location           = $this->location;
             $record->picture            = $this->picture;

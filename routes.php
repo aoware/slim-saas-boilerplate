@@ -98,6 +98,13 @@
 
         });
 
+        $backoffice->get('/accounts', function ($request, $response, $args) {
+            
+            $c = new \controllers\accounts($this,$request, $response, $args);
+            return $c->list();
+            
+        });
+        
         $backoffice->get('/configurations', function ($request, $response, $args) {
 
             $c = new \controllers\configurations($this,$request, $response, $args);
@@ -304,6 +311,25 @@
 
     });
 
+// =============================================================== //
+// API                                                             //
+// =============================================================== //
+
+
+    $app->post('/api/v1/token', function ($request, $response, $args) {
+        
+        $c = new \controllers\api_token($this,$request, $response, $args);
+        return $c->validate_access_key();
+        
+    });
+    
+    $app->post('/api/v1/public-key/validate', function ($request, $response, $args) {
+        
+        $c = new \controllers\public_key($this,$request, $response, $args);
+        return $c->validate();
+        
+    });
+    
 // =============================================================== //
 // Special Files                                                   //
 // =============================================================== //
