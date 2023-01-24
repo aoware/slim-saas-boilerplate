@@ -84,16 +84,16 @@ $app->addBodyParsingMiddleware();
 // Add Twig-View Middleware
 $app->add(\Slim\Views\TwigMiddleware::createFromContainer($app,'twig'));
 
-// Add 
+// Add
 $app->add(new \Tuupola\Middleware\JwtAuthentication([
     "path"   => ["/api/v1"],
     "ignore" => ["/api/v1/token"],
     "secret" => CONF_jwt_secret,
     "secure" => CONF_jwt_secure,
     "before" => function ($request, $arguments) {
-    
+
     $authorization_headers = $request->getHeader('Authorization');
-    
+
     $token = null;
     foreach($authorization_headers as $header) {
         if (substr($header,0,7) == 'Bearer ') {
@@ -101,16 +101,16 @@ $app->add(new \Tuupola\Middleware\JwtAuthentication([
             continue;
         }
     }
-    
+
     $token_id = null;
-    
+
     $at = new \models\api_access_tokens();
     $at->getRecordByToken($token);
-    
+
     if (count($at->recordSet) == 1) {
         $token_id =  $at->recordSet[0]->id;
     }
-    
+
     return $request->withAttribute("api_access_token" , $token)
     ->withAttribute("access_token_id", $token_id);
     },
@@ -119,11 +119,11 @@ $app->add(new \Tuupola\Middleware\JwtAuthentication([
         "success" => false,
         "message" => "401 Unauthorized"
     ];
-    
+
     $response->getBody()->write(
         json_encode($result, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)
         );
-    
+
     return $response->withHeader("Content-Type", "application/json");
     }
 ]));
@@ -151,7 +151,7 @@ $custom_error_handler = function (
                     'screen_title' => 'Unable to handle this request',
                 ]);
             $response = new \Slim\Psr7\Response();
-            return $container->get('twig')->render($response->withStatus(404), '500.html',$variable_content );
+            return $container->get('twig')->render($response->withStatus(500), '500.html',$variable_content );
         }
         if ($exception instanceof \Slim\Exception\HttpMethodNotAllowedException) {
             $message = 'not allowed';
