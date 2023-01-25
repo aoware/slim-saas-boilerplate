@@ -90,7 +90,7 @@ class base_controller {
 
         if (isset($_SESSION['login_token'])) {
             $u = new \models\users;
-            $u->getRecordsByLogin_token($_SESSION['login_token']);
+            $u->getRecordByLogin_token($_SESSION['login_token']);
             if (count($u->recordSet) == 0) {
                 $result = [
                     'is_logged' => false,

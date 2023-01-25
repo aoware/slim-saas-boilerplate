@@ -59,14 +59,33 @@ function update(endPoint) {
 
 function change_password(endPoint) {
 
-    var confirm_content = $('#confirm_content').html();
+    var confirm_content  = "<form id'confirm_content'>";
+        confirm_content += "  <div class='form-group mb-3 row'>";
+        confirm_content += "    <label class='col-5 col-form-label'>Old Password</label>";
+        confirm_content += "    <div class='col'>";
+        confirm_content += "      <input type='password' class='form-control' name='old_password' onblur='copy_old_password(this.value)'>";
+        confirm_content += "    </div>";
+        confirm_content += "  </div>";
+        confirm_content += "  <div class='form-group mb-3 row'>";
+        confirm_content += "    <label class='col-5 col-form-label'>New Password</label>";
+        confirm_content += "    <div class='col'>";
+        confirm_content += "      <input type='password' class='form-control' name='new_password' onblur='copy_new_password(this.value)'>";
+        confirm_content += "    </div>";
+        confirm_content += "  </div>";                                      
+        confirm_content += "  <div class='form-group mb-3 row'>";
+        confirm_content += "    <label class='col-5 col-form-label'>Confirm New Password</label>";
+        confirm_content += "    <div class='col'>";
+        confirm_content += "      <input type='password' class='form-control' name='confirmed_password' onblur='copy_confirmed_password(this.value)'>";
+        confirm_content += "    </div>";
+        confirm_content += "  </div>";
+        confirm_content += "</form>";        
 
     alertify.confirm(confirm_content,
         function(){ 
 			$.ajax({
 	    	    type: 'POST',
 	    		url: base_url + '/' + endPoint + '/my-profile-password',
-	    		data: $('#confirm_content').serialize(),
+	    		data: 'old_password=' + $('#old_password').val() + '&new_password=' + $('#new_password').val() + '&confirmed_password=' + $('#confirmed_password').val(),
 	    		success: function(result) {
 	
 	                if (result.success === false) {
@@ -80,4 +99,16 @@ function change_password(endPoint) {
 	        }); 
 		}	
 	).set('reverseButtons', true);
+}
+
+function copy_old_password(value) {
+    $('#old_password').val(value);
+}
+
+function copy_new_password(value) {
+    $('#new_password').val(value);
+}
+
+function copy_confirmed_password(value) {
+    $('#confirmed_password').val(value);
 }

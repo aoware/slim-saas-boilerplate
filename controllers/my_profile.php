@@ -11,7 +11,10 @@ class my_profile extends base_controller {
         if ($session['is_logged'] === false) {
             return $this->return_redirection(CONF_base_url);
         }
-        if ($session['user_type'] !== 'agent') {
+        if (($session['user_type'] !== 'agent') and ($user_area == 'backoffice')) {
+            return $this->return_redirection(CONF_base_url);
+        }
+        if (($session['user_type'] !== 'client') and ($user_area == 'dashboard')) {
             return $this->return_redirection(CONF_base_url);
         }
         
@@ -25,7 +28,7 @@ class my_profile extends base_controller {
         
     }
     
-    function update() {
+    function update($user_area) {
         
         $post_variables = $this->request->getParsedBody();
         
@@ -34,7 +37,10 @@ class my_profile extends base_controller {
         if ($session['is_logged'] === false) {
             return $this->return_json(false,'Session expired. Please login again.');
         }
-        if ($session['user_type'] !== 'agent') {
+        if (($session['user_type'] !== 'agent') and ($user_area == 'backoffice')) {
+            return $this->return_json(false,'Session expired. Please login again.');
+        }
+        if (($session['user_type'] !== 'client') and ($user_area == 'dashboard')) {
             return $this->return_json(false,'Session expired. Please login again.');
         }
         
@@ -91,7 +97,7 @@ class my_profile extends base_controller {
         
     }
     
-    function update_password() {
+    function update_password($user_area) {
         
         $post_variables = $this->request->getParsedBody();
         
@@ -100,7 +106,10 @@ class my_profile extends base_controller {
         if ($session['is_logged'] === false) {
             return $this->return_json(false,'Session expired. Please login again.');
         }
-        if ($session['user_type'] !== 'agent') {
+        if (($session['user_type'] !== 'agent') and ($user_area == 'backoffice')) {
+            return $this->return_json(false,'Session expired. Please login again.');
+        }
+        if (($session['user_type'] !== 'client') and ($user_area == 'dashboard')) {
             return $this->return_json(false,'Session expired. Please login again.');
         }
                
@@ -114,7 +123,7 @@ class my_profile extends base_controller {
         $u_record = $u->recordSet[0];
 
         if ($u_record->password != md5($post_variables['old_password'])) {
-            return $this->return_json(false,'Invalid Password');
+            return $this->return_json(false,'Invalid Password ' . $u_record->password . ' - ' . md5($post_variables['old_password']));
         }
         
         if ($post_variables['new_password'] != $post_variables['confirmed_password']) {

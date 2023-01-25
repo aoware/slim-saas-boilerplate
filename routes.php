@@ -18,14 +18,42 @@
 
     });
 
-    $app->get('/dashboard', function ($request, $response, $args) {
+// =============================================================== //
+// Backoffice pages                                                //
+// =============================================================== //
 
-        $c = new \controllers\static_pages($this,$request, $response, $args);
-        return $c->render('dashboard','client');
+    $app->group('/dashboard', function (\Slim\Routing\RouteCollectorProxy $dashboard) {
+        
+        $dashboard->get('', function ($request, $response, $args) {
+            
+            $c = new \controllers\static_pages($this,$request, $response, $args);
+            return $c->render('dashboard','client');
+            
+        });
 
+        $dashboard->get('/my-profile', function ($request, $response, $args) {
+            
+            $c = new \controllers\my_profile($this,$request, $response, $args);
+            return $c->display('dashboard');
+            
+        });
+                
+        $dashboard->post('/my-profile', function ($request, $response, $args) {
+            
+            $c = new \controllers\my_profile($this,$request, $response, $args);
+            return $c->update('dashboard');
+            
+        });
+                    
+        $dashboard->post('/my-profile-password', function ($request, $response, $args) {
+            
+            $c = new \controllers\my_profile($this,$request, $response, $args);
+            return $c->update_password('dashboard');
+            
+        });
+                        
     });
-
-
+    
 // =============================================================== //
 // Backoffice pages                                                //
 // =============================================================== //

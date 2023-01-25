@@ -64,7 +64,7 @@ class communication_tracking {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -145,55 +145,6 @@ class communication_tracking {
 
     }
 
-    function getRecordsByEvent_id($key,$orderBy = "") {
-
-        $sql = "SELECT `id`,`communication_id`,`event`,`email`,`call_datetime`,`event_datetime`,`event_id`,`ip_address`,`user_agent`,`payload` FROM `communication_tracking` WHERE `event_id` = ?";
-
-        if ($orderBy != "") {
-            $sql .= " order by " . $orderBy;
-        }
-
-        $stmt = $this->mysqli->prepare($sql);
-        if ($stmt === false) {
-            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
-        }
-
-       $bind = $stmt->bind_param("s", $key);
-        if ($bind === false) {
-            return "MYSQL BIND ERROR : " . $stmt->error;
-        }
-
-        $execute = $stmt->execute();
-        if ($execute === false) {
-            return "MYSQL EXECUTE ERROR : " . $stmt->error;
-        }
-
-        $bind = $stmt->bind_result($this->id,$this->communication_id,$this->event,$this->email,$this->call_datetime,$this->event_datetime,$this->event_id,$this->ip_address,$this->user_agent,$this->payload);
-        if ($bind === false) {
-            return "MYSQL BIND ERROR : " . $stmt->error;
-        }
-
-        while ($stmt->fetch()) {
-            $record = new communication_tracking_record;
-            $record->id               = $this->id;
-            $record->communication_id = $this->communication_id;
-            $record->event            = $this->event;
-            $record->email            = $this->email;
-            $record->call_datetime    = $this->call_datetime;
-            $record->event_datetime   = $this->event_datetime;
-            $record->event_id         = $this->event_id;
-            $record->ip_address       = $this->ip_address;
-            $record->user_agent       = $this->user_agent;
-            $record->payload          = $this->payload;
-            array_push($this->recordSet, $record);
-        }
-
-        $stmt->close();
-
-        return true;
-
-    }
-
     function deleteRecordByEvent_id($key) {
 
         $sql = "delete from `communication_tracking` WHERE `event_id` = ?";
@@ -228,7 +179,7 @@ class communication_tracking {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -277,7 +228,7 @@ class communication_tracking {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }

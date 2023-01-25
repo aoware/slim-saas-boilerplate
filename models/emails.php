@@ -78,7 +78,7 @@ class emails {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -140,56 +140,6 @@ class emails {
         }
 
         if ($stmt->fetch()) {
-            $record = new emails_record;
-            $record->id                 = $this->id;
-            $record->view_online_id     = $this->view_online_id;
-            $record->recipient_email    = $this->recipient_email;
-            $record->recipient_name     = $this->recipient_name;
-            $record->creation_date      = $this->creation_date;
-            $record->trigger_date       = $this->trigger_date;
-            $record->sent_date          = $this->sent_date;
-            $record->status             = $this->status;
-            $record->status_description = $this->status_description;
-            $record->subject            = $this->subject;
-            $record->content            = $this->content;
-            array_push($this->recordSet, $record);
-        }
-
-        $stmt->close();
-
-        return true;
-
-    }
-
-    function getRecordsByView_online_id($key,$orderBy = "") {
-
-        $sql = "SELECT `id`,`view_online_id`,`recipient_email`,`recipient_name`,`creation_date`,`trigger_date`,`sent_date`,`status`,`status_description`,`subject`,`content` FROM `emails` WHERE `view_online_id` = ?";
-
-        if ($orderBy != "") {
-            $sql .= " order by " . $orderBy;
-        }
-
-        $stmt = $this->mysqli->prepare($sql);
-        if ($stmt === false) {
-            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
-        }
-
-       $bind = $stmt->bind_param("s", $key);
-        if ($bind === false) {
-            return "MYSQL BIND ERROR : " . $stmt->error;
-        }
-
-        $execute = $stmt->execute();
-        if ($execute === false) {
-            return "MYSQL EXECUTE ERROR : " . $stmt->error;
-        }
-
-        $bind = $stmt->bind_result($this->id,$this->view_online_id,$this->recipient_email,$this->recipient_name,$this->creation_date,$this->trigger_date,$this->sent_date,$this->status,$this->status_description,$this->subject,$this->content);
-        if ($bind === false) {
-            return "MYSQL BIND ERROR : " . $stmt->error;
-        }
-
-        while ($stmt->fetch()) {
             $record = new emails_record;
             $record->id                 = $this->id;
             $record->view_online_id     = $this->view_online_id;

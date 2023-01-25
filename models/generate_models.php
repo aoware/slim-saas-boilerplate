@@ -198,19 +198,25 @@ function generateModel($table,$schema,$mysql_major_version) {
 
     while ($stmt2->fetch()) {
         if (isset($array_index[$ind_keyName])) {
-            $array_index[$ind_keyName] .= "," . $ind_columnName;
+            $array_index[$ind_keyName]['columns'] .= "," . $ind_columnName;
         }
         else {
-            $array_index[$ind_keyName] = $ind_columnName;
+            $array_index[$ind_keyName] = [
+                'non_unique' => $ind_nonUnique,
+                'columns'    => $ind_columnName
+            ];
         }
     }
     echo $table . " - " . $crypted_columns . "\r\n";
 
-    foreach($array_index as $ind_keyName => $ind_columnNames) {
+    foreach($array_index as $ind_keyName => $ind_data) {
+
+        $ind_nonUnique   = $ind_data['non_unique'];
+        $ind_columnNames = $ind_data['columns'];
 
         $array_columnNames = explode(",",$ind_columnNames);
         if ($ind_keyName == "PRIMARY") {
-            $modelTemplate .= addGet(ucfirst($array_columnNames[0]),$columnsMysqlList,$table,$array_columnNames[0],$columnsType[$array_columnNames[0]],$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted);
+            $modelTemplate .= addGet(ucfirst($array_columnNames[0]),$columnsMysqlList,$table,$array_columnNames[0],$columnsType[$array_columnNames[0]],$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted,$ind_nonUnique);
         }
         else {
             switch(count($array_columnNames)) {
@@ -225,7 +231,7 @@ function generateModel($table,$schema,$mysql_major_version) {
                         $ind_keyName .= $index_name_array[$i] . "_";
                     }
                     $ind_keyName = substr($ind_keyName,0,strlen($ind_keyName)-1);
-                    $modelTemplate .= addGet(ucfirst($ind_keyName),$columnsMysqlList,$table,$array_columnNames[0],$columnsType[$array_columnNames[0]],$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted);
+                    $modelTemplate .= addGet(ucfirst($ind_keyName),$columnsMysqlList,$table,$array_columnNames[0],$columnsType[$array_columnNames[0]],$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted,$ind_nonUnique);
                     $modelTemplate .= addDelete($table,$array_columnNames[0],$columnsType[$array_columnNames[0]],ucfirst($ind_keyName));
                     break;
                 default :
@@ -236,7 +242,7 @@ function generateModel($table,$schema,$mysql_major_version) {
                         $ind_keyName .= $index_name_array[$i] . "_";
                     }
                     $ind_keyName = substr($ind_keyName,0,strlen($ind_keyName)-1);
-                    $modelTemplate .= addGetMultiple(ucfirst($ind_keyName),$columnsMysqlList,$table,$array_columnNames,$columnsType,$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted);
+                    $modelTemplate .= addGetMultiple(ucfirst($ind_keyName),$columnsMysqlList,$table,$array_columnNames,$columnsType,$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted,$ind_nonUnique);
                     break;
             }
 
@@ -318,11 +324,15 @@ function addStart($table,$columnsProperties,$enumsDefinitions) {
 
 }
 
-function addGet($keyNameCamelCase,$columnsMysqlList,$table,$keyName,$keyType,$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted) {
+function addGet($keyNameCamelCase,$columnsMysqlList,$table,$keyName,$keyType,$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted,$non_unique) {
 
     $sm = new \helpers\string_manipulation();
 
-    switch($sm->returnBeforeWord($keyType, "(")) {
+    if (!is_null($sm->returnBeforeWord($keyType, "("))) {
+        $keyType = $sm->returnBeforeWord($keyType, "(");
+    }
+
+    switch($keyType) {
         case "int" :
         case "bigint" :
             $type = "i";
@@ -383,7 +393,7 @@ function addGet($keyNameCamelCase,$columnsMysqlList,$table,$keyName,$keyType,$co
     $code .= "\r\n";
 
     // if the key is not id, than let's assume than more than one record can be returned
-    if ($keyNameCamelCase != 'Id') {
+    if (($keyNameCamelCase != 'Id') and ($non_unique == 1)) {
         $code .= '    function getRecordsBy' . $keyNameCamelCase . '($key,$orderBy = "") {' . "\r\n";
         $code .= "\r\n";
         $code .= '        $sql = "SELECT ' . $columnsMysqlList . ' FROM `' . $table . '` WHERE `' . $keyName . '` = ?";' . "\r\n";
@@ -443,7 +453,7 @@ function addGet($keyNameCamelCase,$columnsMysqlList,$table,$keyName,$keyType,$co
 
 }
 
-function addGetMultiple($keyNameCamelCase,$columnsMysqlList,$table,$array_keyName,$array_keyType,$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted) {
+function addGetMultiple($keyNameCamelCase,$columnsMysqlList,$table,$array_keyName,$array_keyType,$columnsPropertiesList,$columnsRecordMoveList,$crypted_columns,$columnsRecordMoveList_crypted,$non_unique) {
 
     $selection = '';
     $keys      = '';
@@ -454,7 +464,12 @@ function addGetMultiple($keyNameCamelCase,$columnsMysqlList,$table,$array_keyNam
 
         $sm = new \helpers\string_manipulation();
 
-        switch($sm->returnBeforeWord($array_keyType[$columnSelection], "(")) {
+        $keyType = $array_keyType[$columnSelection];
+        if (!is_null($sm->returnBeforeWord($array_keyType[$columnSelection], "("))) {
+            $keyType = $sm->returnBeforeWord($array_keyType[$columnSelection], "(");
+        }
+
+        switch($keyType) {
             case "int" :
             case "bigint" :
                 $types .= "i";
@@ -467,7 +482,12 @@ function addGetMultiple($keyNameCamelCase,$columnsMysqlList,$table,$array_keyNam
     $selection = substr($selection,0,strlen($selection) - 5);
     $keys      = substr($keys     ,0,strlen($keys)      - 1);
 
-    $code  = '    function getRecordsBy' . $keyNameCamelCase . '(' . $keys . ',$orderBy = "") {' . "\r\n";
+    $plural = '';
+    if ($non_unique == 1) {
+        $plural = 's';
+    }
+
+    $code  = '    function getRecord' . $plural . 'By' . $keyNameCamelCase . '(' . $keys . ',$orderBy = "") {' . "\r\n";
     $code .= "\r\n";
     $code .= '        $sql = "SELECT ' . $columnsMysqlList . ' FROM `' . $table . '` WHERE ' . $selection . '";' . "\r\n";
     $code .= "\r\n";

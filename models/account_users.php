@@ -54,7 +54,7 @@ class account_users {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -85,7 +85,7 @@ class account_users {
 
     }
 
-    function getRecordsByAccount_id_user_id($account_id,$user_id,$orderBy = "") {
+    function getRecordByAccount_id_user_id($account_id,$user_id,$orderBy = "") {
 
         $sql = "SELECT `id`,`account_id`,`user_id`,`created`,`modified` FROM `account_users` WHERE `account_id` = ? and `user_id` = ?";
 
@@ -98,7 +98,7 @@ class account_users {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("ss",$account_id,$user_id);
+       $bind = $stmt->bind_param("ii",$account_id,$user_id);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -138,7 +138,7 @@ class account_users {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -182,7 +182,7 @@ class account_users {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -247,7 +247,7 @@ class account_users {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -291,7 +291,7 @@ class account_users {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }

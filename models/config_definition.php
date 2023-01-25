@@ -68,7 +68,7 @@ class config_definition {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }

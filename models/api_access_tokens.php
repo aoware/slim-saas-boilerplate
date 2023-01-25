@@ -56,7 +56,7 @@ class api_access_tokens {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -129,51 +129,6 @@ class api_access_tokens {
 
     }
 
-    function getRecordsByToken($key,$orderBy = "") {
-
-        $sql = "SELECT `id`,`token`,`api_access_key_id`,`expires_at`,`created_timestamp`,`amended_timestamp` FROM `api_access_tokens` WHERE `token` = ?";
-
-        if ($orderBy != "") {
-            $sql .= " order by " . $orderBy;
-        }
-
-        $stmt = $this->mysqli->prepare($sql);
-        if ($stmt === false) {
-            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
-        }
-
-       $bind = $stmt->bind_param("s", $key);
-        if ($bind === false) {
-            return "MYSQL BIND ERROR : " . $stmt->error;
-        }
-
-        $execute = $stmt->execute();
-        if ($execute === false) {
-            return "MYSQL EXECUTE ERROR : " . $stmt->error;
-        }
-
-        $bind = $stmt->bind_result($this->id,$this->token,$this->api_access_key_id,$this->expires_at,$this->created_timestamp,$this->amended_timestamp);
-        if ($bind === false) {
-            return "MYSQL BIND ERROR : " . $stmt->error;
-        }
-
-        while ($stmt->fetch()) {
-            $record = new api_access_tokens_record;
-            $record->id                = $this->id;
-            $record->token             = $this->token;
-            $record->api_access_key_id = $this->api_access_key_id;
-            $record->expires_at        = $this->expires_at;
-            $record->created_timestamp = $this->created_timestamp;
-            $record->amended_timestamp = $this->amended_timestamp;
-            array_push($this->recordSet, $record);
-        }
-
-        $stmt->close();
-
-        return true;
-
-    }
-
     function deleteRecordByToken($key) {
 
         $sql = "delete from `api_access_tokens` WHERE `token` = ?";
@@ -208,7 +163,7 @@ class api_access_tokens {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -253,7 +208,7 @@ class api_access_tokens {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }

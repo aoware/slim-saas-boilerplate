@@ -126,7 +126,7 @@ class login extends base_controller {
         $post_variables = $this->request->getParsedBody();
 
         $u = new \models\users;
-        $result = $u->getRecordsByOauth_provider_oauth_uid('email',$post_variables['login_email']);
+        $result = $u->getRecordByOauth_provider_oauth_uid('email',$post_variables['login_email']);
         if (count($u->recordSet) == 0) {
             return $this->return_json(false,"You have entered an invalid email or password");
         }
@@ -148,11 +148,11 @@ class login extends base_controller {
         $sm = new \helpers\string_manipulation;
         $login_token = $sm->generate_random_code(32);
 
-        $u->getRecordsByLogin_token($login_token);
+        $u->getRecordByLogin_token($login_token);
 
         while(count($u->recordSet) > 0) {
             $login_token = $sm->generate_random_code(32);
-            $u->getRecordsByLogin_token($login_token);
+            $u->getRecordByLogin_token($login_token);
         }
 
         $u->oauth_provider     = $u_record->oauth_provider;
@@ -208,7 +208,7 @@ class login extends base_controller {
         }
 
         $u = new \models\users;
-        $u->getRecordsByOauth_provider_oauth_uid('email',$post_variables['email']);
+        $u->getRecordByOauth_provider_oauth_uid('email',$post_variables['email']);
         if (count($u->recordSet) > 0) {
             return $this->return_json(false,"Email already registered");
         }
@@ -339,7 +339,7 @@ class login extends base_controller {
         // ALWAYS return a positive outcome to not disclose email is in our DB
 
         $u = new \models\users;
-        $u->getRecordsByOauth_provider_oauth_uid('email',$post_variables['email']);
+        $u->getRecordByOauth_provider_oauth_uid('email',$post_variables['email']);
         if (count($u->recordSet) == 0) {
             $result = [
                 "type" => "json",

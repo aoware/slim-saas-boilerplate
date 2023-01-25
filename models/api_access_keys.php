@@ -56,7 +56,7 @@ class api_access_keys {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -113,51 +113,6 @@ class api_access_keys {
         }
 
         if ($stmt->fetch()) {
-            $record = new api_access_keys_record;
-            $record->id                = $this->id;
-            $record->key               = $this->key;
-            $record->password          = $this->password;
-            $record->name              = $this->name;
-            $record->created_timestamp = $this->created_timestamp;
-            $record->amended_timestamp = $this->amended_timestamp;
-            array_push($this->recordSet, $record);
-        }
-
-        $stmt->close();
-
-        return true;
-
-    }
-
-    function getRecordsByKey($key,$orderBy = "") {
-
-        $sql = "SELECT `id`,`key`,`password`,`name`,`created_timestamp`,`amended_timestamp` FROM `api_access_keys` WHERE `key` = ?";
-
-        if ($orderBy != "") {
-            $sql .= " order by " . $orderBy;
-        }
-
-        $stmt = $this->mysqli->prepare($sql);
-        if ($stmt === false) {
-            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
-        }
-
-       $bind = $stmt->bind_param("s", $key);
-        if ($bind === false) {
-            return "MYSQL BIND ERROR : " . $stmt->error;
-        }
-
-        $execute = $stmt->execute();
-        if ($execute === false) {
-            return "MYSQL EXECUTE ERROR : " . $stmt->error;
-        }
-
-        $bind = $stmt->bind_result($this->id,$this->key,$this->password,$this->name,$this->created_timestamp,$this->amended_timestamp);
-        if ($bind === false) {
-            return "MYSQL BIND ERROR : " . $stmt->error;
-        }
-
-        while ($stmt->fetch()) {
             $record = new api_access_keys_record;
             $record->id                = $this->id;
             $record->key               = $this->key;

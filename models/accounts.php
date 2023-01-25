@@ -54,7 +54,7 @@ class accounts {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -110,50 +110,6 @@ class accounts {
         }
 
         if ($stmt->fetch()) {
-            $record = new accounts_record;
-            $record->id       = $this->id;
-            $record->name     = $this->name;
-            $record->slug     = $this->slug;
-            $record->created  = $this->created;
-            $record->modified = $this->modified;
-            array_push($this->recordSet, $record);
-        }
-
-        $stmt->close();
-
-        return true;
-
-    }
-
-    function getRecordsBySlug($key,$orderBy = "") {
-
-        $sql = "SELECT `id`,`name`,`slug`,`created`,`modified` FROM `accounts` WHERE `slug` = ?";
-
-        if ($orderBy != "") {
-            $sql .= " order by " . $orderBy;
-        }
-
-        $stmt = $this->mysqli->prepare($sql);
-        if ($stmt === false) {
-            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
-        }
-
-       $bind = $stmt->bind_param("s", $key);
-        if ($bind === false) {
-            return "MYSQL BIND ERROR : " . $stmt->error;
-        }
-
-        $execute = $stmt->execute();
-        if ($execute === false) {
-            return "MYSQL EXECUTE ERROR : " . $stmt->error;
-        }
-
-        $bind = $stmt->bind_result($this->id,$this->name,$this->slug,$this->created,$this->modified);
-        if ($bind === false) {
-            return "MYSQL BIND ERROR : " . $stmt->error;
-        }
-
-        while ($stmt->fetch()) {
             $record = new accounts_record;
             $record->id       = $this->id;
             $record->name     = $this->name;

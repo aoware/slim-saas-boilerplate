@@ -58,7 +58,7 @@ class email_attachments {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -91,7 +91,7 @@ class email_attachments {
 
     }
 
-    function getRecordsByEmail_id_sequence($email_id,$sequence,$orderBy = "") {
+    function getRecordByEmail_id_sequence($email_id,$sequence,$orderBy = "") {
 
         $sql = "SELECT `id`,`email_id`,`sequence`,`mime_type`,`filename`,`encoding`,`content` FROM `email_attachments` WHERE `email_id` = ? and `sequence` = ?";
 
@@ -104,7 +104,7 @@ class email_attachments {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("ss",$email_id,$sequence);
+       $bind = $stmt->bind_param("ii",$email_id,$sequence);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -146,7 +146,7 @@ class email_attachments {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -192,7 +192,7 @@ class email_attachments {
             return "MYSQL PREPARE ERROR : " . $this->mysqli->error;
         }
 
-       $bind = $stmt->bind_param("s", $key);
+       $bind = $stmt->bind_param("i", $key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
