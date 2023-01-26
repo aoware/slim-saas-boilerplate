@@ -162,16 +162,16 @@ class string_manipulation {
         $pwd = "";
         for ($i = 0; $i < $plength; $i++) {
             $key = mt_rand(0,strlen($chars)-1);
-            $pwd .= $chars{$key};
+            $pwd .= $chars[$key];
         }
         
         // More randomizing
         for ($i = 0; $i < $plength; $i++) {
             $key1 = mt_rand(0,strlen($pwd)-1);
             $key2 = mt_rand(0,strlen($pwd)-1);
-            $tmp = $pwd{$key1};
-            $pwd{$key1} = $pwd{$key2};
-            $pwd{$key2} = $tmp;
+            $tmp = $pwd[$key];
+            $pwd[$key1] = $pwd[$key2];
+            $pwd[$key2] = $tmp;
         }
         
         // Even More randomizing!
@@ -181,7 +181,7 @@ class string_manipulation {
                 // return as is
                 break;
             case 1 :
-                $pwd = substr(md5($pwd),0,$plength);
+                $pwd = substr(md5[$pwd],0,$plength);
                 break;
             case 2 :
                 $pwd = base64_encode($pwd);

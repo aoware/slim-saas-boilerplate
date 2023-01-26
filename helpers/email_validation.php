@@ -27,7 +27,7 @@ class email_validation {
                 $result_bac = $bac->validate_email($email);
                 // The email is valid, but it is a disposable email
                 if ($result_bac['resultCode'] == '01') {
-                    if ($result_bac['resultCode']['emailProperties']['is_disposable'] == true) {
+                    if ($result_bac['emailProperties']['is_disposable'] == true) {
                         $result_validation = false;
                         $result_message    = 'disposable domain ' . $arr[1];;
                     }

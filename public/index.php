@@ -15,7 +15,9 @@ $container = new \DI\Container();
 // Set view in Container
 $container->set('twig', function() {
 
-    return \Slim\Views\Twig::create('../views', compact('cache'));
+    return \Slim\Views\Twig::create('../views', [
+        'cache' => false
+    ]);
 
 });
 
