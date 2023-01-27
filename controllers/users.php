@@ -24,6 +24,7 @@ class users extends base_controller {
                     first_name_crypted,
                     last_name_crypted,
                     email,
+                    active,
                     a.created,
                     a.modified,
                     last_login,
@@ -47,11 +48,18 @@ class users extends base_controller {
                 $last_login = date('Y-m-d H:i:s',strtotime($row->last_login));
             }
 
+            $active = "<input type='checkbox' class='js-switch' disabled";
+            if ($row->active == 1) {
+                $active .= " checked";
+            }
+            $active .= " />";
+            
             $record = array(
                 'account'      => "<a href='" . CONF_base_url . "/backoffice/account/" . $row->account_id . "/update'>" . $row->name . "</a>",
                 'email'        => $row->email,
                 'first_name'   => $ed->decrypt($row->first_name_crypted),
                 'last_name'    => $ed->decrypt($row->last_name_crypted),
+                'active'       => $active,
                 'date_created' => date('Y-m-d H:i:s',strtotime($row->created)),
                 'date_updated' => $date_updated,
                 'last_login'   => $last_login,
@@ -64,13 +72,14 @@ class users extends base_controller {
             array_push($recordSet,$record);
 
         }
-
+        
         $table = [
             'columns' => [
                 ['name' => 'Account'   ,'sortable' => true],
                 ['name' => 'Email'     ,'sortable' => true],
                 ['name' => 'First Name','sortable' => true],
                 ['name' => 'Last Name' ,'sortable' => true],
+                ['name' => 'Active'    ,'sortable' => true],
                 ['name' => 'Created'   ,'sortable' => true],
                 ['name' => 'Updated'   ,'sortable' => true],
                 ['name' => 'Last Login','sortable' => true],
@@ -86,7 +95,7 @@ class users extends base_controller {
 
     }
 
-    function display($administrator_id = null) {
+    function display($user_id = null) {
 
         $session = $this->check_login_session();
 
@@ -97,23 +106,23 @@ class users extends base_controller {
             return $this->return_redirection(CONF_base_url);
         }
 
-        if (is_null($administrator_id)) {
+        if (is_null($user_id)) {
             $u_record = null;
         }
         else {
             $u = new \models\users();
-            $u->getRecordById($administrator_id);
+            $u->getRecordById($user_id);
             $u_record = $u->recordSet[0];
         }
 
-        return $this->return_html('administrator_display.html',[
-            'administrator_id'  => $administrator_id,
-            'administrator'     => $u_record
+        return $this->return_html('user_display.html',[
+            'user_id'  => $user_id,
+            'user'     => $u_record
         ]);
 
     }
 
-    function update($administrator_id) {
+    function update($user_id) {
 
         $post_variables = $this->request->getParsedBody();
 
@@ -137,12 +146,12 @@ class users extends base_controller {
         $u = new \models\users();
         $u->getRecordByEmail($post_variables['email']);
         if (count($u->recordSet) == 1) {
-            if ($u->recordSet[0]->id != $administrator_id) {
+            if ($u->recordSet[0]->id != $user_id) {
                 return $this->return_json(false,"User already registered");
             }
         }
 
-        $result_read = $u->getRecordById($administrator_id);
+        $result_read = $u->getRecordById($user_id);
 
         if ($result_read !== true) {
             throw new \Exception($result_read);
@@ -169,21 +178,21 @@ class users extends base_controller {
         $u->verification_ip    = $u_record->verification_ip;
         $u->login_token        = $u_record->login_token;
 
-        $result_update = $u->updateRecord($administrator_id);
+        $result_update = $u->updateRecord($user_id);
 
         if ($result_update !== true) {
             throw new \Exception($result_update);
         }
 
         $data = [
-            'redirection' => CONF_base_url . "/backoffice/administrators"
+            'redirection' => CONF_base_url . "/backoffice/users"
         ];
 
-        return $this->return_json(true,'Administrator updated',$data);
+        return $this->return_json(true,'User updated',$data);
 
     }
 
-    function delete($administrator_id) {
+    function delete($user_id) {
 
         $session = $this->check_login_session();
 
@@ -195,13 +204,13 @@ class users extends base_controller {
         }
 
         $u = new \models\users();
-        $result_delete = $u->deleteRecord($administrator_id);
+        $result_delete = $u->deleteRecord($user_id);
 
         if ($result_delete !== true) {
             throw new \Exception($result_delete);
         }
 
-        return $this->return_json(true,'Administrator deleted');
+        return $this->return_json(true,'User deleted');
 
     }
 

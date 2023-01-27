@@ -281,7 +281,7 @@ class login extends base_controller {
         $ip_address = $h->get_ip();
 
         $u = new \models\users;
-        $u->getRecordsByVerification_token($token);
+        $u->getRecordByVerification_token($token);
 
         if (count($u->recordSet) == 1) {
 

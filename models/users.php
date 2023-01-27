@@ -803,11 +803,11 @@ class users {
         $sm = new \helpers\string_manipulation;
         $verification_token = $sm->generate_random_code(32);
 
-        $this->getRecordsByVerification_token($verification_token);
+        $this->getRecordByVerification_token($verification_token);
 
         while(count($this->recordSet) > 0) {
             $verification_token = $sm->generate_random_code(32);
-            $this->getRecordsByVerification_token($verification_token);
+            $this->getRecordByVerification_token($verification_token);
         }
 
         // Trying to retrieve picture url from gravater

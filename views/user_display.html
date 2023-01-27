@@ -1,0 +1,79 @@
+{% set active_menu = 'Users' %}
+
+{% extends "base_tabler.html" %}
+
+{% set screen_title = 'User Details' %}
+
+{% block page_title %}
+<a href='{{ base_url }}/backoffice/users'>Users</a>
+{% endblock %}
+
+{% block main_menu %}
+{% include "backoffice_main_menu.html" %}
+{% endblock %}
+
+{% block user_menu %}
+{% include "backoffice_user_menu.html" %}
+{% endblock %}
+
+{% block page_content %}
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">{% if user_id is null %}Creating new user{% else %}Updating user ID {{ user_id }}{% endif %}</h3>
+                </div>
+                <div class="card-body">
+                  <form id="user_form">
+                    <div class="row mb-3">
+                        <div class="col-3"></div>
+                        <div class="col-9">
+				            <div class="alert alert-danger d-none" role="alert" id="errors">
+							  <p id="error_messages"></p>
+							</div>
+						</div>
+					</div>
+                    <div class="form-group mb-3 row">
+                      <label class="col-3 col-form-label required">First Name</label>
+                      <div class="col">
+                        <input type="text" class="form-control" placeholder="John" name="first_name"  id="first_name" value="{{ user.first_name }}">
+                      </div>
+                    </div>
+                    <div class="form-group mb-3 row">
+                      <label class="col-3 col-form-label required">Last Name</label>
+                      <div class="col">
+                        <input type="text" class="form-control" placeholder="Smith" name="last_name"  id="last_name" value="{{ user.last_name }}">
+                      </div>
+                    </div>
+                    <div class="form-group mb-3 row">
+                      <label class="col-3 col-form-label required">Email address</label>
+                      <div class="col">
+                        <input type="text" class="form-control" placeholder="name@domain.com" name="email"  id="email" value="{{ user.email }}">
+                      </div>
+                    </div>
+                    <div class="form-group mb-3 row">
+                      <label class="col-3 col-form-label required">Active</label>
+                      <div class="col">
+	                    <input type="checkbox" class="js-switch" name="active" id="active" {% if user.active == 1 %}checked{% endif %} />
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div class="card-footer text-end">
+                  <div class="d-flex">
+                    <a href="{{ base_url }}/backoffice/users" class="btn btn-link">Cancel</a>
+                    <button type="button" class="btn btn-primary ms-auto" onclick="action('{% if user_id is null %}new{% else %}{{ user_id}}/update{% endif %}')">
+                      {% if user_id is null %}Save{% else %}Update{% endif %}
+                      <span id="action_cog"></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="{{ base_url }}/assets/js/switchery/dist/switchery.min.css" />
+{% endblock %}
+
+{% block additional_js %}
+<script src="{{ base_url }}/assets/js/user.js?v={{ version }}"></script>
+<script src="{{ base_url }}/assets/js/switchery/dist/switchery.min.js"></script>
+{% endblock %}

@@ -11,13 +11,6 @@
 
     });
 
-    $app->get('/about', function ($request, $response, $args) {
-        
-        $c = new \controllers\static_pages($this,$request, $response, $args);
-        return $c->render_public_page('about');
-        
-    });
-
     $app->get('/pricing', function ($request, $response, $args) {
         
         $c = new \controllers\static_pages($this,$request, $response, $args);
@@ -43,6 +36,13 @@
         
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('blog');
+        
+    });
+
+    $app->get('/blog-details', function ($request, $response, $args) {
+        
+        $c = new \controllers\static_pages($this,$request, $response, $args);
+        return $c->render_public_page('blog_details');
         
     });
     
@@ -105,7 +105,7 @@
         $backoffice->get('', function ($request, $response, $args) {
 
             $c = new \controllers\static_pages($this,$request, $response, $args);
-            return $c->render('backoffice','agent');
+            return $c->render_page('backoffice','agent');
 
         });
 
@@ -168,6 +168,51 @@
 
         });
 
+        $backoffice->group('/user', function (\Slim\Routing\RouteCollectorProxy $user) {
+                
+            $user->get('/new', function ($request, $response, $args) {
+                
+                $c = new \controllers\users($this,$request, $response, $args);
+                return $c->display();
+                
+            });
+                    
+            $user->post('/new', function ($request, $response, $args) {
+                
+                $c = new \controllers\users($this,$request, $response, $args);
+                return $c->insert();
+                
+            });
+                        
+            $user->get('/{id}/update', function ($request, $response, $args) {
+                
+                $id = $args['id'];
+                
+                $c = new \controllers\users($this,$request, $response, $args);
+                return $c->display($id);
+                
+            });
+                            
+            $user->post('/{id}/update', function ($request, $response, $args) {
+                
+                $id = $args['id'];
+                
+                $c = new \controllers\users($this,$request, $response, $args);
+                return $c->update($id);
+                
+            });
+                                
+            $user->get('/{id}/delete', function ($request, $response, $args) {
+                
+                $id = $args['id'];
+                
+                $c = new \controllers\users($this,$request, $response, $args);
+                return $c->delete($id);
+                
+            });
+                                    
+        });
+        
         $backoffice->get('/accounts', function ($request, $response, $args) {
             
             $c = new \controllers\accounts($this,$request, $response, $args);
@@ -257,7 +302,7 @@
     $app->get('/compress-pdf', function ($request, $response, $args) {
 
         $c = new \controllers\static_pages($this,$request, $response, $args);
-        return $c->render('compress_pdf');
+        return $c->render_public_page('compress_pdf');
 
     });
 
@@ -275,7 +320,7 @@
     $app->get('/log-in', function ($request, $response, $args) {
 
         $c = new \controllers\static_pages($this,$request, $response, $args);
-        return $c->render('log_in');
+        return $c->render_public_page('log_in');
 
     });
 
@@ -310,7 +355,7 @@
     $app->get('/sign-up', function ($request, $response, $args) {
 
         $c = new \controllers\static_pages($this,$request, $response, $args);
-        return $c->render('sign_up');
+        return $c->render_public_page('sign_up');
 
     });
 
@@ -331,7 +376,7 @@
     $app->get('/reset-password', function ($request, $response, $args) {
 
         $c = new \controllers\static_pages($this,$request, $response, $args);
-        return $c->render('reset_password');
+        return $c->render_public_page('reset_password');
 
     });
 
