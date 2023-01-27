@@ -114,13 +114,13 @@ $app->add(new \Tuupola\Middleware\JwtAuthentication([
     }
 
     return $request->withAttribute("api_access_token" , $token)
-    ->withAttribute("access_token_id", $token_id);
+                   ->withAttribute("access_token_id", $token_id);
     },
     "error" => function ($response, $arguments) {
-    $result = [
-        "success" => false,
-        "message" => "401 Unauthorized"
-    ];
+        $result = [
+            "success" => false,
+            "message" => "401 Unauthorized"
+        ];
 
     $response->getBody()->write(
         json_encode($result, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)

@@ -1,20 +1,62 @@
 <?php
 
 // =============================================================== //
-// Static Pages                                                    //
+// Static Pages for public pages                                   //
 // =============================================================== //
 
     $app->get('/', function ($request, $response, $args) {
 
         $c = new \controllers\static_pages($this,$request, $response, $args);
-        return $c->render('home');
+        return $c->render_public_page('home');
 
     });
 
+    $app->get('/about', function ($request, $response, $args) {
+        
+        $c = new \controllers\static_pages($this,$request, $response, $args);
+        return $c->render_public_page('about');
+        
+    });
+
+    $app->get('/pricing', function ($request, $response, $args) {
+        
+        $c = new \controllers\static_pages($this,$request, $response, $args);
+        return $c->render_public_page('pricing');
+        
+    });
+
+    $app->get('/team', function ($request, $response, $args) {
+        
+        $c = new \controllers\static_pages($this,$request, $response, $args);
+        return $c->render_public_page('team');
+        
+    });
+            
+    $app->get('/faq', function ($request, $response, $args) {
+        
+        $c = new \controllers\static_pages($this,$request, $response, $args);
+        return $c->render_public_page('faq');
+        
+    });
+
+    $app->get('/blog', function ($request, $response, $args) {
+        
+        $c = new \controllers\static_pages($this,$request, $response, $args);
+        return $c->render_public_page('blog');
+        
+    });
+    
+    $app->get('/contact', function ($request, $response, $args) {
+        
+        $c = new \controllers\static_pages($this,$request, $response, $args);
+        return $c->render_public_page('contact');
+        
+    });
+    
     $app->get('/terms-of-service', function ($request, $response, $args) {
 
         $c = new \controllers\static_pages($this,$request, $response, $args);
-        return $c->render('terms_of_service');
+        return $c->render_public_page('terms_of_service');
 
     });
 
@@ -27,7 +69,7 @@
         $dashboard->get('', function ($request, $response, $args) {
             
             $c = new \controllers\static_pages($this,$request, $response, $args);
-            return $c->render('dashboard','client');
+            return $c->render_page('dashboard','client');
             
         });
 
