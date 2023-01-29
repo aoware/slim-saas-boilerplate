@@ -169,21 +169,7 @@
         });
 
         $backoffice->group('/user', function (\Slim\Routing\RouteCollectorProxy $user) {
-                
-            $user->get('/new', function ($request, $response, $args) {
-                
-                $c = new \controllers\users($this,$request, $response, $args);
-                return $c->display();
-                
-            });
-                    
-            $user->post('/new', function ($request, $response, $args) {
-                
-                $c = new \controllers\users($this,$request, $response, $args);
-                return $c->insert();
-                
-            });
-                        
+                                       
             $user->get('/{id}/update', function ($request, $response, $args) {
                 
                 $id = $args['id'];
@@ -218,6 +204,37 @@
             $c = new \controllers\accounts($this,$request, $response, $args);
             return $c->list();
             
+        });
+
+        $backoffice->group('/account', function (\Slim\Routing\RouteCollectorProxy $account) {
+            
+            $account->get('/{id}/update', function ($request, $response, $args) {
+                
+                $id = $args['id'];
+                
+                $c = new \controllers\accounts($this,$request, $response, $args);
+                return $c->display($id);
+                
+            });
+                            
+            $account->post('/{id}/update', function ($request, $response, $args) {
+                
+                $id = $args['id'];
+                
+                $c = new \controllers\accounts($this,$request, $response, $args);
+                return $c->update($id);
+                
+            });
+                                
+            $account->get('/{id}/delete', function ($request, $response, $args) {
+                
+                $id = $args['id'];
+                
+                $c = new \controllers\accounts($this,$request, $response, $args);
+                return $c->delete($id);
+                
+            });
+                                    
         });
         
         $backoffice->get('/configurations', function ($request, $response, $args) {

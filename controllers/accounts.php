@@ -20,9 +20,17 @@ class accounts extends base_controller {
         
         $recordSet = array();
         foreach($a->recordSet as $a_record) {
-                        
+
+            $actions = [
+                array('label' => 'View/Update' ,'icon' => 'edit'      ,'action' => CONF_base_url . '/backoffice/account/' . $a_record->id . '/update')
+            ];
+            
             $au = new \models\account_users();
             $au->getRecordsByAccount_id($a_record->id);
+            
+            if (count($au->recordSet) == 0) {
+                $actions[] = array('label' => 'Delete'      ,'icon' => 'trash-alt' ,'action' => 'delete_account(' . $a_record->id . ');');
+            }
             
             $record = array(
                 'name'         => $a_record->name,
@@ -30,16 +38,10 @@ class accounts extends base_controller {
                 'users_count'  => count($au->recordSet),
                 'date_created' => $a_record->created,
                 'date_updated' => $a_record->modified,
-                'actions' => array(
-                    array('label' => 'View/Update' ,'icon' => 'edit'      ,'action' => CONF_base_url . '/backoffice/account/' . $a_record->id . '/update') ,
-                    array('label' => 'Delete'      ,'icon' => 'trash-alt' ,'action' => 'delete_account(' . $a_record->id . ');')
-                )
-                
+                'actions'      => $actions
             );
             array_push($recordSet,$record);
-            
             unset($au);
-            
         }
 
         $table = [
@@ -158,7 +160,7 @@ class accounts extends base_controller {
 
     }
 
-    function delete($administrator_id) {
+    function delete($account_id) {
 
         $session = $this->check_login_session();
 
@@ -169,14 +171,14 @@ class accounts extends base_controller {
             return $this->return_json(false,'Session expired. Please login again.');
         }
 
-        $u = new \models\users();
-        $result_delete = $u->deleteRecord($administrator_id);
+        $a = new \models\accounts();
+        $result_delete = $a->deleteRecord($account_id);
 
         if ($result_delete !== true) {
             throw new \Exception($result_delete);
         }
 
-        return $this->return_json(true,'Administrator deleted');
+        return $this->return_json(true,'Account deleted');
 
     }
 

@@ -25,6 +25,7 @@ class users extends base_controller {
                     last_name_crypted,
                     email,
                     active,
+                    (select COUNT(*) FROM account_users WHERE account_users.user_id = a.id) AS 'accounts_count',
                     a.created,
                     a.modified,
                     last_login,
@@ -52,7 +53,7 @@ class users extends base_controller {
             if ($row->active == 1) {
                 $active .= " checked";
             }
-            $active .= " />";
+            $active .= ">";
             
             $record = array(
                 'account'      => "<a href='" . CONF_base_url . "/backoffice/account/" . $row->account_id . "/update'>" . $row->name . "</a>",
@@ -60,6 +61,7 @@ class users extends base_controller {
                 'first_name'   => $ed->decrypt($row->first_name_crypted),
                 'last_name'    => $ed->decrypt($row->last_name_crypted),
                 'active'       => $active,
+                'accounts'     => $row->accounts_count,
                 'date_created' => date('Y-m-d H:i:s',strtotime($row->created)),
                 'date_updated' => $date_updated,
                 'last_login'   => $last_login,
@@ -75,15 +77,16 @@ class users extends base_controller {
         
         $table = [
             'columns' => [
-                ['name' => 'Account'   ,'sortable' => true],
-                ['name' => 'Email'     ,'sortable' => true],
-                ['name' => 'First Name','sortable' => true],
-                ['name' => 'Last Name' ,'sortable' => true],
-                ['name' => 'Active'    ,'sortable' => true],
-                ['name' => 'Created'   ,'sortable' => true],
-                ['name' => 'Updated'   ,'sortable' => true],
-                ['name' => 'Last Login','sortable' => true],
-                ['name' => 'Actions'   ,'sortable' => false]
+                ['name' => 'Account'       ,'sortable' => true],
+                ['name' => 'Email'         ,'sortable' => true],
+                ['name' => 'First Name'    ,'sortable' => true],
+                ['name' => 'Last Name'     ,'sortable' => true],
+                ['name' => 'Active'        ,'sortable' => true],
+                ['name' => 'Accounts Count','sortable' => true],
+                ['name' => 'Created'       ,'sortable' => true],
+                ['name' => 'Updated'       ,'sortable' => true],
+                ['name' => 'Last Login'    ,'sortable' => true],
+                ['name' => 'Actions'       ,'sortable' => false]
             ],
             'recordset'      => $recordSet,
             'new_record_url' => null
@@ -203,6 +206,13 @@ class users extends base_controller {
             return $this->return_json(false,'Session expired. Please login again.');
         }
 
+        $au = new \models\account_users();
+        $result_delete = $au->deleteRecordByUser_id($user_id);
+        
+        if ($result_delete !== true) {
+            throw new \Exception($result_delete);
+        }
+        
         $u = new \models\users();
         $result_delete = $u->deleteRecord($user_id);
 
