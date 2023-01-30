@@ -6,10 +6,13 @@
         <div class="card card-md">
           <div class="card-body">
             <h2 class="h2 text-center mb-4">Login to your account</h2>
-			<div class="alert alert-success" role="alert">
+			<div class="alert alert-success" role="alert" id="verification_alert">
 			  <h4 class="alert-title">Email Verification</h4>
 			  <p>Thanks for confirming your email address. You are now ready to use your account.
 			</div>
+			<div class="alert alert-danger d-none" role="alert" id="error">
+			  <h4 class="alert-title" id="error_message"></h4>
+			</div>			
             <div>
               <div class="mb-3">
                 <label class="form-label">Email address</label>

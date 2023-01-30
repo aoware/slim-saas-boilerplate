@@ -41,6 +41,7 @@ function login(channel) {
     			$('#login_button').prop('disabled', false);
 
                 if (result.success === false) {
+					$('#verification_alert').addClass("d-none").hide();
                 	$("#email").addClass("is-invalid");
                 	$("#password").addClass("is-invalid");
                 	$('#error_message').text(result.message);

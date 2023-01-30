@@ -181,10 +181,10 @@ class login extends base_controller {
 
         switch($u_record->type) {
             case 'agent' :
-                $redirection = 'backoffice';
+                $redirection = '/backoffice';
                 break;
             case 'client' :
-                $redirection = 'dashboard';
+                $redirection = '/dashboard';
                 break;
         }
 
@@ -300,7 +300,7 @@ class login extends base_controller {
                 $u->picture            = $u_record->picture;
                 $u->link               = $u_record->link;
                 $u->type               = $u_record->type;
-                $u->active             = $u_record->active;
+                $u->active             = 1;
                 $u->created            = $u_record->created;
                 $u->modified           = $u_record->modified;
                 $u->last_login         = $u_record->last_login;
@@ -318,7 +318,7 @@ class login extends base_controller {
 
             }
 
-            return $this->return_html("verify_confirmed.html");
+            return $this->return_html('brands/' . CONF_public_brand . '/verify_confirmed.html');
         }
         else {
             return $this->return_html("log_inx.html");
