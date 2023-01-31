@@ -63,7 +63,7 @@ INSERT INTO `config_value` (`id`, `config_definition_id`, `profile`, `effective_
 (13,    13,  'Live', NULL,   NULL,   '', ''),
 (14,    14,  'Live', NULL,   NULL,   '', 'true'),
 (15,    14,  'Test', NULL,   NULL,   '', 'false'),
-(16,    15,  'Test', NULL,   NULL,   '', 'ThisIsAnEncryptionKey');
+(16,    15,  'Live', NULL,   NULL,   '', 'ThisIsAnEncryptionKey');
 
 CREATE TABLE `emails` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
