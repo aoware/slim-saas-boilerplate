@@ -50,7 +50,7 @@
                   </li>
                   <li class="nav-item">
                     <a class="ud-menu-scroll" href="{{ base_url }}/faq">FAQ</a>
-                  </li>                                    
+                  </li>
                   <li class="nav-item">
                     <a class="ud-menu-scroll" href="{{ base_url }}/contact">Contact</a>
                   </li>
@@ -59,12 +59,12 @@
 
               <div class="navbar-btn d-none d-sm-inline-block">
                 {% if is_logged is same as(true) %}
-                {% if user_type == 'client' %}
+                {% if current_user_type == 'client' %}
                 <a class="ud-main-btn ud-white-btn" href="/dashboard">
                   Go to Dashboard
                 </a>
                 {% endif %}
-                {% if user_type == 'agent' %}
+                {% if current_user_type == 'agent' %}
                 <a class="ud-main-btn ud-white-btn" href="/backoffice">
                   Go to Backoffice
                 </a>

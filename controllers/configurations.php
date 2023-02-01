@@ -6,15 +6,6 @@ class configurations extends base_controller {
 
     function list() {
 
-        $session = $this->check_login_session();
-
-        if ($session['is_logged'] === false) {
-            return $this->return_redirection(CONF_base_url);
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_redirection(CONF_base_url);
-        }
-
         $cd = new \models\config_definition;
         $cd->getAllRecords();
 
@@ -74,15 +65,6 @@ class configurations extends base_controller {
 
     function display($definition_id = null) {
 
-        $session = $this->check_login_session();
-
-        if ($session['is_logged'] === false) {
-            return $this->return_redirection(CONF_base_url);
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_redirection(CONF_base_url);
-        }
-
         if (is_null($definition_id)) {
             $cd_record = null;
             $table     = null;
@@ -135,68 +117,50 @@ class configurations extends base_controller {
     }
 
     function update($definition_id) {
-        
+
         $post_variables = $this->request->getParsedBody();
-        
-        $session = $this->check_login_session();
-        
-        if ($session['is_logged'] === false) {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-                
+
         $cd = new \models\config_definition();
         $cd->getRecordById($definition_id);
-        
+
         $cd_record   = $cd->recordSet[0];
         $cd->group   = $post_variables['group'];
         $cd->name    = $post_variables['name'];
         $cd->type    = $post_variables['type'];
         $cd->comment = $post_variables['comment'];
-        
+
         $result_update = $cd->updateRecord($definition_id);
-        
+
         if ($result_update !== true) {
             throw new \Exception($result_update);
         }
-        
+
         $data = [
             'redirection' => CONF_base_url . "/backoffice/configurations"
         ];
-        
+
         return $this->return_json(true,'Configuration Definition updated',$data);
-        
+
     }
-    
+
     function delete($definition_id) {
-        
-        $session = $this->check_login_session();
-        
-        if ($session['is_logged'] === false) {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-        
+
         $cv = new \models\config_value();
         $result_delete = $cv->deleteRecordByConfig_definition_id($definition_id);
-        
+
         if ($result_delete !== true) {
             throw new \Exception($result_delete);
         }
 
         $cd = new \models\config_definition();
         $result_delete = $cd->deleteRecord($definition_id);
-        
+
         if ($result_delete !== true) {
             throw new \Exception($result_delete);
         }
-        
+
         return $this->return_json(true,'Configuration Definition deleted');
-        
+
     }
-    
+
 }

@@ -5,28 +5,19 @@ namespace controllers;
 class administrators extends base_controller {
 
     function list() {
-       
-        $session = $this->check_login_session();
-        
-        if ($session['is_logged'] === false) {
-            return $this->return_redirection(CONF_base_url);
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_redirection(CONF_base_url);
-        }
-        
+
         $u = new \models\users();
         $u->getRecordsByType('agent');
-        
+
         $recordSet = array();
         foreach($u->recordSet as $u_record) {
-            
+
             $active = "<input type='checkbox' class='js-switch' disabled";
             if ($u_record->active == 1) {
                 $active .= " checked";
             }
             $active .= " />";
-            
+
             $record = array(
                 'email'        => $u_record->email,
                 'first_name'   => $u_record->first_name,
@@ -39,12 +30,12 @@ class administrators extends base_controller {
                     array('label' => 'View/Update' ,'icon' => 'edit'      ,'action' => CONF_base_url . '/backoffice/administrator/' . $u_record->id . '/update') ,
                     array('label' => 'Delete'      ,'icon' => 'trash-alt' ,'action' => 'delete_administrator(' . $u_record->id . ');')
                 )
-                
+
             );
             array_push($recordSet,$record);
-            
+
         }
-        
+
         $table = [
             'columns' => [
                 ['name' => 'Email'     ,'sortable' => true],
@@ -59,24 +50,15 @@ class administrators extends base_controller {
             'recordset'      => $recordSet,
             'new_record_url' => '/backoffice/administrator/new'
         ];
-        
+
         return $this->return_html('administrators_list.html',[
             'users_table'  => $table
         ]);
-        
+
     }
-    
+
     function display($administrator_id = null) {
-        
-        $session = $this->check_login_session();
-        
-        if ($session['is_logged'] === false) {
-            return $this->return_redirection(CONF_base_url);
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_redirection(CONF_base_url);
-        }
-        
+
         if (is_null($administrator_id)) {
             $u_record = null;
         }
@@ -85,48 +67,39 @@ class administrators extends base_controller {
             $u->getRecordById($administrator_id);
             $u_record = $u->recordSet[0];
         }
-        
+
         return $this->return_html('administrator_display.html',[
             'administrator_id'  => $administrator_id,
             'administrator'     => $u_record
         ]);
-        
+
     }
 
     function insert() {
-        
+
         $post_variables = $this->request->getParsedBody();
-        
-        $session = $this->check_login_session();
-        
-        if ($session['is_logged'] === false) {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-        
+
         $ev = new \helpers\email_validation;
         $result_ev = $ev->validate($post_variables['email']);
-        
+
         // If email is valid, let's check if already in the DB
         if ($result_ev['validation'] === false) {
             return $this->return_json(false,"Invalid email");
         }
-        
+
         $u = new \models\users();
         $u->getRecordByEmail($post_variables['email']);
         if (count($u->recordSet) > 0) {
             return $this->return_json(false,"User already registered");
         }
-        
+
         $active = 0;
         if (isset($post_variables['active'])) {
             if ($post_variables['active'] == 'on') {
                 $active = 1;
             }
         }
-        
+
         $u->oauth_provider     = 'email';
         $u->oauth_uid          = $post_variables['email'];
         $u->password           = '';
@@ -146,37 +119,28 @@ class administrators extends base_controller {
         $u->verification_date  = null;
         $u->verification_ip    = null;
         $u->login_token        = null;
-        
+
         $result_save = $u->saveRecord();
-        
+
         if ($result_save !== true) {
             throw new \Exception($result_save);
         }
-        
+
         $data = [
             'redirection' => CONF_base_url . "/backoffice/administrators"
         ];
-        
+
         return $this->return_json(true,'Administrator created',$data);
-        
+
     }
-    
+
     function update($administrator_id) {
-        
+
         $post_variables = $this->request->getParsedBody();
-        
-        $session = $this->check_login_session();
-        
-        if ($session['is_logged'] === false) {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-        
+
         $ev = new \helpers\email_validation;
         $result_ev = $ev->validate($post_variables['email']);
-        
+
         // If email is valid, let's check if already in the DB
         if ($result_ev['validation'] === false) {
             return $this->return_json(false,"Invalid email");
@@ -189,20 +153,20 @@ class administrators extends base_controller {
                 return $this->return_json(false,"User already registered");
             }
         }
-        
+
         $result_read = $u->getRecordById($administrator_id);
-        
+
         if ($result_read !== true) {
             throw new \Exception($result_read);
         }
-        
+
         $active = 0;
         if (isset($post_variables['active'])) {
             if ($post_variables['active'] == 'on') {
                 $active = 1;
             }
         }
-        
+
         $u_record = $u->recordSet[0];
         $u->oauth_provider     = $u_record->oauth_provider;
         $u->oauth_uid          = $u_record->oauth_uid;
@@ -225,39 +189,30 @@ class administrators extends base_controller {
         $u->login_token        = $u_record->login_token;
 
         $result_update = $u->updateRecord($administrator_id);
-        
+
         if ($result_update !== true) {
             throw new \Exception($result_update);
         }
-        
+
         $data = [
             'redirection' => CONF_base_url . "/backoffice/administrators"
         ];
-        
+
         return $this->return_json(true,'Administrator updated',$data);
-        
+
     }
-    
+
     function delete($administrator_id) {
-        
-        $session = $this->check_login_session();
-        
-        if ($session['is_logged'] === false) {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-        
+
         $u = new \models\users();
         $result_delete = $u->deleteRecord($administrator_id);
-        
+
         if ($result_delete !== true) {
             throw new \Exception($result_delete);
         }
-        
+
         return $this->return_json(true,'Administrator deleted');
-        
+
     }
-    
+
 }

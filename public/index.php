@@ -82,54 +82,66 @@ $app = \Slim\Factory\AppFactory::create();
 $app->addBodyParsingMiddleware();
 
 $session_middleware = function ($request, $handler): \Psr\Http\Message\ResponseInterface {
-    
+
     $route_context = \Slim\Routing\RouteContext::fromRequest($request);
     $route = $route_context->getRoute();
-    
+
     if (empty($route)) {
         throw new \Slim\Exception\HttpNotFoundException($request, $response);
     }
-    
+
     $route_name    = $route->getName();
     $route_pattern = $route->getPattern();
     $public_routes = array('public_page','api','special_file'); // List of routes that do not require a SESSION Token, therefore not redirected
     $route_parser  = $route_context->getRouteParser();
-    
+
     if (empty($_SESSION['login_token'])) {
         if (in_array($route_name, $public_routes)) {
-            return $handler->handle($request);
+            return $handler->handle(
+                $request->withAttribute("is_logged"           , false)
+                        ->withAttribute("current_user_id"     , null)
+                        ->withAttribute("current_user_name"   , null)
+                        ->withAttribute("current_user_picture", null)
+                        ->withAttribute("current_user_type"   , null)
+                        ->withAttribute("current_account_id"  , null)
+                        ->withAttribute("current_account_name", null)
+                        ->withAttribute("web_session_log_id"  , null)
+                );
         }
         else {
             $response = new \Slim\Psr7\Response();
             return $response->withHeader('Location', '/log-in')->withStatus(302);
         }
     }
-    
+
     // Checking if it is a valid existing session
     $user = new \models\users();
     $user->getRecordByLogin_token($_SESSION['login_token']);
-   
+
     if (count($user->recordSet) == 0) {
         $response = $handler->handle(
-            $request->withAttribute("current_user_id"        , null)
-                    ->withAttribute("current_user_first_name", null)
-                    ->withAttribute("current_user_last_name" , null)
-                    ->withAttribute("current_user_type"      , null)
-                    ->withAttribute("web_session_log_id"     , null)
+            $request->withAttribute("is_logged"           , false)
+                    ->withAttribute("current_user_id"     , null)
+                    ->withAttribute("current_user_name"   , null)
+                    ->withAttribute("current_user_picture", null)
+                    ->withAttribute("current_user_type"   , null)
+                    ->withAttribute("current_account_id"  , null)
+                    ->withAttribute("current_account_name", null)
+                    ->withAttribute("web_session_log_id"  , null)
             );
     }
     else {
-        
+
         // Creating an entry in the web_session_log table
         $h = new \helpers\headers($request);
-        
+
         $method       = $request->getMethod();
         $content_type = $h->get_content_type();
         $payload      = serialize($request->getParsedBody());
         if ($payload == "N;") {
             $payload = null;
         }
-        
+
         $endpoint = $request->getUri();
         $endpoint = str_replace(CONF_base_url . ':80','',$endpoint); // required as apache behind cloudflare seems to add the port
         $endpoint = str_replace(CONF_base_url,'',$endpoint);
@@ -148,32 +160,45 @@ $session_middleware = function ($request, $handler): \Psr\Http\Message\ResponseI
         $wsl->created_timestamp = date('Y-m-d H:i:s');
         $wsl->amended_timestamp = date('Y-m-d H:i:s');
         $result = $wsl->saveRecord();
-        
+
         if ($result !== true) {
             throw new \Exception($result);
         }
         */
-        
-        $this->template_options['is_logged']    = false;
-        $this->template_options['user_type']    = null;
-        $this->template_options['user_id']      = null;
-        $this->template_options['user_name']    = null;
-        $this->template_options['user_picture'] = null;
-        $this->template_options['account_id']   = null;
-        $this->template_options['account_name'] = null;
-        
+
+        if ($user->picture == '') {
+            $user->picture = "https://eu.ui-avatars.com/api/?background=0D8ABC&color=fff&size=250&name=" . urlencode(trim($user->first_name . ' ' . $user->last_name));
+        }
+
+        /*
+        if ($user->type == 'client') {
+
+            $query = "SELECT *
+                              FROM account_users as a , accounts as b
+                              WHERE a.account_id = b.id
+                              and a.user_id = %i";
+            $query_result = $this->dbal->query($query, $u_record->id);
+            $agent = $query_result->fetch();
+
+            $this->template_options['account_id']   = $agent->id;
+            $this->template_options['account_name'] = $agent->name;
+        }
+        */
         $response = $handler->handle(
-            $request->withAttribute("current_user_id"        , $user->id)
-                    ->withAttribute("current_user_first_name", $user->first_name)
-                    ->withAttribute("current_user_last_name" , $user->last_name)
-                    ->withAttribute("current_user_type"      , $user->type)
-                    ->withAttribute("web_session_log_id"     , null)
+            $request->withAttribute("is_logged"           , true)
+                    ->withAttribute("current_user_id"     , $user->id)
+                    ->withAttribute("current_user_name"   , trim($user->first_name . ' ' . $user->last_name))
+                    ->withAttribute("current_user_picture", $user->picture)
+                    ->withAttribute("current_user_type"   , $user->type)
+                    ->withAttribute("current_account_id"  , $user->id)
+                    ->withAttribute("current_account_name", trim($user->first_name . ' ' . $user->last_name))
+                    ->withAttribute("web_session_log_id"  , null)
             );
-        
+
     }
-    
+
     return $response;
-    
+
 };
 
 $app->add($session_middleware);

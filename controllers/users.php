@@ -6,15 +6,6 @@ class users extends base_controller {
 
     function list() {
 
-        $session = $this->check_login_session();
-
-        if ($session['is_logged'] === false) {
-            return $this->return_redirection(CONF_base_url);
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_redirection(CONF_base_url);
-        }
-
         $ed = new \helpers\encrypt_decrypt;
 
         $recordSet = array();
@@ -54,7 +45,7 @@ class users extends base_controller {
                 $active .= " checked";
             }
             $active .= ">";
-            
+
             $record = array(
                 'account'      => "<a href='" . CONF_base_url . "/backoffice/account/" . $row->account_id . "/update'>" . $row->name . "</a>",
                 'email'        => $row->email,
@@ -74,7 +65,7 @@ class users extends base_controller {
             array_push($recordSet,$record);
 
         }
-        
+
         $table = [
             'columns' => [
                 ['name' => 'Account'       ,'sortable' => true],
@@ -100,15 +91,6 @@ class users extends base_controller {
 
     function display($user_id = null) {
 
-        $session = $this->check_login_session();
-
-        if ($session['is_logged'] === false) {
-            return $this->return_redirection(CONF_base_url);
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_redirection(CONF_base_url);
-        }
-
         if (is_null($user_id)) {
             $u_record = null;
         }
@@ -128,15 +110,6 @@ class users extends base_controller {
     function update($user_id) {
 
         $post_variables = $this->request->getParsedBody();
-
-        $session = $this->check_login_session();
-
-        if ($session['is_logged'] === false) {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
 
         $ev = new \helpers\email_validation;
         $result_ev = $ev->validate($post_variables['email']);
@@ -197,22 +170,13 @@ class users extends base_controller {
 
     function delete($user_id) {
 
-        $session = $this->check_login_session();
-
-        if ($session['is_logged'] === false) {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-
         $au = new \models\account_users();
         $result_delete = $au->deleteRecordByUser_id($user_id);
-        
+
         if ($result_delete !== true) {
             throw new \Exception($result_delete);
         }
-        
+
         $u = new \models\users();
         $result_delete = $u->deleteRecord($user_id);
 

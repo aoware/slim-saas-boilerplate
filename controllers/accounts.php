@@ -6,32 +6,23 @@ class accounts extends base_controller {
 
     function list() {
 
-        $session = $this->check_login_session();
-
-        if ($session['is_logged'] === false) {
-            return $this->return_redirection(CONF_base_url);
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_redirection(CONF_base_url);
-        }
-
         $a = new \models\accounts();
         $a->getAllRecords();
-        
+
         $recordSet = array();
         foreach($a->recordSet as $a_record) {
 
             $actions = [
                 array('label' => 'View/Update' ,'icon' => 'edit'      ,'action' => CONF_base_url . '/backoffice/account/' . $a_record->id . '/update')
             ];
-            
+
             $au = new \models\account_users();
             $au->getRecordsByAccount_id($a_record->id);
-            
+
             if (count($au->recordSet) == 0) {
                 $actions[] = array('label' => 'Delete'      ,'icon' => 'trash-alt' ,'action' => 'delete_account(' . $a_record->id . ');');
             }
-            
+
             $record = array(
                 'name'         => $a_record->name,
                 'slug'         => $a_record->slug,
@@ -65,15 +56,6 @@ class accounts extends base_controller {
 
     function display($administrator_id = null) {
 
-        $session = $this->check_login_session();
-
-        if ($session['is_logged'] === false) {
-            return $this->return_redirection(CONF_base_url);
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_redirection(CONF_base_url);
-        }
-
         if (is_null($administrator_id)) {
             $u_record = null;
         }
@@ -93,15 +75,6 @@ class accounts extends base_controller {
     function update($administrator_id) {
 
         $post_variables = $this->request->getParsedBody();
-
-        $session = $this->check_login_session();
-
-        if ($session['is_logged'] === false) {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
 
         $ev = new \helpers\email_validation;
         $result_ev = $ev->validate($post_variables['email']);
@@ -161,15 +134,6 @@ class accounts extends base_controller {
     }
 
     function delete($account_id) {
-
-        $session = $this->check_login_session();
-
-        if ($session['is_logged'] === false) {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
-        if ($session['user_type'] !== 'agent') {
-            return $this->return_json(false,'Session expired. Please login again.');
-        }
 
         $a = new \models\accounts();
         $result_delete = $a->deleteRecord($account_id);

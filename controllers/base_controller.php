@@ -4,7 +4,25 @@ namespace controllers;
 
 class base_controller {
 
+    protected $is_logged;
+    protected $current_user_id;
+    protected $current_user_name;
+    protected $current_user_picture;
+    protected $current_user_type;
+    protected $current_account_id;
+    protected $current_account_name;
+    protected $web_session_log_id;
+
     function __construct($app, $request, $response, $args) {
+
+        $this->is_logged            = $request->getAttribute("is_logged");
+        $this->current_user_id      = $request->getAttribute("current_user_id");
+        $this->current_user_name    = $request->getAttribute("current_user_name");
+        $this->current_user_picture = $request->getAttribute("current_user_picture");
+        $this->current_user_type    = $request->getAttribute("current_user_type");
+        $this->current_account_id   = $request->getAttribute("current_account_id");
+        $this->current_account_name = $request->getAttribute("current_account_name");
+        $this->web_session_log_id   = $request->getAttribute("web_session_log_id");
 
         $this->app                      = $app;
         $this->request                  = $request;
@@ -15,6 +33,19 @@ class base_controller {
         $this->view                     = $this->app->get('twig');
         $this->template_options         = $this->app->get('template_options');
         $this->email_template_processor = $this->app->get('email_template');
+
+        $this->template_options = array_merge($this->app->get('template_options'),
+            [
+                'is_logged'            => $this->is_logged,
+                'current_user_id'      => $this->current_user_id,
+                'current_user_name'    => $this->current_user_name,
+                'current_user_picture' => $this->current_user_picture,
+                'current_user_type'    => $this->current_user_type,
+                'current_account_id'   => $this->current_account_id,
+                'current_account_name' => $this->current_account_name,
+                'web_session_log_id'   => $this->web_session_log_id
+            ]
+            );
 
     }
 

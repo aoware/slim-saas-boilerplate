@@ -9,7 +9,7 @@
     <link href="{{ base_url }}/assets/css/tabler_custom.css?v={{ version }}" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
     <script src="{{ base_url }}/assets/js/jquery-3.6.0.min.js"></script>
-    {% block additional_css %}{% endblock %}    
+    {% block additional_css %}{% endblock %}
     <style>
       @import url('https://rsms.me/inter/inter.css');
       :root {
@@ -132,10 +132,10 @@
             </div>
             <div class="nav-item dropdown">
               <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
-                <span class="avatar avatar-sm" style="background-image: url({{ user_picture }})"></span>
+                <span class="avatar avatar-sm" style="background-image: url({{ current_user_picture }})"></span>
                 <div class="d-none d-xl-block ps-2">
-                  <div>{{ user_name }}</div>
-                  <div class="mt-1 small text-muted">{{ account_name }}</div>
+                  <div>{{ current_user_name }}</div>
+                  <div class="mt-1 small text-muted">{{ current_account_name }}</div>
                 </div>
               </a>
               <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
@@ -143,7 +143,7 @@
                 <div class="dropdown-divider"></div>
                 <a href="{{ base_url }}/log-out" class="dropdown-item">Logout</a>
               </div>
-            </div>                     
+            </div>
           </div>
           <div class="collapse navbar-collapse" id="navbar-menu">
             <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
