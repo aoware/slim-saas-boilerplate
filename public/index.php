@@ -79,12 +79,109 @@ $container->set('dbal', function() {
 // Create App
 $app = \Slim\Factory\AppFactory::create();
 
-$app->addRoutingMiddleware();
-
 $app->addBodyParsingMiddleware();
 
+$session_middleware = function ($request, $handler): \Psr\Http\Message\ResponseInterface {
+    
+    $route_context = \Slim\Routing\RouteContext::fromRequest($request);
+    $route = $route_context->getRoute();
+    
+    if (empty($route)) {
+        throw new \Slim\Exception\HttpNotFoundException($request, $response);
+    }
+    
+    $route_name    = $route->getName();
+    $route_pattern = $route->getPattern();
+    $public_routes = array('public_page','api','special_file'); // List of routes that do not require a SESSION Token, therefore not redirected
+    $route_parser  = $route_context->getRouteParser();
+    
+    if (empty($_SESSION['login_token'])) {
+        if (in_array($route_name, $public_routes)) {
+            return $handler->handle($request);
+        }
+        else {
+            $response = new \Slim\Psr7\Response();
+            return $response->withHeader('Location', '/log-in')->withStatus(302);
+        }
+    }
+    
+    // Checking if it is a valid existing session
+    $user = new \models\users();
+    $user->getRecordByLogin_token($_SESSION['login_token']);
+   
+    if (count($user->recordSet) == 0) {
+        $response = $handler->handle(
+            $request->withAttribute("current_user_id"        , null)
+                    ->withAttribute("current_user_first_name", null)
+                    ->withAttribute("current_user_last_name" , null)
+                    ->withAttribute("current_user_type"      , null)
+                    ->withAttribute("web_session_log_id"     , null)
+            );
+    }
+    else {
+        
+        // Creating an entry in the web_session_log table
+        $h = new \helpers\headers($request);
+        
+        $method       = $request->getMethod();
+        $content_type = $h->get_content_type();
+        $payload      = serialize($request->getParsedBody());
+        if ($payload == "N;") {
+            $payload = null;
+        }
+        
+        $endpoint = $request->getUri();
+        $endpoint = str_replace(CONF_base_url . ':80','',$endpoint); // required as apache behind cloudflare seems to add the port
+        $endpoint = str_replace(CONF_base_url,'',$endpoint);
+
+        // die("POLLUX mark the spot " . count($user->recordSet));
+        /*
+        $wsl = new \models\web_session_log();
+        $wsl->session_token     = $_SESSION['token'];
+        $wsl->user_id           = $user->id;
+        $wsl->ip                = $h->get_ip();
+        $wsl->endpoint          = $endpoint;
+        $wsl->method            = $method;
+        $wsl->content_type      = $content_type;
+        $wsl->payload           = $payload;
+        $wsl->http_result_code  = null;
+        $wsl->created_timestamp = date('Y-m-d H:i:s');
+        $wsl->amended_timestamp = date('Y-m-d H:i:s');
+        $result = $wsl->saveRecord();
+        
+        if ($result !== true) {
+            throw new \Exception($result);
+        }
+        */
+        
+        $this->template_options['is_logged']    = false;
+        $this->template_options['user_type']    = null;
+        $this->template_options['user_id']      = null;
+        $this->template_options['user_name']    = null;
+        $this->template_options['user_picture'] = null;
+        $this->template_options['account_id']   = null;
+        $this->template_options['account_name'] = null;
+        
+        $response = $handler->handle(
+            $request->withAttribute("current_user_id"        , $user->id)
+                    ->withAttribute("current_user_first_name", $user->first_name)
+                    ->withAttribute("current_user_last_name" , $user->last_name)
+                    ->withAttribute("current_user_type"      , $user->type)
+                    ->withAttribute("web_session_log_id"     , null)
+            );
+        
+    }
+    
+    return $response;
+    
+};
+
+$app->add($session_middleware);
+
+$app->addRoutingMiddleware();
+
 // Add Twig-View Middleware
-$app->add(\Slim\Views\TwigMiddleware::createFromContainer($app,'twig'));
+// $app->add(\Slim\Views\TwigMiddleware::createFromContainer($app,'twig'));
 
 // Add
 $app->add(new \Tuupola\Middleware\JwtAuthentication([
@@ -166,9 +263,9 @@ $custom_error_handler = function (
 };
 
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
-if (CONF_configuration_profile == 'Live') {
+//if (CONF_configuration_profile == 'Live') {
     $errorMiddleware->setDefaultErrorHandler($custom_error_handler);
-}
+//}
 
 // Define all the routes
 require_once('../routes.php');

@@ -5,63 +5,47 @@
 // =============================================================== //
 
     $app->get('/', function ($request, $response, $args) {
-
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('home');
-
-    });
+    })->setName('public_page');
 
     $app->get('/pricing', function ($request, $response, $args) {
-        
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('pricing');
-        
-    });
+    })->setName('public_page');
 
     $app->get('/team', function ($request, $response, $args) {
-        
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('team');
-        
-    });
+    })->setName('public_page');
             
     $app->get('/faq', function ($request, $response, $args) {
-        
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('faq');
-        
-    });
+    })->setName('public_page');
 
     $app->get('/blog', function ($request, $response, $args) {
-        
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('blog');
-        
-    });
+    })->setName('public_page');
 
     $app->get('/blog-details', function ($request, $response, $args) {
-        
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('blog_details');
-        
-    });
+    })->setName('public_page');
     
     $app->get('/contact', function ($request, $response, $args) {
-        
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('contact');
-        
-    });
+    })->setName('public_page');
     
     $app->get('/terms-of-service', function ($request, $response, $args) {
-
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('terms_of_service');
-
-    });
+    })->setName('public_page');
 
 // =============================================================== //
-// Backoffice pages                                                //
+// Dashboard pages - Client area                                   //
 // =============================================================== //
 
     $app->group('/dashboard', function (\Slim\Routing\RouteCollectorProxy $dashboard) {
@@ -97,7 +81,7 @@
     });
     
 // =============================================================== //
-// Backoffice pages                                                //
+// Backoffice pages - Administration area                          //
 // =============================================================== //
 
     $app->group('/backoffice', function (\Slim\Routing\RouteCollectorProxy $backoffice) {
@@ -339,77 +323,77 @@
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('log_in');
 
-    });
+    })->setName('public_page');
 
     $app->get('/log-in/github', function ($request, $response, $args) {
 
         $c = new \controllers\login($this,$request, $response, $args);
         return $c->login_github();
 
-    });
+    })->setName('public_page');
 
     $app->get('/log-in/google', function ($request, $response, $args) {
 
         $c = new \controllers\login($this,$request, $response, $args);
         return $c->login_google();
 
-    });
+    })->setName('public_page');
 
     $app->get('/log-in/facebook', function ($request, $response, $args) {
 
         $c = new \controllers\login($this,$request, $response, $args);
         return $c->login_facebook();
 
-    });
+    })->setName('public_page');
 
     $app->post('/log-in/email', function ($request, $response, $args) {
 
         $c = new \controllers\login($this,$request, $response, $args);
         return $c->login_email();
 
-    });
+    })->setName('public_page');
 
     $app->get('/sign-up', function ($request, $response, $args) {
 
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('sign_up');
 
-    });
+    })->setName('public_page');
 
     $app->post('/sign-up', function ($request, $response, $args) {
 
         $c = new \controllers\login($this,$request, $response, $args);
         return $c->sign_up();
 
-    });
+    })->setName('public_page');
 
     $app->post('/sign-up/email-validation', function ($request, $response, $args) {
 
         $c = new \controllers\login($this,$request, $response, $args);
         return $c->email_validation();
 
-    });
+    })->setName('public_page');
 
     $app->get('/reset-password', function ($request, $response, $args) {
 
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('reset_password');
 
-    });
+    })->setName('public_page');
 
     $app->post('/reset-password', function ($request, $response, $args) {
 
         $c = new \controllers\login($this,$request, $response, $args);
         return $c->reset_password();
 
-    });
+    })->setName('public_page');
 
     $app->post('/set-password', function ($request, $response, $args) {
 
         $c = new \controllers\login($this,$request, $response, $args);
         return $c->set_password();
 
-    });
+    })->setName('public_page');
 
     $app->get('/set-password/{token}', function ($request, $response, $args) {
 
@@ -418,14 +402,14 @@
         $c = new \controllers\login($this,$request, $response, $args);
         return $c->verify_password_token($token);
 
-    });
+    })->setName('public_page');
 
     $app->get('/verify', function ($request, $response, $args) {
 
         $c = new \controllers\login($this,$request, $response, $args);
         return $c->verify();
 
-    });
+    })->setName('public_page');
 
     $app->get('/verify/{token}', function ($request, $response, $args) {
 
@@ -434,7 +418,7 @@
         $c = new \controllers\login($this,$request, $response, $args);
         return $c->verify($token);
 
-    });
+    })->setName('public_page');
 
     $app->get('/log-out', function ($request, $response, $args) {
 
@@ -467,15 +451,11 @@
 // =============================================================== //
 
     $app->get('/site.webmanifest', function ($request, $response, $args) {
-
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_manifest();
-
-    });
+    })->setName('special_file');
 
     $app->get('/global.js', function ($request, $response, $args) {
-
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_global();
-
-    });
+    })->setName('special_file');
