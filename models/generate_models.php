@@ -254,7 +254,7 @@ function generateModel($table,$schema,$mysql_major_version) {
     $modelTemplate .= addUpdate($table,$keyName,$keyType,$columnsMysqlUpdateList,$columnsMysqlUpdateType,$columnsMysqlUpdateBind,$crypted_columns,$columns);
     $modelTemplate .= addDelete($table,$keyName,$keyType);
     $modelTemplate .= addDeleteAllRecords($table);
-    $modelTemplate .= addEnd($customCodeFlag,$customCode,$customCodeStart,$customCodeEnd,$columnsPropertiesSample);
+    $modelTemplate .= addEnd($customCodeFlag,$customCode,$customCodeStart,$customCodeEnd,$columnsPropertiesSample,$enumsDefinitions);
 
     // Save the model
     file_put_contents($table.".php",$modelTemplate);
@@ -487,14 +487,20 @@ function addGetMultiple($keyNameCamelCase,$columnsMysqlList,$table,$array_keyNam
         $plural = 's';
     }
 
-    $code  = '    function getRecord' . $plural . 'By' . $keyNameCamelCase . '(' . $keys . ',$orderBy = "") {' . "\r\n";
+    $code  = '    function getRecord' . $plural . 'By' . $keyNameCamelCase . '(' . $keys;
+    if ($non_unique == 1) {
+        $code .= ',$orderBy = ""';
+    }
+    $code .= ') {' . "\r\n";
     $code .= "\r\n";
     $code .= '        $sql = "SELECT ' . $columnsMysqlList . ' FROM `' . $table . '` WHERE ' . $selection . '";' . "\r\n";
     $code .= "\r\n";
-    $code .= '        if ($orderBy != "") {' . "\r\n";
-    $code .= '            $sql .= " order by " . $orderBy;' . "\r\n";
-    $code .= '        }' . "\r\n";
-    $code .= "\r\n";
+    if ($non_unique == 1) {
+        $code .= '        if ($orderBy != "") {' . "\r\n";
+        $code .= '            $sql .= " order by " . $orderBy;' . "\r\n";
+        $code .= '        }' . "\r\n";
+        $code .= "\r\n";
+    }
     $code .= '        $stmt = $this->mysqli->prepare($sql);' . "\r\n";
     $code .= '        if ($stmt === false) {' . "\r\n";
     $code .= '            return "MYSQL PREPARE ERROR : " . $this->mysqli->error;' . "\r\n";
@@ -761,9 +767,20 @@ function addCreate($table,$columnsMysqlInsertList,$columnsMysqlInsertQues,$colum
 
 }
 
-function addEnd($customCodeFlag,$customCode,$customCodeStart,$customCodeEnd,$columnsPropertiesSample) {
+function addEnd($customCodeFlag,$customCode,$customCodeStart,$customCodeEnd,$columnsPropertiesSample,$enumsDefinitions) {
 
-    $code  = $customCodeStart;
+    $code = "";
+
+    if (count($enumsDefinitions) > 0) {
+        $code .= "    function return_enums() {\r\n";
+        $code .= "\r\n";
+        $code .= "        return self::\$enums;\r\n";
+        $code .= "\r\n";
+        $code .= "    }\r\n";
+        $code .= "\r\n";
+    }
+
+    $code .= $customCodeStart;
     if ($customCodeFlag) {
         $code .= $customCode;
     }

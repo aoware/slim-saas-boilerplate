@@ -91,13 +91,9 @@ class email_attachments {
 
     }
 
-    function getRecordByEmail_id_sequence($email_id,$sequence,$orderBy = "") {
+    function getRecordByEmail_id_sequence($email_id,$sequence) {
 
         $sql = "SELECT `id`,`email_id`,`sequence`,`mime_type`,`filename`,`encoding`,`content` FROM `email_attachments` WHERE `email_id` = ? and `sequence` = ?";
-
-        if ($orderBy != "") {
-            $sql .= " order by " . $orderBy;
-        }
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {

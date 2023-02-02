@@ -328,6 +328,12 @@ class emails {
 
     }
 
+    function return_enums() {
+
+        return self::$enums;
+
+    }
+
     // =-=- Custom Code Start -=-=
     // =-=- Custom Code End -=-=
 

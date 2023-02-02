@@ -85,13 +85,9 @@ class account_users {
 
     }
 
-    function getRecordByAccount_id_user_id($account_id,$user_id,$orderBy = "") {
+    function getRecordByAccount_id_user_id($account_id,$user_id) {
 
         $sql = "SELECT `id`,`account_id`,`user_id`,`created`,`modified` FROM `account_users` WHERE `account_id` = ? and `user_id` = ?";
-
-        if ($orderBy != "") {
-            $sql .= " order by " . $orderBy;
-        }
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {

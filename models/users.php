@@ -157,13 +157,9 @@ class users {
 
     }
 
-    function getRecordByOauth_provider_oauth_uid($oauth_provider,$oauth_uid,$orderBy = "") {
+    function getRecordByOauth_provider_oauth_uid($oauth_provider,$oauth_uid) {
 
         $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `oauth_provider` = ? and `oauth_uid` = ?";
-
-        if ($orderBy != "") {
-            $sql .= " order by " . $orderBy;
-        }
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -793,6 +789,12 @@ class users {
         $stmt->close();
 
         return true;
+
+    }
+
+    function return_enums() {
+
+        return self::$enums;
 
     }
 
