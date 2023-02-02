@@ -33,6 +33,11 @@
           </p>
         </div>
       </div>
+      <div class="container d-none">
+        <h2>{{ exception_message }}</h2>
+        In <strong>{{ exception_file }}</strong> at line <strong>{{ exception_line }}</strong>
+	    <pre>{{ exception_trace_as_string }}</pre>
+	  </div>
     </div>
     <!-- Libs JS -->
     <!-- Tabler Core -->
