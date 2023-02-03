@@ -92,7 +92,7 @@ $session_middleware = function ($request, $handler): \Psr\Http\Message\ResponseI
     $route_parser  = $route_context->getRouteParser();
 
     // Getting details for the web_session_log table
-    $h = new \helpers\headers($request);
+    $h = new \helpers\http_headers($request);
 
     $method       = $request->getMethod();
     $content_type = $h->get_content_type();
@@ -329,7 +329,7 @@ $custom_error_handler = function (
     ) use ($container) {
 
         // Identify if application/json is an accept type
-        $h = new \helpers\headers($request);
+        $h = new \helpers\http_headers($request);
         $accept = $h->get_accept();
         $pos = strrpos($accept,'application/json');
         if ($pos !== false) {
@@ -339,7 +339,7 @@ $custom_error_handler = function (
             ];
             $payload = json_encode($result);
             $response = new \Slim\Psr7\Response();
-            $response->getBody()->write($payload);    
+            $response->getBody()->write($payload);
             if ($exception instanceof \Slim\Exception\HttpException){
                 $exception_code = $exception->getCode();
             }
@@ -349,7 +349,7 @@ $custom_error_handler = function (
             return $response->withHeader('Content-Type', 'application/json')
                             ->withStatus($exception_code);
         }
-        
+
         // Return an html version
         if ($exception instanceof \Slim\Exception\HttpNotFoundException) {
             $variable_content = array_merge($container->get('template_options'),
@@ -360,7 +360,7 @@ $custom_error_handler = function (
             return $container->get('twig')->render($response->withStatus(404), '404.html',$variable_content );
         }
         else {
-            
+
             $variable_content = array_merge($container->get('template_options'),
                 [
                     'screen_title'              => 'Unable to handle this request',
@@ -371,7 +371,7 @@ $custom_error_handler = function (
                     'exception_previous'        => $exception->getPrevious(),
                     'exception_trace_as_string' => $exception->getTraceAsString()
                 ]);
-            
+
             $response = new \Slim\Psr7\Response();
             return $container->get('twig')->render($response->withStatus(500), '500.html',$variable_content );
         }

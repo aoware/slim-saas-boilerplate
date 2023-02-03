@@ -18,7 +18,7 @@
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('team');
     })->setName('public_page');
-            
+
     $app->get('/faq', function ($request, $response, $args) {
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('faq');
@@ -33,12 +33,12 @@
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('blog_details');
     })->setName('public_page');
-    
+
     $app->get('/contact', function ($request, $response, $args) {
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('contact');
     })->setName('public_page');
-    
+
     $app->get('/terms-of-service', function ($request, $response, $args) {
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('terms_of_service');
@@ -49,37 +49,37 @@
 // =============================================================== //
 
     $app->group('/dashboard', function (\Slim\Routing\RouteCollectorProxy $dashboard) {
-        
+
         $dashboard->get('', function ($request, $response, $args) {
-            
+
             $c = new \controllers\static_pages($this,$request, $response, $args);
             return $c->render_page('dashboard','client');
-            
+
         });
 
         $dashboard->get('/my-profile', function ($request, $response, $args) {
-            
+
             $c = new \controllers\my_profile($this,$request, $response, $args);
             return $c->display('dashboard');
-            
+
         });
-                
+
         $dashboard->post('/my-profile', function ($request, $response, $args) {
-            
+
             $c = new \controllers\my_profile($this,$request, $response, $args);
             return $c->update('dashboard');
-            
+
         });
-                    
+
         $dashboard->post('/my-profile-password', function ($request, $response, $args) {
-            
+
             $c = new \controllers\my_profile($this,$request, $response, $args);
             return $c->update_password('dashboard');
-            
+
         });
-                        
+
     });
-    
+
 // =============================================================== //
 // Backoffice pages - Administration area                          //
 // =============================================================== //
@@ -153,74 +153,74 @@
         });
 
         $backoffice->group('/user', function (\Slim\Routing\RouteCollectorProxy $user) {
-                                       
+
             $user->get('/{id}/update', function ($request, $response, $args) {
-                
+
                 $id = $args['id'];
-                
+
                 $c = new \controllers\users($this,$request, $response, $args);
                 return $c->display($id);
-                
+
             });
-                            
+
             $user->post('/{id}/update', function ($request, $response, $args) {
-                
+
                 $id = $args['id'];
-                
+
                 $c = new \controllers\users($this,$request, $response, $args);
                 return $c->update($id);
-                
+
             });
-                                
+
             $user->get('/{id}/delete', function ($request, $response, $args) {
-                
+
                 $id = $args['id'];
-                
+
                 $c = new \controllers\users($this,$request, $response, $args);
                 return $c->delete($id);
-                
+
             });
-                                    
+
         });
-        
+
         $backoffice->get('/accounts', function ($request, $response, $args) {
-            
+
             $c = new \controllers\accounts($this,$request, $response, $args);
             return $c->list();
-            
+
         });
 
         $backoffice->group('/account', function (\Slim\Routing\RouteCollectorProxy $account) {
-            
+
             $account->get('/{id}/update', function ($request, $response, $args) {
-                
+
                 $id = $args['id'];
-                
+
                 $c = new \controllers\accounts($this,$request, $response, $args);
                 return $c->display($id);
-                
+
             });
-                            
+
             $account->post('/{id}/update', function ($request, $response, $args) {
-                
+
                 $id = $args['id'];
-                
+
                 $c = new \controllers\accounts($this,$request, $response, $args);
                 return $c->update($id);
-                
+
             });
-                                
+
             $account->get('/{id}/delete', function ($request, $response, $args) {
-                
+
                 $id = $args['id'];
-                
+
                 $c = new \controllers\accounts($this,$request, $response, $args);
                 return $c->delete($id);
-                
+
             });
-                                    
+
         });
-        
+
         $backoffice->get('/configurations', function ($request, $response, $args) {
 
             $c = new \controllers\configurations($this,$request, $response, $args);
@@ -291,6 +291,13 @@
 
             $c = new \controllers\my_profile($this,$request, $response, $args);
             return $c->update_password('backoffice');
+
+        });
+
+        $backoffice->post('/my-profile-2fa', function ($request, $response, $args) {
+
+            $c = new \controllers\my_profile($this,$request, $response, $args);
+            return $c->update_2fa('backoffice');
 
         });
 
@@ -433,19 +440,19 @@
 
 
     $app->post('/api/v1/token', function ($request, $response, $args) {
-        
+
         $c = new \controllers\api_token($this,$request, $response, $args);
         return $c->validate_access_key();
-        
+
     });
-    
+
     $app->post('/api/v1/public-key/validate', function ($request, $response, $args) {
-        
+
         $c = new \controllers\public_key($this,$request, $response, $args);
         return $c->validate();
-        
+
     });
-    
+
 // =============================================================== //
 // Special Files                                                   //
 // =============================================================== //

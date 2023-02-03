@@ -127,6 +127,11 @@ class login extends base_controller {
 
         $u = new \models\users;
         $result = $u->getRecordByOauth_provider_oauth_uid('email',$post_variables['login_email']);
+
+        if ($result !== true) {
+            throw new \Exception($result);
+        }
+
         if (count($u->recordSet) == 0) {
             return $this->return_json(false,"You have entered an invalid email or password");
         }
@@ -173,6 +178,7 @@ class login extends base_controller {
         $u->verification_token = $u_record->verification_token;
         $u->verification_date  = $u_record->verification_date;
         $u->verification_ip    = $u_record->verification_ip;
+        $u->mfa_token          = $u_record->mfa_token;
         $u->login_token        = $login_token;
 
         $u->updateRecord($u_record->id);
@@ -220,7 +226,7 @@ class login extends base_controller {
         }
 
         $h = new \helpers\http_headers($this->request);
-        $ip_address = $h->get_ip($this->request->getHeaders());
+        $ip_address = $h->get_ip();
 
         $result_registration = $u->email_register(
             $post_variables['first_name'],
@@ -511,6 +517,7 @@ class login extends base_controller {
                 $u->verification_token = $u_record->verification_token;
                 $u->verification_date  = $u_record->verification_date;
                 $u->verification_ip    = $u_record->verification_ip;
+                $u->mfa_token          = $u_record->mfa_token;
                 $u->login_token        = null;
 
                 $u->updateRecord($u_record->id);

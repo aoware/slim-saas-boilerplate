@@ -36,7 +36,7 @@
                       <div class="col">
                         <input type="text" class="form-control" placeholder="Smith" name="last_name"  id="last_name" value="{{ user.last_name }}">
                       </div>
-                    </div>                                      
+                    </div>
                     <div class="form-group mb-3 row">
                       <label class="col-3 col-form-label required">Email address</label>
                       <div class="col">
@@ -44,23 +44,34 @@
                       </div>
                     </div>
                     <div class="form-group mb-3 row">
+                      <label class="col-3 col-form-label required">2FA</label>
+                      <div class="col">
+                        <input type="hidden" name="2fa_secret" id="2fa_secret" value="{{ google_2fa_secret }}" />
+                        <input type="hidden" name="2fa_url_qr" id="2fa_url_qr" value="{{ google_2fa_url_qr }}" />
+                        <input type="hidden" name="hidden_2fa" id="hidden_2fa" value="{% if user.mfa_token is null %}0{% else %}1{% endif %}">
+                        <input type='checkbox' id='user_2fa' enabled value="{% if user.mfa_token is not null %}checked{% endif %}">
+                        <small class="form-hint">2FA requires the use of an Authenticator app</small>
+                      </div>
+                    </div>
+                    <div class="form-group mb-3 row">
                       <label class="col-3 col-form-label">Password</label>
                       <div class="col">
-                        <button type="button" class="btn btn-secondary ms-auto" onclick="change_password('backoffice');">Change Password</button>
+                        <input type="hidden" name="user_area" id="user_area" value="{{ user_area }}" />
+                        <button type="button" class="btn btn-secondary ms-auto" onclick="change_password('{{ user_area }}');">Change Password</button>
                       </div>
-                    </div>                    
+                    </div>
                   </form>
                 </div>
                 <div class="card-footer text-end">
                   <div class="d-flex">
-                    <button type="button" class="btn btn-primary ms-auto" onclick="update('backoffice');">
+                    <button type="button" class="btn btn-primary ms-auto" onclick="update('{{ user_area }}');">
                       Update
                       <span id="action_cog"></span>
                     </button>
                   </div>
                 </div>
               </div>
-              
+
    <div class="d-none">
      <form id="confirm_content">
        <div class="form-group mb-3 row">
@@ -74,7 +85,7 @@
          <div class="col">
            <input type="text" class="form-control" name="new_password"  id="new_password">
          </div>
-       </div>                                      
+       </div>
        <div class="form-group mb-3 row">
          <label class="col-5 col-form-label">Confirm New Password</label>
          <div class="col">
@@ -85,6 +96,11 @@
   </div>
 {% endblock %}
 
+{% block additional_css %}
+<link rel="stylesheet" href="{{ base_url }}/assets/js/switchery/dist/switchery.min.css">
+{% endblock %}
+
 {% block additional_js %}
+<script src="{{ base_url }}/assets/js/switchery/dist/switchery.min.js"></script>
 <script src="{{ base_url }}/assets/js/my-profile.js?v={{ version }}"></script>
 {% endblock %}

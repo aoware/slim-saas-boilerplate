@@ -3,27 +3,27 @@ function delete_account(id) {
     var account_id = id;
 
     alertify.confirm('Delete Account id ' + account_id,
-        function(){ 
+        function(){
 			$.ajax({
 	    	    type: 'GET',
 	    		url: base_url + '/backoffice/account/' + account_id + '/delete',
 	    		success: function(result) {
-	
+
 	                if (result.success === false) {
-						alertify.error(result.message,2);
+						alertify.error(result.message,3);
 	                }
 	                else {
-						alertify.success(result.message,2,
+						alertify.success(result.message,3,
 						    function() {
 							    window.location.reload();
 						    }
 						);
-	                	
+
 	                }
-	
+
 	            },
 	    		async:true
-	        }); 
+	        });
 		}
 	);
 

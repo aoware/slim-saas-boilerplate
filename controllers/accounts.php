@@ -117,6 +117,7 @@ class accounts extends base_controller {
         $u->verification_token = $u_record->verification_token;
         $u->verification_date  = $u_record->verification_date;
         $u->verification_ip    = $u_record->verification_ip;
+        $u->mfa_token          = $u_record->mfa_token;
         $u->login_token        = $u_record->login_token;
 
         $result_update = $u->updateRecord($administrator_id);

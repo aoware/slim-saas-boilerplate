@@ -32,7 +32,8 @@ INSERT INTO `config_definition` (`id`, `group`, `name`, `type`, `comment`) VALUE
 (12,    'bac',  'CONF_bac_password',    'string',   ''),
 (13,    'jwt',  'CONF_jwt_secret',    'string',   ''),
 (14,    'jwt',  'CONF_jwt_secret',    'bolean',   ''),
-(15,    'encryption',  'CONF_encryption_key',    'string',   '');
+(15,    'encryption',  'CONF_encryption_key',    'string',   ''),
+(16,    'encryption',  'CONF_encryption_method',    'string',   '');
 
 CREATE TABLE `config_value` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -63,7 +64,8 @@ INSERT INTO `config_value` (`id`, `config_definition_id`, `profile`, `effective_
 (13,    13,  'Live', NULL,   NULL,   '', ''),
 (14,    14,  'Live', NULL,   NULL,   '', 'true'),
 (15,    14,  'Test', NULL,   NULL,   '', 'false'),
-(16,    15,  'Live', NULL,   NULL,   '', 'ThisIsAnEncryptionKey');
+(16,    15,  'Live', NULL,   NULL,   '', 'ThisIsAnEncryptionKey'),
+(17,    16,  'Live', NULL,   NULL,   '', 'aes-256-cbc-hmac-sha256');
 
 CREATE TABLE `emails` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

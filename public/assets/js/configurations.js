@@ -10,10 +10,10 @@ function delete_configuration(id) {
 	    		success: function(result) {
 
 	                if (result.success === false) {
-						alertify.error(result.message,2);
+						alertify.error(result.message,3);
 	                }
 	                else {
-						alertify.success(result.message,2,
+						alertify.success(result.message,3,
 						    function() {
 							    window.location.reload();
 						    }

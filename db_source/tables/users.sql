@@ -18,6 +18,7 @@ CREATE TABLE `users` (
   `verification_token` char(32) DEFAULT NULL,
   `verification_date` datetime DEFAULT NULL,
   `verification_ip` varchar(40) DEFAULT NULL,
+  `mfa_token` char(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `login_token` char(32) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `IDX_users_oauth_provider_oauth_uid` (`oauth_provider`,`oauth_uid`),

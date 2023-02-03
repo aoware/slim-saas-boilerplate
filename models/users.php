@@ -28,6 +28,7 @@ class users_record {
     public $verification_token;
     public $verification_date;
     public $verification_ip;
+    public $mfa_token;
     public $login_token;
 
 }
@@ -53,6 +54,7 @@ class users {
     public $verification_token;
     public $verification_date;
     public $verification_ip;
+    public $mfa_token;
     public $login_token;
 
     public static $enums = array(
@@ -98,7 +100,7 @@ class users {
 
     function getRecordById($key) {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `id` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`mfa_token`,`login_token` FROM `users` WHERE `id` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -115,7 +117,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->mfa_token,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -147,6 +149,7 @@ class users {
             $record->verification_token = $this->verification_token;
             $record->verification_date  = $this->verification_date;
             $record->verification_ip    = $this->verification_ip;
+            $record->mfa_token          = $this->mfa_token;
             $record->login_token        = $this->login_token;
             array_push($this->recordSet, $record);
         }
@@ -159,7 +162,7 @@ class users {
 
     function getRecordByOauth_provider_oauth_uid($oauth_provider,$oauth_uid) {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `oauth_provider` = ? and `oauth_uid` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`mfa_token`,`login_token` FROM `users` WHERE `oauth_provider` = ? and `oauth_uid` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -176,7 +179,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->mfa_token,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -208,6 +211,7 @@ class users {
             $record->verification_token = $this->verification_token;
             $record->verification_date  = $this->verification_date;
             $record->verification_ip    = $this->verification_ip;
+            $record->mfa_token          = $this->mfa_token;
             $record->login_token        = $this->login_token;
             array_push($this->recordSet, $record);
         }
@@ -220,7 +224,7 @@ class users {
 
     function getRecordByEmail($key) {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `email` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`mfa_token`,`login_token` FROM `users` WHERE `email` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -237,7 +241,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->mfa_token,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -269,6 +273,7 @@ class users {
             $record->verification_token = $this->verification_token;
             $record->verification_date  = $this->verification_date;
             $record->verification_ip    = $this->verification_ip;
+            $record->mfa_token          = $this->mfa_token;
             $record->login_token        = $this->login_token;
             array_push($this->recordSet, $record);
         }
@@ -306,7 +311,7 @@ class users {
 
     function getRecordByLogin_token($key) {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `login_token` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`mfa_token`,`login_token` FROM `users` WHERE `login_token` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -323,7 +328,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->mfa_token,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -355,6 +360,7 @@ class users {
             $record->verification_token = $this->verification_token;
             $record->verification_date  = $this->verification_date;
             $record->verification_ip    = $this->verification_ip;
+            $record->mfa_token          = $this->mfa_token;
             $record->login_token        = $this->login_token;
             array_push($this->recordSet, $record);
         }
@@ -392,7 +398,7 @@ class users {
 
     function getRecordByVerification_token($key) {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `verification_token` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`mfa_token`,`login_token` FROM `users` WHERE `verification_token` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -409,7 +415,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->mfa_token,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -441,6 +447,7 @@ class users {
             $record->verification_token = $this->verification_token;
             $record->verification_date  = $this->verification_date;
             $record->verification_ip    = $this->verification_ip;
+            $record->mfa_token          = $this->mfa_token;
             $record->login_token        = $this->login_token;
             array_push($this->recordSet, $record);
         }
@@ -478,7 +485,7 @@ class users {
 
     function getRecordByType($key) {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `type` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`mfa_token`,`login_token` FROM `users` WHERE `type` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -495,7 +502,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->mfa_token,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -527,6 +534,7 @@ class users {
             $record->verification_token = $this->verification_token;
             $record->verification_date  = $this->verification_date;
             $record->verification_ip    = $this->verification_ip;
+            $record->mfa_token          = $this->mfa_token;
             $record->login_token        = $this->login_token;
             array_push($this->recordSet, $record);
         }
@@ -539,7 +547,7 @@ class users {
 
     function getRecordsByType($key,$orderBy = "") {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users` WHERE `type` = ?";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`mfa_token`,`login_token` FROM `users` WHERE `type` = ?";
 
         if ($orderBy != "") {
             $sql .= " order by " . $orderBy;
@@ -560,7 +568,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->mfa_token,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -592,6 +600,7 @@ class users {
             $record->verification_token = $this->verification_token;
             $record->verification_date  = $this->verification_date;
             $record->verification_ip    = $this->verification_ip;
+            $record->mfa_token          = $this->mfa_token;
             $record->login_token        = $this->login_token;
             array_push($this->recordSet, $record);
         }
@@ -629,7 +638,7 @@ class users {
 
     function getAllRecords($orderBy = "") {
 
-        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token` FROM `users`";
+        $sql = "SELECT `id`,`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`mfa_token`,`login_token` FROM `users`";
 
         if ($orderBy != "") {
             $sql .= " order by " . $orderBy;
@@ -645,7 +654,7 @@ class users {
             return "MYSQL EXECUTE ERROR : " . $stmt->error;
         }
 
-        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_result($this->id,$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->mfa_token,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -677,6 +686,7 @@ class users {
             $record->verification_token = $this->verification_token;
             $record->verification_date  = $this->verification_date;
             $record->verification_ip    = $this->verification_ip;
+            $record->mfa_token          = $this->mfa_token;
             $record->login_token        = $this->login_token;
             array_push($this->recordSet, $record);
         }
@@ -689,7 +699,7 @@ class users {
 
     function saveRecord() {
 
-        $sql = "INSERT INTO `users` (`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`login_token`) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $sql = "INSERT INTO `users` (`oauth_provider`,`oauth_uid`,`password`,`first_name_crypted`,`last_name_crypted`,`email`,`location`,`picture`,`link`,`type`,`active`,`created`,`modified`,`last_login`,`registration_ip`,`verification_token`,`verification_date`,`verification_ip`,`mfa_token`,`login_token`) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -700,7 +710,7 @@ class users {
         $this->first_name = $ed->encrypt($this->first_name);
         $this->last_name = $ed->encrypt($this->last_name);
 
-        $bind = $stmt->bind_param("sssssssssssssssssss",$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token);
+        $bind = $stmt->bind_param("ssssssssssssssssssss",$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->mfa_token,$this->login_token);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -720,7 +730,7 @@ class users {
 
     function updateRecord($key) {
 
-        $sql = "UPDATE `users` SET `oauth_provider` = ?,`oauth_uid` = ?,`password` = ?,`first_name_crypted` = ?,`last_name_crypted` = ?,`email` = ?,`location` = ?,`picture` = ?,`link` = ?,`type` = ?,`active` = ?,`created` = ?,`modified` = ?,`last_login` = ?,`registration_ip` = ?,`verification_token` = ?,`verification_date` = ?,`verification_ip` = ?,`login_token` = ? WHERE `id` = ?";
+        $sql = "UPDATE `users` SET `oauth_provider` = ?,`oauth_uid` = ?,`password` = ?,`first_name_crypted` = ?,`last_name_crypted` = ?,`email` = ?,`location` = ?,`picture` = ?,`link` = ?,`type` = ?,`active` = ?,`created` = ?,`modified` = ?,`last_login` = ?,`registration_ip` = ?,`verification_token` = ?,`verification_date` = ?,`verification_ip` = ?,`mfa_token` = ?,`login_token` = ? WHERE `id` = ?";
 
         $stmt = $this->mysqli->prepare($sql);
         if ($stmt === false) {
@@ -731,7 +741,7 @@ class users {
         $this->first_name = $ed->encrypt($this->first_name);
         $this->last_name = $ed->encrypt($this->last_name);
 
-        $bind = $stmt->bind_param("sssssssssssssssssssi",$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->login_token,$key);
+        $bind = $stmt->bind_param("ssssssssssssssssssssi",$this->oauth_provider,$this->oauth_uid,$this->password,$this->first_name,$this->last_name,$this->email,$this->location,$this->picture,$this->link,$this->type,$this->active,$this->created,$this->modified,$this->last_login,$this->registration_ip,$this->verification_token,$this->verification_date,$this->verification_ip,$this->mfa_token,$this->login_token,$key);
         if ($bind === false) {
             return "MYSQL BIND ERROR : " . $stmt->error;
         }
@@ -881,6 +891,7 @@ class users {
         $u->verification_token = $u_record->verification_token;
         $u->verification_date  = $u_record->verification_date;
         $u->verification_ip    = $u_record->verification_ip;
+        $u->mfa_token          = $u_record->mfa_token;
         $u->login_token        = $u_record->login_token;
 */
 

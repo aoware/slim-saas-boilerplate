@@ -40,7 +40,7 @@ class users extends base_controller {
                 $last_login = date('Y-m-d H:i:s',strtotime($row->last_login));
             }
 
-            $active = "<input type='checkbox' class='js-switch' disabled";
+            $active = "<input type='checkbox' class='js-switch' data-switchery='true' disabled";
             if ($row->active == 1) {
                 $active .= " checked";
             }
@@ -152,6 +152,7 @@ class users extends base_controller {
         $u->verification_token = $u_record->verification_token;
         $u->verification_date  = $u_record->verification_date;
         $u->verification_ip    = $u_record->verification_ip;
+        $u->mfa_token          = $u_record->mfa_token;
         $u->login_token        = $u_record->login_token;
 
         $result_update = $u->updateRecord($user_id);

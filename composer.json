@@ -21,6 +21,8 @@
         "phpmailer/phpmailer": "^6.5",
         "wixel/gump": "v2.0.0",
         "tuupola/slim-jwt-auth": "3.6.0",
+        "chillerlan/php-qrcode": "3.4.1",
+        "pragmarx/google2fa" : "dev-master",
         "goldspecdigital/oooas": "v2.10.0"
     },
     "autoload": {

@@ -4,8 +4,7 @@ namespace helpers;
 
 class encrypt_decrypt {
 
-    protected $method = 'aes-256-cbc-hmac-sha256';
-
+    private $method;
     private $key;
 
     public function __construct() {
@@ -13,11 +12,22 @@ class encrypt_decrypt {
         if (!defined(CONF_encryption_key)) {
             if (CONF_encryption_key != '') {
                 $this->key = CONF_encryption_key;
-                return;
+            }
+            else {
+                throw new \Exception("CONF_encryption_key is not set correctly");
             }
         }
+        else {
+            throw new \Exception("CONF_encryption_key is not set correctly");
+        }
 
-        die("CONF_encryption_key is not set correctly");
+        $this->method = CONF_encryption_method;
+
+        $cipher = openssl_get_cipher_methods();
+
+        if (!in_array($this->method,$cipher)) {
+            throw new \Exception("Cypher `" . $this->method . "` is not set supported");
+        }
 
     }
 
