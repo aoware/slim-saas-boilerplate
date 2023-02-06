@@ -8,9 +8,7 @@ $(document).ready(function(){
     var u2fa = document.querySelector('#user_2fa');
     u2fa.onchange = function() {
        $("#hidden_2fa").val(0);
-       if (u2fa.checked) {
-       	   display_2fa();
-       }
+       display_2fa();
     };
 
 });
@@ -144,6 +142,23 @@ function display_2fa() {
 		    onclose : function(){ $('#user_2fa').trigger('click') },
 		    'message': modal_body
 		  }).resizeTo(800,500).show();
+	}
+	else {
+		$.ajax({
+		    type: 'POST',
+		    url: base_url + '/' + $("#user_area").val() + '/my-profile-2fa-disable',
+			success: function(result) {
+	            if (result.success === true) {
+	            	alertify.success(result.message,3,function() {
+	            		window.location.reload();
+		            });
+	            }
+	            else {
+	            	alertify.error(result.message,3);
+	            }
+	        },
+			async:true
+	    });		
 	}
 
 // https://apps.apple.com/us/app/google-authenticator/id388497605

@@ -49,7 +49,7 @@
                         <input type="hidden" name="2fa_secret" id="2fa_secret" value="{{ google_2fa_secret }}" />
                         <input type="hidden" name="2fa_url_qr" id="2fa_url_qr" value="{{ google_2fa_url_qr }}" />
                         <input type="hidden" name="hidden_2fa" id="hidden_2fa" value="{% if user.mfa_token is null %}0{% else %}1{% endif %}">
-                        <input type='checkbox' id='user_2fa' enabled value="{% if user.mfa_token is not null %}checked{% endif %}">
+                        <input type='checkbox' id='user_2fa' enabled value="{% if user.mfa_token is not null %}checked{% endif %}" {% if user.mfa_token is not null %}checked{% endif %}>
                         <small class="form-hint">2FA requires the use of an Authenticator app</small>
                       </div>
                     </div>

@@ -18,11 +18,18 @@ class administrators extends base_controller {
             }
             $active .= " />";
 
+            $mfa = "<input type='checkbox' class='js-switch' disabled";
+            if (!is_null($u_record->mfa_token)) {
+                $mfa .= " checked";
+            }
+            $mfa .= " />";
+            
             $record = array(
                 'email'        => $u_record->email,
                 'first_name'   => $u_record->first_name,
                 'last_name'    => $u_record->last_name,
                 'active'       => $active,
+                'mfa'          => $mfa,
                 'date_created' => $u_record->created,
                 'date_updated' => $u_record->modified,
                 'last_login'   => $u_record->last_login,
@@ -42,6 +49,7 @@ class administrators extends base_controller {
                 ['name' => 'First Name','sortable' => true],
                 ['name' => 'Last Name' ,'sortable' => true],
                 ['name' => 'Active'    ,'sortable' => true],
+                ['name' => 'Mfa'       ,'sortable' => true],
                 ['name' => 'Created'   ,'sortable' => true],
                 ['name' => 'Updated'   ,'sortable' => true],
                 ['name' => 'Last Login','sortable' => true],

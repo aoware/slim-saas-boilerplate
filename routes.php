@@ -297,10 +297,17 @@
         $backoffice->post('/my-profile-2fa', function ($request, $response, $args) {
 
             $c = new \controllers\my_profile($this,$request, $response, $args);
-            return $c->update_2fa('backoffice');
+            return $c->update_2fa_enable('backoffice');
 
         });
 
+        $backoffice->post('/my-profile-2fa-disable', function ($request, $response, $args) {
+            
+            $c = new \controllers\my_profile($this,$request, $response, $args);
+            return $c->update_2fa_disable('backoffice');
+            
+        });
+        
     });
 
 // =============================================================== //

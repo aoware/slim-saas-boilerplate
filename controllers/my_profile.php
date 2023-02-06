@@ -137,7 +137,7 @@ class my_profile extends base_controller {
 
     }
 
-    function update_2fa($user_area) {
+    function update_2fa_enable($user_area) {
 
         $post_variables = $this->request->getParsedBody();
 
@@ -187,4 +187,46 @@ class my_profile extends base_controller {
 
     }
 
+    function update_2fa_disable($user_area) {
+                
+        $u = new \models\users();
+        $result_read = $u->getRecordById($this->current_user_id);
+        
+        if ($result_read !== true) {
+            throw new \Exception($result_read);
+        }
+        
+        $u_record = $u->recordSet[0];
+        
+        $u->oauth_provider     = $u_record->oauth_provider;
+        $u->oauth_uid          = $u_record->oauth_uid;
+        $u->password           = $u_record->password;
+        $u->first_name         = $u_record->first_name;
+        $u->last_name          = $u_record->last_name;
+        $u->email              = $u_record->email;
+        $u->location           = $u_record->location;
+        $u->picture            = $u_record->picture;
+        $u->link               = $u_record->link;
+        $u->type               = $u_record->type;
+        $u->active             = $u_record->active;
+        $u->created            = $u_record->created;
+        $u->modified           = date('Y-m-d H:i:s');
+        $u->last_login         = $u_record->last_login;
+        $u->registration_ip    = $u_record->registration_ip;
+        $u->verification_token = $u_record->verification_token;
+        $u->verification_date  = $u_record->verification_date;
+        $u->verification_ip    = $u_record->verification_ip;
+        $u->mfa_token          = null;
+        $u->login_token        = $u_record->login_token;
+        
+        $result_update = $u->updateRecord($this->current_user_id);
+        
+        if ($result_update !== true) {
+            throw new \Exception($result_update);
+        }
+        
+        return $this->return_json(true,'Mfa updated');
+        
+    }
+    
 }

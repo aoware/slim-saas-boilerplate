@@ -1,7 +1,10 @@
 $(document).ready(function(){
+    
+    var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
 
-	var elem = document.querySelector('.js-switch');
-    var switchery = new Switchery(elem,  { color : '#206bc4', size: 'small' });
+    elems.forEach(function(html) {
+      var switchery = new Switchery(html, { color : '#206bc4', size: 'small' });
+    });
 
 });
 
