@@ -276,7 +276,7 @@ class login extends base_controller {
         }
         
         $google_2fa = new \PragmaRX\Google2FA\Google2FA();
-        $valid = $google_2fa->verifyKey($u_record->mfa_token, $post_variables["code"]);
+        $valid = $google_2fa->verifyKey($u_record->mfa_token, $post_variables["mfa_code"]);
         if ($valid == false) {
             return $this->return_json(false,"You have entered an invalid code");
         }
