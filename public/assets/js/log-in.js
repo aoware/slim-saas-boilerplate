@@ -49,7 +49,14 @@ function login(channel) {
                 	$("#email").focus();
                 }
                 else {
-                	window.location = result.data.redirection;
+					if (result.data.action == 'redirection') {
+                	    window.location = result.data.redirection_path;
+                	}
+					if (result.data.action == 'mfa') {
+						$('#mfa_email').val($('#email').val());
+						$('#mfa_password').val($('#password').val());
+						$('#mfa_form').submit();
+                	}
                 }
 
             },

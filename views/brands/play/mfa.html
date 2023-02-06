@@ -1,0 +1,30 @@
+{% extends "base_tabler_access.html" %}
+
+{% set screen_title = 'Log in' %}
+
+{% block page_content %}
+        <div class="card card-md">
+          <div class="card-body">
+            <h2 class="h2 text-center mb-4">Enter your 2FA code</h2>
+			<div class="alert alert-danger d-none" role="alert" id="error">
+			  <h4 class="alert-title" id="error_message"></h4>
+			</div>
+            <div>
+              <div class="mb-3">
+                <input type="text" id="code" class="form-control" placeholder="2FA code" autocomplete="off" tabindex="1">
+                <input type='hidden' name='mfa_email' id='mfa_email' value='{{ mfa_email }}'>
+                <input type='hidden' name='mfa_password' id='mfa_password' value='{{ mfa_password }}'>
+              </div>
+              <div class="form-footer">
+                <button class="btn btn-primary w-100" onclick="mfa_continue()" id="continue_button">
+                  Continue<span id="continue_cog"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+{% endblock %}
+
+{% block additional_js %}
+<script src="{{ base_url }}/assets/js/mfa.js?v={{ version }}"></script>
+{% endblock %}

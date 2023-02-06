@@ -36,6 +36,11 @@
         <div class="text-center text-muted mt-3">
           Don't have account yet? <a href="{{ base_url }}/sign-up" tabindex="-1">Sign up</a>
         </div>
+        <form method='post' action="/mfa" id="mfa_form">
+          <input type='hidden' name='mfa_email' id='mfa_email'>
+          <input type='hidden' name='mfa_password' id='mfa_password'>
+        </form>
+        log-in.js
 {% endblock %}
 
 {% block additional_js %}

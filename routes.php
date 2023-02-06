@@ -326,12 +326,20 @@
 // =============================================================== //
 
     $app->get('/log-in', function ($request, $response, $args) {
-
         $c = new \controllers\static_pages($this,$request, $response, $args);
         return $c->render_public_page('log_in');
-
     })->setName('public_page');
 
+    $app->post('/mfa', function ($request, $response, $args) {
+        $c = new \controllers\login($this,$request, $response, $args);
+        return $c->display_mfa();
+    })->setName('public_page');
+
+    $app->post('/mfa-code', function ($request, $response, $args) {
+        $c = new \controllers\login($this,$request, $response, $args);
+        return $c->verify_mfa();
+    })->setName('public_page');
+    
     $app->get('/log-in/github', function ($request, $response, $args) {
 
         $c = new \controllers\login($this,$request, $response, $args);

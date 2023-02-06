@@ -146,6 +146,14 @@ class login extends base_controller {
             return $this->return_json(false,"You have entered an invalid email or password");
         }
 
+        // If mfa is enabled, request to redirect to capture the code
+        if (!is_null($u_record->mfa_token)) {
+            $response = [
+                "action" => "mfa"
+            ];           
+            return $this->return_json(true,"MFA redirection",$response);
+        }
+        
         unset($u);
 
         $u = new \models\users;
@@ -187,21 +195,149 @@ class login extends base_controller {
 
         switch($u_record->type) {
             case 'agent' :
-                $redirection = '/backoffice';
+                $path = '/backoffice';
                 break;
             case 'client' :
-                $redirection = '/dashboard';
+                $path = '/dashboard';
                 break;
         }
 
         $response = [
-            "redirection" => $redirection
+            "action"           => "redirection",
+            "redirection_path" => $path
         ];
 
         return $this->return_json(true,"Log in Success",$response);
 
     }
 
+    function display_mfa() {
+        
+        $post_variables = $this->request->getParsedBody();
+        
+        $u = new \models\users;
+        $result = $u->getRecordByOauth_provider_oauth_uid('email',$post_variables['mfa_email']);
+        
+        if ($result !== true) {
+            throw new \Exception($result);
+        }
+        
+        if (count($u->recordSet) == 0) {
+            return $this->return_redirection("/log-in");
+        }
+        
+        $u_record = $u->recordSet[0];
+        
+        if (md5($post_variables['mfa_password']) != $u_record->password) {
+            return $this->return_redirection("/log-in");
+        }
+        
+        if ($u_record->active == 0) {
+            return $this->return_redirection("/log-in");
+        }
+        
+        // If mfa is not enabled
+        if (is_null($u_record->mfa_token)) {
+            return $this->return_redirection("/log-in");
+        }
+        
+        $content = [
+            'mfa_email'    => $post_variables['mfa_email'],
+            'mfa_password' => base64_encode($post_variables['mfa_password'])
+        ];
+        
+        return $this->return_html("brands/" . CONF_public_brand . "/mfa.html", $content);
+                
+    }
+
+    function verify_mfa() {
+        
+        $post_variables = $this->request->getParsedBody();
+        
+        $u = new \models\users;
+        $result = $u->getRecordByOauth_provider_oauth_uid('email',$post_variables['mfa_email']);
+        
+        if ($result !== true) {
+            throw new \Exception($result);
+        }
+        
+        if (count($u->recordSet) == 0) {
+            return $this->return_json(false,"You have entered an invalid code");
+        }
+        
+        $u_record = $u->recordSet[0];
+        
+        if (md5(base64_decode($post_variables['mfa_password'])) != $u_record->password) {
+            return $this->return_json(false,"You have entered an invalid code");
+        }
+        
+        if ($u_record->active == 0) {
+            return $this->return_json(false,"You have entered an invalid code");
+        }
+        
+        $google_2fa = new \PragmaRX\Google2FA\Google2FA();
+        $valid = $google_2fa->verifyKey($u_record->mfa_token, $post_variables["code"]);
+        if ($valid == false) {
+            return $this->return_json(false,"You have entered an invalid code");
+        }
+        
+        unset($u);
+        
+        $u = new \models\users;
+        
+        $sm = new \helpers\string_manipulation;
+        $login_token = $sm->generate_random_code(32);
+        
+        $u->getRecordByLogin_token($login_token);
+        
+        while(count($u->recordSet) > 0) {
+            $login_token = $sm->generate_random_code(32);
+            $u->getRecordByLogin_token($login_token);
+        }
+        
+        $u->oauth_provider     = $u_record->oauth_provider;
+        $u->oauth_uid          = $u_record->oauth_uid;
+        $u->password           = $u_record->password;
+        $u->first_name         = $u_record->first_name;
+        $u->last_name          = $u_record->last_name;
+        $u->email              = $u_record->email;
+        $u->location           = $u_record->location;
+        $u->picture            = $u_record->picture;
+        $u->link               = $u_record->link;
+        $u->type               = $u_record->type;
+        $u->active             = $u_record->active;
+        $u->created            = $u_record->created;
+        $u->modified           = $u_record->modified;
+        $u->registration_ip    = $u_record->registration_ip;
+        $u->last_login         = date('Y-m-d H:i:s');
+        $u->verification_token = $u_record->verification_token;
+        $u->verification_date  = $u_record->verification_date;
+        $u->verification_ip    = $u_record->verification_ip;
+        $u->mfa_token          = $u_record->mfa_token;
+        $u->login_token        = $login_token;
+        
+        $u->updateRecord($u_record->id);
+        
+        $_SESSION['login_token'] = $login_token;
+        
+        switch($u_record->type) {
+            case 'agent' :
+                $path = '/backoffice';
+                break;
+            case 'client' :
+                $path = '/dashboard';
+                break;
+        }
+        
+        $response = [
+            "redirection_path" => $path
+        ];
+        
+        return $this->return_json(true,"Log in Success",$response);
+        
+    }
+    
+    
     function sign_up() {
 
         $post_variables = $this->request->getParsedBody();
