@@ -77,6 +77,13 @@
             return $c->update_password('dashboard');
 
         });
+        
+        $dashboard->get('/media', function ($request, $response, $args) {
+            
+            $c = new \controllers\media($this,$request, $response, $args);
+            return $c->list_folders();
+            
+        });
 
     });
 

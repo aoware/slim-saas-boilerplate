@@ -22,6 +22,28 @@
     <script src="{{ base_url }}/global.js"></script>
   </head>
   <body >
+    {% if tabler_mode == 'dashboard' %}
+    {% if tracking is same as(true) %}
+	<!-- Start Open Web Analytics Tracker -->
+	<script type="text/javascript">
+	//<![CDATA[
+	var owa_baseUrl = '{{ tracking_url }}';
+	var owa_cmds = owa_cmds || [];
+	owa_cmds.push(['setSiteId', '{{ tracking_code }}']);
+	owa_cmds.push(['trackPageView']);
+	owa_cmds.push(['trackClicks']);
+	
+	(function() {
+	    var _owa = document.createElement('script'); _owa.type = 'text/javascript'; _owa.async = true;
+	    owa_baseUrl = ('https:' == document.location.protocol ? window.owa_baseSecUrl || owa_baseUrl.replace(/http:/, 'https:') : owa_baseUrl );
+	    _owa.src = owa_baseUrl + 'modules/base/dist/owa.tracker.js';
+	    var _owa_s = document.getElementsByTagName('script')[0]; _owa_s.parentNode.insertBefore(_owa, _owa_s);
+	}());
+	//]]>
+	</script>
+	<!-- End Open Web Analytics Code -->
+    {% endif %}
+    {% endif %}
     <div class="page">
       <!-- Navbar -->
       <header class="navbar navbar-expand-md navbar-light d-print-none">
@@ -164,6 +186,15 @@
                   {% block page_title %}{% endblock %}
                 </h2>
               </div>
+              {% if page_top_label is defined %}
+              <div class="col-12 col-md-auto ms-auto d-print-none">
+                <div class="d-flex">
+                  <a href="{{ page_top_action }}" class="btn btn-primary">
+                    {{ page_top_label }}
+                  </a>
+                </div>
+              </div>
+              {% endif %}
             </div>
           </div>
         </div>

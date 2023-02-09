@@ -1,17 +1,20 @@
-            <div class="nav-item dropdown">
-              <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
-                <span class="avatar avatar-sm" style="background-image: url({{ current_user_picture }})"></span>
-                <div class="d-none d-xl-block ps-2">
-                  <div>{{ current_user_name }}</div>
-                  <div class="mt-1 small text-muted">{{ current_account_name }}</div>
-                </div>
-              </a>
-              <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                <a href="#" class="dropdown-item">Status</a>
-                <a href="#" class="dropdown-item">Profile</a>
-                <a href="#" class="dropdown-item">Feedback</a>
-                <div class="dropdown-divider"></div>
-                <a href="./settings.html" class="dropdown-item">Settings</a>
-                <a href="{{ base_url }}/log-out" class="dropdown-item">Logout</a>
-              </div>
-            </div>
+                <li class="nav-item{% if active_menu == 'Home' %} active{% endif %}">
+                  <a class="nav-link" href="{{ base_url }}/dashboard" >
+                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+                      <i class="fas fa-home"></i>
+                    </span>
+                    <span class="nav-link-title">
+                      Home
+                    </span>
+                  </a>
+                </li>
+                <li class="nav-item{% if active_menu == 'Cloud' %} active{% endif %}">
+                  <a class="nav-link" href="{{ base_url }}/dashboard/media" >
+                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+                      <i class="fas fa-cloud"></i>
+                    </span>
+                    <span class="nav-link-title">
+                      Cloud Media
+                    </span>
+                  </a>
+                </li>

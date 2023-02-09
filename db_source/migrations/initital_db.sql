@@ -33,7 +33,11 @@ INSERT INTO `config_definition` (`id`, `group`, `name`, `type`, `comment`) VALUE
 (13,    'jwt',  'CONF_jwt_secret',    'string',   ''),
 (14,    'jwt',  'CONF_jwt_secret',    'bolean',   ''),
 (15,    'encryption',  'CONF_encryption_key',    'string',   ''),
-(16,    'encryption',  'CONF_encryption_method',    'string',   '');
+(16,    'encryption',  'CONF_encryption_method',    'string',   ''),
+(17,    'tracking',    'CONF_tracking',    'boolean',   ''),
+(18,    'tracking',    'CONF_tracking_type',    'string',   ''),
+(19,    'tracking',    'CONF_tracking_url',    'string',   ''),
+(20,    'tracking',    'CONF_tracking_code',    'string',   '');
 
 CREATE TABLE `config_value` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -65,7 +69,12 @@ INSERT INTO `config_value` (`id`, `config_definition_id`, `profile`, `effective_
 (14,    14,  'Live', NULL,   NULL,   '', 'true'),
 (15,    14,  'Test', NULL,   NULL,   '', 'false'),
 (16,    15,  'Live', NULL,   NULL,   '', 'ThisIsAnEncryptionKey'),
-(17,    16,  'Live', NULL,   NULL,   '', 'aes-256-cbc-hmac-sha256');
+(17,    16,  'Live', NULL,   NULL,   '', 'aes-256-cbc-hmac-sha256'),
+(18,    17,  'Live', NULL,   NULL,   '', 'true'),
+(19,    17,  'Test', NULL,   NULL,   '', 'false'),
+(20,    18,  'Live', NULL,   NULL,   '', 'owa'),
+(21,    19,  'Live', NULL,   NULL,   '', ''),
+(22,    20,  'Live', NULL,   NULL,   '', '');
 
 CREATE TABLE `emails` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

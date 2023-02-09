@@ -69,7 +69,11 @@ $container->set('dbal', function() {
          'current_year'      => date('Y'),
          'current_month'     => date('m'),
          'brand_name'        => 'Slim Saas Boilerplate',
-         'version'           => trim(file_get_contents("../.git/ORIG_HEAD"))
+         'version'           => trim(file_get_contents("../.git/ORIG_HEAD")),
+         'tracking'          => CONF_tracking,
+         'tracking_type'     => CONF_tracking_type,
+         'tracking_url'      => CONF_tracking_url,
+         'tracking_code'     => CONF_tracking_code
      ];
 
      return $template_options;
