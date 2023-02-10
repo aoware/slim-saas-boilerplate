@@ -276,9 +276,6 @@ $app->add($session_middleware);
 
 $app->addRoutingMiddleware();
 
-// Add Twig-View Middleware
-// $app->add(\Slim\Views\TwigMiddleware::createFromContainer($app,'twig'));
-
 // Add
 $app->add(new \Tuupola\Middleware\JwtAuthentication([
     "path"   => ["/api/v1"],
