@@ -23,7 +23,8 @@
         "tuupola/slim-jwt-auth": "3.6.0",
         "chillerlan/php-qrcode": "3.4.1",
         "pragmarx/google2fa" : "dev-master",
-        "goldspecdigital/oooas": "v2.10.0"
+        "goldspecdigital/oooas": "v2.10.0",
+        "aws/aws-sdk-php": "3.258.9"
     },
     "autoload": {
         "psr-4": {
