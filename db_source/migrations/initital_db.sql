@@ -38,6 +38,8 @@ INSERT INTO `config_definition` (`id`, `group`, `name`, `type`, `comment`) VALUE
 (18,    'tracking',    'CONF_tracking_type',    'string',   ''),
 (19,    'tracking',    'CONF_tracking_url',    'string',   ''),
 (20,    'tracking',    'CONF_tracking_code',    'string',   '');
+(21,    'tracking',    'CONF_tracking_api_key',    'string',   ''),
+(22,    'tracking',    'CONF_tracking_api_auth',    'string',   '');
 
 CREATE TABLE `config_value` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -74,7 +76,9 @@ INSERT INTO `config_value` (`id`, `config_definition_id`, `profile`, `effective_
 (19,    17,  'Test', NULL,   NULL,   '', 'false'),
 (20,    18,  'Live', NULL,   NULL,   '', 'owa'),
 (21,    19,  'Live', NULL,   NULL,   '', ''),
-(22,    20,  'Live', NULL,   NULL,   '', '');
+(22,    20,  'Live', NULL,   NULL,   '', ''),
+(23,    21,  'Live', NULL,   NULL,   '', ''),
+(24,    22,  'Live', NULL,   NULL,   '', '');
 
 CREATE TABLE `emails` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

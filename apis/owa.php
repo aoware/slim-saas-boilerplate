@@ -52,9 +52,9 @@ class owa {
         
     }
     
-    public function report_latest_visits($start_date,$end_date,$site_id) {
+    public function report_last_seven_days($site_id) {
         
-        $parameters = "?owa_module=base&owa_version=v1&owa_do=reports&owa_metrics=visits,pageViews&dateStart=" . $start_date . "&dateEnd=" . $end_date . "&siteId=" . $site_id . "&owa_apiKey=" . $this->api_key;
+        $parameters = "?owa_module=base&owa_version=v1&owa_do=reports&owa_period=last_seven_days&owa_metrics=visits,uniqueVisitors,pageViews,bounceRate,pagesPerVisit,visitDuration&owa_dimensions=date&owa_sort=date&owa_format=json&owa_siteId=" . $site_id . "&owa_apiKey=" . $this->api_key;
         
         $url = $this->api_url . $parameters;
         
@@ -97,7 +97,7 @@ class owa {
         }
 
         curl_close ($ch);
-        
+                
         $responseArray = json_decode($response,true);
 
         return $responseArray;
