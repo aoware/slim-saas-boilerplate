@@ -3,6 +3,12 @@
     // Default timezone setting.
     date_default_timezone_set('Europe/London');
 
+    // Site mode dictacte behavior of the site
+    // - Live: Error details not displayed on 500 page
+    // - Demo: Error details not displayed on 500 page and Backoffice Configuration is hidden
+    // - Test: Error details displayed on 500 page
+    define('CONF_site_mode'        ,'Live');
+
     // Profile name used to identify the configuration information saved config_definition and config_value
     define('CONF_configuration_profile','Test,Live');
 
@@ -13,10 +19,10 @@
     define('CONF_mysql_database'   ,'');
 
     // Location of the home directory path
-    define('CONF_base_url'          ,'');
+    define('CONF_base_url'         ,'');
 
     // Brand to be used. Should de a sub-folder of /views/brands
-    define('CONF_public_brand'      ,'play');
+    define('CONF_public_brand'     ,'play');
 
     // mysqli connection
     $db = new mysqli(CONF_mysql_host,CONF_mysql_user,CONF_mysql_password,CONF_mysql_database);

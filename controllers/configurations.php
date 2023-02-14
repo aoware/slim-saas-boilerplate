@@ -4,6 +4,15 @@ namespace controllers;
 
 class configurations extends base_controller {
 
+    function __construct($app, $request, $response, $args) {
+        
+        parent::__construct($app, $request, $response, $args);
+        
+        if (CONF_site_mode == 'Demo') {
+            throw new \RuntimeException("Forbidden", 403);
+        }
+    }
+    
     function list() {
 
         $cd = new \models\config_definition;

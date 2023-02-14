@@ -69,6 +69,7 @@ $container->set('dbal', function() {
          'current_year'      => date('Y'),
          'current_month'     => date('m'),
          'brand_name'        => 'Slim Saas Boilerplate',
+         'site_mode'         => CONF_site_mode,
          'version'           => trim(file_get_contents("../.git/ORIG_HEAD")),
          'tracking'          => CONF_tracking,
          'tracking_type'     => CONF_tracking_type,
@@ -359,6 +360,15 @@ $custom_error_handler = function (
               ]);
             $response = new \Slim\Psr7\Response();
             return $container->get('twig')->render($response->withStatus(404), '404.html',$variable_content );
+        };
+        
+        if ($exception instanceof \Slim\Exception\HttpForbiddenException) {
+            $variable_content = array_merge($container->get('template_options'),
+                [
+                    'screen_title' => 'Forbidden'
+                ]);
+            $response = new \Slim\Psr7\Response();
+            return $container->get('twig')->render($response->withStatus(403), '403.html',$variable_content );
         }
         else {
 

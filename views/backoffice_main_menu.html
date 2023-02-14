@@ -39,6 +39,8 @@
                   </a>
                   <div class="dropdown-menu">
                     <a class="dropdown-item" href="{{ base_url }}/backoffice/administrators">Administrators</a>
-                    <a class="dropdown-item" href="{{ base_url }}/backoffice/configurations">Configurations</a>
+                    {% if site_mode != 'Demo' %}
+                    <a class="dropdown-item" href="{{ base_url }}/backoffice/configurations">Configurations {{ site_mode }}</a>
+                    {% endif %}
                   </div>
                 </li>
