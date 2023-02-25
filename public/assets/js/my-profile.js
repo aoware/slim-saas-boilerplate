@@ -68,7 +68,7 @@ function update(end_point) {
 
 function change_password(end_point) {
 
-    var confirm_content  = "<form id'confirm_content'>";
+    var confirm_content  = "<form id='confirm_content'>";
         confirm_content += "  <div class='form-group mb-3 row'>";
         confirm_content += "    <label class='col-5 col-form-label'>Old Password</label>";
         confirm_content += "    <div class='col'>";
