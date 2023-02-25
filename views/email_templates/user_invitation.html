@@ -1,0 +1,14 @@
+{% extends "base_email.html" %}
+
+{% block paragraph_before %}
+<p>You have been invited to the <strong>{{ brand_name }}</strong> site.</p>
+<p>Please follow the link below to set the password on your account.</p>
+{% endblock %}
+
+{% set button_label = 'set your password' %}
+{% set button_url   = base_url ~ '/set-password/' ~ token %}
+
+{% block paragraph_after %}
+<p>This link will expire in 24 hours.</p>
+<p>This is an automated email - do not reply.</p>
+{% endblock %}
