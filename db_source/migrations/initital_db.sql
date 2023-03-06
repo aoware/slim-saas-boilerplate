@@ -18,28 +18,33 @@ CREATE TABLE `config_definition` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `config_definition` (`id`, `group`, `name`, `type`, `comment`) VALUES
-(1, 'smtp', 'CONF_smtp_host',   'string',   ''),
-(2, 'smtp', 'CONF_smtp_port',   'integer',  ''),
-(3, 'smtp', 'CONF_smtp_username',   'string',   ''),
-(4, 'smtp', 'CONF_smtp_password',   'string',   ''),
-(5, 'smtp', 'CONF_smtp_sender_email',   'string',   ''),
-(6, 'smtp', 'CONF_smtp_sender_name',    'string',   ''),
-(7, 'telegram', 'CONF_telegram_bot_id', 'integer',  ''),
-(8, 'telegram', 'CONF_telegram_bot_token',  'string',   ''),
-(9, 'telegram', 'CONF_telegram_admin_id',   'integer',  ''),
-(10,    'telegram', 'CONF_telegram_alert_ids',  'array',    ''),
-(11,    'bac',  'CONF_bac_key', 'string',   ''),
-(12,    'bac',  'CONF_bac_password',    'string',   ''),
-(13,    'jwt',  'CONF_jwt_secret',    'string',   ''),
-(14,    'jwt',  'CONF_jwt_secret',    'bolean',   ''),
-(15,    'encryption',  'CONF_encryption_key',    'string',   ''),
-(16,    'encryption',  'CONF_encryption_method',    'string',   ''),
-(17,    'tracking',    'CONF_tracking',    'boolean',   ''),
-(18,    'tracking',    'CONF_tracking_type',    'string',   ''),
-(19,    'tracking',    'CONF_tracking_url',    'string',   ''),
-(20,    'tracking',    'CONF_tracking_code',    'string',   '');
-(21,    'tracking',    'CONF_tracking_api_key',    'string',   ''),
-(22,    'tracking',    'CONF_tracking_api_auth',    'string',   '');
+(1,     'smtp',      'CONF_smtp_host',            'string', ''),
+(2, 	'smtp',      'CONF_smtp_port',            'integer',''),
+(3, 	'smtp',      'CONF_smtp_username',        'string', ''),
+(4, 	'smtp',      'CONF_smtp_password',        'string', ''),
+(5, 	'smtp',      'CONF_smtp_sender_email',    'string', ''),
+(6, 	'smtp',      'CONF_smtp_sender_name',     'string', ''),
+(7, 	'telegram',  'CONF_telegram_bot_id',      'integer',''),
+(8, 	'telegram',  'CONF_telegram_bot_token',   'string', ''),
+(9, 	'telegram',  'CONF_telegram_admin_id',    'integer',''),
+(10,    'telegram',  'CONF_telegram_alert_ids',   'array',  ''),
+(11,    'bac',       'CONF_bac_key',              'string', ''),
+(12,    'bac',       'CONF_bac_password',         'string', ''),
+(13,    'jwt',       'CONF_jwt_secret',           'string', ''),
+(14,    'jwt', 		 'CONF_jwt_secret',           'bolean', ''),
+(15,    'encryption','CONF_encryption_key',       'string', ''),
+(16,    'encryption','CONF_encryption_method',    'string', ''),
+(17,    'tracking',  'CONF_tracking',             'boolean',''),
+(18,    'tracking',  'CONF_tracking_type',        'string', ''),
+(19,    'tracking',  'CONF_tracking_url',         'string', ''),
+(20,    'tracking',  'CONF_tracking_code',        'string', '');
+(21,    'tracking',  'CONF_tracking_api_key',     'string', ''),
+(22,    'tracking',  'CONF_tracking_api_auth',    'string', ''),
+(23,    'aws',       'CONF_aws_key',              'string', ''),
+(24,    'aws',       'CONF_aws_secret',           'string', ''),
+(25,    'aws',       'CONF_aws_region',           'string', ''),
+(26,    'aws',       'CONF_aws_account_id',       'string', ''),
+(27,    'cloudflare','CONF_cloudflare_account_id','string', '');
 
 CREATE TABLE `config_value` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -78,7 +83,12 @@ INSERT INTO `config_value` (`id`, `config_definition_id`, `profile`, `effective_
 (21,    19,  'Live', NULL,   NULL,   '', ''),
 (22,    20,  'Live', NULL,   NULL,   '', ''),
 (23,    21,  'Live', NULL,   NULL,   '', ''),
-(24,    22,  'Live', NULL,   NULL,   '', '');
+(24,    22,  'Live', NULL,   NULL,   '', ''),
+(25,    23,  'Live', NULL,   NULL,   '', ''),
+(26,    24,  'Live', NULL,   NULL,   '', ''),
+(27,    25,  'Live', NULL,   NULL,   '', 'eu-west-2'),
+(28,    26,  'Live', NULL,   NULL,   '', ''),
+(29,    27,  'Live', NULL,   NULL,   '', '');
 
 CREATE TABLE `emails` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
