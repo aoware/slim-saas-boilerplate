@@ -4,20 +4,21 @@
 
 namespace apis;
 
-class aws_s3 {
+class cloudflare_r2 {
 
     private $client;
     private $bucket_name;
 
-    public function __construct($region,$key,$secret,$bucket_name) {
-
+    public function __construct($cloudflare_account_id,$aws_key,$aws_secret,$bucket_name) {
+        
         $this->client = new \Aws\S3\S3Client(
             [
-                'region'  => $region,
+                'region'  => 'auto',
+                'endpoint' => "https://" . $cloudflare_account_id . ".r2.cloudflarestorage.com",
                 'version' => "latest",
                 'credentials' => [
-                    'key'     => $key,
-                    'secret'  => $secret
+                    'key'     => $aws_key,
+                    'secret'  => $aws_secret
                 ]
             ]
         );
