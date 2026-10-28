@@ -13,7 +13,7 @@
     ],
     "require": {
         "slim/slim": "^4",
-        "slim/psr7": "1.4",
+        "slim/psr7": "^1",
         "twig/twig": "^3",
         "slim/twig-view": "^3.2.0",
         "php-di/php-di": "^6",
@@ -24,7 +24,7 @@
         "chillerlan/php-qrcode": "3.4.1",
         "pragmarx/google2fa" : "dev-master",
         "goldspecdigital/oooas": "v2.10.0",
-        "aws/aws-sdk-php": "3.258.9"
+        "aws/aws-sdk-php": "^3"
     },
     "autoload": {
         "psr-4": {
@@ -33,5 +33,15 @@
             "helpers\\": "helpers/",
             "models\\": "models/"
         }
+    },
+    "config": {
+      "allow-plugins": {
+      "php-http/discovery": true
+      },
+      "audit": {
+        "ignore": {
+          "PKSA-y2cr-5h3j-g3ys": "accepted — firebase/php-jwt transitive dep"
+        }
+      }
     }
 }
