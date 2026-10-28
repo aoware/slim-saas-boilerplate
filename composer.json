@@ -20,7 +20,7 @@
         "nextras/dbal": "v4.0.5",
         "phpmailer/phpmailer": "^6.5",
         "wixel/gump": "v2.0.0",
-        "tuupola/slim-jwt-auth": "3.6.0",
+        "jimtools/jwt-auth": "^1",
         "chillerlan/php-qrcode": "3.4.1",
         "pragmarx/google2fa" : "dev-master",
         "goldspecdigital/oooas": "v2.10.0",
